@@ -15,22 +15,6 @@ const deviceUtilities = {
     }
 }
 
-/*const utilityErrors = {
-    CookieError: class CookieError extends Error {
-        constructor(message, name) {
-            super(message);
-            if (name) {
-                this.name = "Generic Cookie Error";
-            }
-        }
-    },
-    UnexistingCookieError: class UnexistingCookieError extends CookieError {
-        constructor(name, cookieName) {
-            super(cookieName+" does not exist!", name);
-        }
-    }
-}*/
-
 const cookieUtilities = {
     addCookie: (name, value, expiration, path) => {
         if (name instanceof String
@@ -53,7 +37,6 @@ const cookieUtilities = {
     }
 }
 
-// TODO: Add a common function that checks if param is really a path string.
 const documentUtilities = {
     addCssFile: (pathToFile) => {
         if (typeof pathToFile === 'string') {
@@ -75,27 +58,65 @@ const documentUtilities = {
     }
 }
 
-//TODO: expand functionality
-const ajaxUtilities = {
-    SimpleAjaxRequest: class SimpleAjaxRequest extends XMLHttpRequest {
-        constructor(method, url, onSuccess, attempts, onFailure) {
-            super();
-            this.open(method, url, true);
-            if (typeof this.attempts === 'number'
-            || typeof this.attempts === 'undefined') {
-                this.attempts = attempts
-            } else {
-                throw new Error("Attempts isNaN!");
-            }
-            this.onreadystatechange = () => {
-                if (this.readyState == 4 && this.status == 200) {
-                    onSuccess(this);
+const AJAXUtilities = {
+    HTTPMethods: {
+        GET: "GET",
+        HEAD: "HEAD",
+        POST: "POST",
+        PUT: "PUT",
+        DELETE: "DELETE",
+        CONNECT: "CONNECT",
+        OPTIONS: "OPTIONS",
+        TRACE: "TRACE",
+        PATCH: "PATCH",
+    },
+    fireSimpleAJAXRequest: (method, url, onSuccess = () => {}, body = "", onFailure = () => {}) => {
+        return new Promise((resolved, rejected) => {
+            let httpRequest = new XMLHttpRequest();
+            httpRequest.open(method, url);
+            httpRequest.onreadystatechange = () => {
+                if (httpRequest.readyState == 4 && httpRequest.status == 200) {
+                    onSuccess(httpRequest.responseText);
+                    resolved(httpRequest.responseText);
                 }
             };
-            this.onerror = () => onFailure(this);
+            try {
+                httpRequest.send();
+            } catch (err) {
+                onFailure(err);
+                rejected(err);
+            }
+        })
+    }
+}
+
+const AssetManager = {
+    defaultAssetPath: "/components/",
+    extensionsToFetchFor: ["js","html","css"],
+    loadAsset: async (assetName) => {
+        if (typeof assetName == 'string') {
+            let separatedPath = assetName.split(".");
+            if (separatedPath.length >= 2
+                && AssetManager.extensionsToFetchFor.includes(separatedPath[separatedPath.length-1])) {
+                return await AJAXUtilities.fireSimpleAJAXRequest(AJAXUtilities.HTTPMethods.GET, 
+                    AssetManager.defaultAssetPath+separatedPath[separatedPath.length-2]
+                    +"/"
+                    +separatedPath[separatedPath.length-2]
+                    +"."
+                    +separatedPath[separatedPath.length-1]);
+            } else {
+                throw new Error("Unsupported asset extension: " + separatedPath[separatedPath.length-1]);
+            }
+        } else {
+            throw new Error("Parameter passed is not a String!");
         }
-        fire() {
-            this.send();
-        }
+    }
+}
+
+const DOMUtilities = {
+    addChildElementToNode: (elementToAdd, node) => {
+        let tmp = document.createElement("template");
+        tmp.innerHTML = node;
+        elementToAdd.appendChild(tmp.content);
     }
 }

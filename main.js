@@ -1,21 +1,13 @@
-document.body.onload = () => {
-    let a = new ajaxUtilities.SimpleAjaxRequest("GET", "/components/header/header.html", (x) => {
-        console.log(x.responseText);
-        let tmp = document.createElement("template");
-        tmp.innerHTML = x.responseText;
-        document.body.appendChild(tmp.content);
-        console.log("Yauuuuuuuuuuuuuuuuuu");
-    }, 5);
-    
-    let b = new ajaxUtilities.SimpleAjaxRequest("GET", "/components/footer/footer.html", (x) => {
-        console.log(x.responseText);
-        let tmp = document.createElement("template");
-        tmp.innerHTML = x.responseText;
-        document.body.appendChild(tmp.content);
-        console.log("Yauuuuuuuuuuuuuuuuuu");
-    }, 5);
+let assetPrototypes = new Map();
 
-    a.fire();
-    b.fire();
-    console.log("Daje Roma");
+async function mainPageInit() {
+    let header = await AssetManager.loadAsset("header.html");
+    DOMUtilities.addChildElementToNode(document.body, header)
+
+    let footer = await AssetManager.loadAsset("footer.html");
+    DOMUtilities.addChildElementToNode(document.body, footer)
+}
+
+document.body.onload = () => {
+    mainPageInit();
 }
