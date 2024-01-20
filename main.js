@@ -1,12 +1,20 @@
 let assetPrototypes = new Map();
 
-function mainPageInit(array) {
-    array.forEach(async element => {
-        let e = await AssetManager.loadAsset(element);
-        DOMUtilities.addChildElementToNode(document.body, e);
-    });
+async function loadMultipleAssets(assetArray) {
+    for(let asset in assetArray) {
+        let obtainedAsset = await AssetManager.loadAsset(assetArray[asset]);
+        DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
+    }
+}
+
+async function mainPageInit() {
+    await loadMultipleAssets(["header.html", "footer.html"]);
+    let mainPageContent = document.createElement("div");
+    mainPageContent.id = "main-content-page";
+    document.body.insertBefore(mainPageContent, document.getElementsByTagName("footer")[0]);
+    document.getElementById("loading-banner").style.display = "none";
 }
 
 document.body.onload = () => {
-   mainPageInit(["header.html", "footer.html"]);
+    mainPageInit();
 }
