@@ -1,28 +1,19 @@
 let assetPrototypes = new Map();
 
-async function mainPageHeaderInit() {
-    let header = await AssetManager.loadAsset("header.html");
-    DOMUtilities.addChildElementToNode(document.body, header)
+function mainPageInit(array) {
+    array.forEach(async element => {
+        let e = await AssetManager.loadAsset(element);
+        DOMUtilities.addChildElementToNode(document.body, e);
+    });
 }
 
-function mainPageContentInit() {
-    let mainContentPage = document.createElement("div");
-    mainContentPage.id = 'main-content-page';
-    document.body.appendChild(mainContentPage);
-}
-
-async function mainPageFooterInit() {
-    let footer = await AssetManager.loadAsset("footer.html");
-    DOMUtilities.addChildElementToNode(document.body, footer)
-}
-
-async function mainPageInit() {
-    await mainPageHeaderInit();
-    mainPageContentInit();
-    await mainPageFooterInit();
-    document.getElementById("loading-banner").style.display = "none";
+function mainPageInit(array) {
+    array.forEach(async element => {
+        let e = await AssetManager.loadAsset(element);
+        DOMUtilities.addChildElementToNode(document.body, e);
+    });
 }
 
 document.body.onload = () => {
-    mainPageInit();
+   mainPageInit(["header.html", "footer.html"]);
 }
