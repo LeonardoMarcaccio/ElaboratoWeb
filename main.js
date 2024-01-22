@@ -1,4 +1,5 @@
 let assetPrototypes = new Map();
+let childAmount;
 
 const mainConstants = {
     actionBar: {
@@ -30,11 +31,13 @@ function flushMainContentPage() {
 
 async function selectPage(selector) {
     let functionSelection;
+    DOMUtilities.removeChildElementsToNode(document.body, childAmount);
     if (mainGlobalVariables.lastSelection != null) {
         document.getElementById("footer-" + mainGlobalVariables.lastSelection).disabled = false;
     }
     document.getElementById("footer-" + selector).disabled = true;
     mainGlobalVariables.lastSelection = selector;
+    let obtainedAsset;
 
     switch(selector) {
         case mainConstants.actionBar.HOME:
@@ -50,7 +53,7 @@ async function selectPage(selector) {
 
         break;
         case mainConstants.actionBar.PROFILE:
-            let obtainedAsset = await AssetManager.loadAsset("profile.html");
+            obtainedAsset = await AssetManager.loadAsset("profile.html");
             DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
         break;
         default:
@@ -83,6 +86,8 @@ async function mainPageInit() {
             selectPage(categories[name]);
         };
     }
+
+    childAmount = document.body.childElementCount;
 }
 
 document.body.onload = () => {

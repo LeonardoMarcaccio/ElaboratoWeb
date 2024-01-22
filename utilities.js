@@ -118,5 +118,10 @@ const DOMUtilities = {
         let tmp = document.createElement("template");
         tmp.innerHTML = node;
         elementToAdd.appendChild(tmp.content);
+    },
+    removeChildElementsToNode: (elementToRemove, oldValue) => {
+        while (elementToRemove.childElementCount > oldValue) {
+            elementToRemove.removeChild(elementToRemove.lastChild);
+        }
     }
 }
