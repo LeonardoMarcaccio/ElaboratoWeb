@@ -1,5 +1,6 @@
 let assetPrototypes = new Map();
-let childAmount;
+let headerEnd;
+let pageElementCount;
 
 const mainConstants = {
     actionBar: {
@@ -25,19 +26,28 @@ let mainGlobalVariables = {
     }
 }
 
+async function simpleAdd(src, add) {
+    let obtainedAsset = await AssetManager.loadAsset(add);
+    DOMUtilities.addChildElementToNode(src, obtainedAsset);
+}
+
 function flushMainContentPage() {
-    
+    DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, 0);
 }
 
 async function selectPage(selector) {
     let functionSelection;
-    DOMUtilities.removeChildElementsToNode(document.body, childAmount);
+    flushMainContentPage();
     if (mainGlobalVariables.lastSelection != null) {
         document.getElementById("footer-" + mainGlobalVariables.lastSelection).disabled = false;
     }
     document.getElementById("footer-" + selector).disabled = true;
     mainGlobalVariables.lastSelection = selector;
-    let obtainedAsset;
+
+    /*
+    SWITCH REPLACEMENT
+    simpleAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
+    */
 
     switch(selector) {
         case mainConstants.actionBar.HOME:
@@ -53,8 +63,7 @@ async function selectPage(selector) {
 
         break;
         case mainConstants.actionBar.PROFILE:
-            obtainedAsset = await AssetManager.loadAsset("profile.html");
-            DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
+            simpleAdd(mainGlobalVariables.page.mainContentPage, "profile.html");
         break;
         default:
             throw new Error("Action "+selector+" not supported!");
@@ -62,11 +71,16 @@ async function selectPage(selector) {
 }
 
 async function mainPageInit() {
-    let initialAssetArr = ["header.html", "footer.html"];
+
+    simpleAdd(document.body, "header.html");
+    headerEnd = document.body.childElementCount;
+    
+    let initialAssetArr = ["footer.html"];
     for(let asset in initialAssetArr) {
         let obtainedAsset = await AssetManager.loadAsset(initialAssetArr[asset]);
         DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
     }
+
     mainGlobalVariables.page.header = document.getElementsByTagName("header")[0];
     mainGlobalVariables.page.footer = document.getElementsByTagName("footer")[0];
     mainGlobalVariables.page.mainContentPage = document.createElement("div");
@@ -87,7 +101,7 @@ async function mainPageInit() {
         };
     }
 
-    childAmount = document.body.childElementCount;
+    pageElementCount = document.body.childElementCount;
 }
 
 document.body.onload = () => {

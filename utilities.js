@@ -119,9 +119,19 @@ const DOMUtilities = {
         tmp.innerHTML = node;
         elementToAdd.appendChild(tmp.content);
     },
-    removeChildElementsToNode: (elementToRemove, oldValue) => {
-        while (elementToRemove.childElementCount > oldValue) {
+    removeChildElementsToNode: (elementToRemove, remaining) => {
+        while (elementToRemove.childElementCount > remaining) {
             elementToRemove.removeChild(elementToRemove.lastChild);
         }
-    }
+    },
+    customAdd: (elementToAdd, node, func) => {
+        let tmp = document.createElement("template");
+        tmp.innerHTML = node;
+        func(elementToAdd, tmp.content);
+    },
+    removeChildElementsInRange: (elementToRemove, start, count) => {
+        for (let i=start; i<start+count; i++) {
+            elementToRemove.removeChild(elementToRemove.children.item(i));
+        }
+    },
 }
