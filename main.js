@@ -18,6 +18,9 @@ let mainGlobalVariables = {
     },
     dynamicElements: {
         loadingBanner: null
+    },
+    buttonData: {
+        lastSelection: null
     }
 }
 
@@ -27,9 +30,15 @@ function flushMainContentPage() {
 
 async function selectPage(selector) {
     let functionSelection;
+    if (mainGlobalVariables.lastSelection != null) {
+        document.getElementById("footer-" + mainGlobalVariables.lastSelection).disabled = false;
+    }
+    document.getElementById("footer-" + selector).disabled = true;
+    mainGlobalVariables.lastSelection = selector;
+
     switch(selector) {
         case mainConstants.actionBar.HOME:
-            
+
         break;
         case mainConstants.actionBar.SEARCH:
 
@@ -41,7 +50,8 @@ async function selectPage(selector) {
 
         break;
         case mainConstants.actionBar.PROFILE:
-
+            let obtainedAsset = await AssetManager.loadAsset("profile.html");
+            DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
         break;
         default:
             throw new Error("Action "+selector+" not supported!");
@@ -61,6 +71,18 @@ async function mainPageInit() {
     document.body.insertBefore(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.footer);
     mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
     mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
+
+    categories = [mainConstants.actionBar.HOME,
+            mainConstants.actionBar.SEARCH,
+            mainConstants.actionBar.POST,
+            mainConstants.actionBar.CHAT,
+            mainConstants.actionBar.PROFILE];
+
+    for (let name in categories) {
+        document.getElementById("footer-" + categories[name]).onclick = function () {
+            selectPage(categories[name]);
+        };
+    }
 }
 
 document.body.onload = () => {
