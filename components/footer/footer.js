@@ -1,32 +1,11 @@
-flushMainContentPage();
-if (mainGlobalVariables.lastSelection != null) {
-    document.getElementById("footer-" + mainGlobalVariables.lastSelection).disabled = false;
-}
-document.getElementById("footer-" + mainGlobalVariables.selector).disabled = true;
-mainGlobalVariables.lastSelection = mainGlobalVariables.selector;
+categories = [mainConstants.actionBar.HOME,
+    mainConstants.actionBar.SEARCH,
+    mainConstants.actionBar.POST,
+    mainConstants.actionBar.CHAT,
+    mainConstants.actionBar.PROFILE];
 
-/*
-SWITCH REPLACEMENT
-DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.selector + ".html");
-DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.selector + ".js");
-*/
-
-switch(mainGlobalVariables.selector) {
-    case mainConstants.actionBar.HOME:
-        DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.selector + ".html");
-    break;
-    case mainConstants.actionBar.SEARCH:
-
-    break;
-    case mainConstants.actionBar.POST:
-
-    break;
-    case mainConstants.actionBar.CHAT:
-
-    break;
-    case mainConstants.actionBar.PROFILE:
-        DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.selector + ".html");
-    break;
-    default:
-        throw new Error("Action "+selector+" not supported!");
+for (let name in categories) {
+document.getElementById("footer-" + categories[name]).onclick = function () {
+    selectPage(categories[name]);
+};
 }

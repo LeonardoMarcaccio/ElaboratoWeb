@@ -20,8 +20,7 @@ let mainGlobalVariables = {
         loadingBanner: null
     },
     buttonData: {
-        lastSelection: null,
-        selector:null
+        lastSelection: null
     }
 }
 
@@ -30,8 +29,38 @@ function flushMainContentPage() {
 }
 
 async function selectPage(selector) {
-    mainGlobalVariables.selector = selector;
-    documentUtilities.addScriptFile("./components/footer/footer.js", () => {});
+    flushMainContentPage();
+    if (mainGlobalVariables.lastSelection != null) {
+        document.getElementById("footer-" + mainGlobalVariables.lastSelection).disabled = false;
+    }
+    document.getElementById("footer-" + selector).disabled = true;
+    mainGlobalVariables.lastSelection = selector;
+
+    /*
+    SWITCH REPLACEMENT
+    DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
+    documentUtilities.addScriptFile("./components/" + selector + "/" + selector + ".js", () => {});
+    */
+
+    switch(selector) {
+        case mainConstants.actionBar.HOME:
+            DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
+        break;
+        case mainConstants.actionBar.SEARCH:
+
+        break;
+        case mainConstants.actionBar.POST:
+
+        break;
+        case mainConstants.actionBar.CHAT:
+
+        break;
+        case mainConstants.actionBar.PROFILE:
+            DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
+        break;
+        default:
+            throw new Error("Action "+selector+" not supported!");
+    }
 }
 
 async function mainPageInit() {
@@ -50,19 +79,7 @@ async function mainPageInit() {
     mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
     mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
 
-    categories = [mainConstants.actionBar.HOME,
-            mainConstants.actionBar.SEARCH,
-            mainConstants.actionBar.POST,
-            mainConstants.actionBar.CHAT,
-            mainConstants.actionBar.PROFILE];
-
-    for (let name in categories) {
-        document.getElementById("footer-" + categories[name]).onclick = function () {
-            selectPage(categories[name]);
-        };
-    }
-
-    pageElementCount = document.body.childElementCount;
+    documentUtilities.addScriptFile("./components/footer/footer.js", () => {});
 }
 
 document.body.onload = () => {
