@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP Request Sender</title>
+  </head>
+  <body>
+    <h1>HTTP Request Sender</h1>
+
+    <label for="urlInput">URL:</label>
+    <input type="text" id="urlInput" placeholder="Enter URL">
+    
+    <label for="dataInput">Data:</label>
+    <input type="text" id="dataInput" placeholder="Enter data">
+    
+    <label for="methodSelect">Request Type:</label>
+    <select id="methodSelect">
+      <option value="GET">GET</option>
+      <option value="POST">POST</option>
+    </select>
+    
+    <button onclick="sendHttpRequest()">Invia Richiesta</button>
+    
+    <script>
+      function sendHttpRequest() {
+        var url = document.getElementById('urlInput').value;
+        var data = document.getElementById('dataInput').value;
+        var method = document.getElementById('methodSelect').value;
+        
+        var xhr = new XMLHttpRequest();
+        
+        xhr.open(method, url, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              console.log('Risposta:', xhr.responseText);
+            } else {
+              console.error('Errore nella richiesta. Codice:', xhr.status);
+            }
+          }
+        };
+        
+        xhr.send(data);
+      }
+    </script>
+
+  </body>
+</html>
