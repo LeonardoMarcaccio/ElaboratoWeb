@@ -129,9 +129,8 @@ const DOMUtilities = {
         tmp.innerHTML = node;
         func(elementToAdd, tmp.content);
     },
-    removeChildElementsInRange: (elementToRemove, start, count) => {
-        for (let i=start; i<start+count; i++) {
-            elementToRemove.removeChild(elementToRemove.children.item(i));
-        }
-    },
+    loadAndAdd: async (src, add) => {
+        let obtainedAsset = await AssetManager.loadAsset(add);
+        DOMUtilities.addChildElementToNode(src, obtainedAsset);
+    }
 }

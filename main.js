@@ -2,7 +2,7 @@ let assetPrototypes = new Map();
 
 const mainConstants = {
     actionBar: {
-        HOME: "home",
+        HOME: "feed",
         SEARCH: "search",
         POST: "post",
         CHAT: "chat",
@@ -24,11 +24,6 @@ let mainGlobalVariables = {
     }
 }
 
-async function simpleAdd(src, add) {
-    let obtainedAsset = await AssetManager.loadAsset(add);
-    DOMUtilities.addChildElementToNode(src, obtainedAsset);
-}
-
 function flushMainContentPage() {
     DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, 0);
 }
@@ -44,12 +39,12 @@ async function selectPage(selector) {
 
     /*
     SWITCH REPLACEMENT
-    simpleAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
+    DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
     */
 
     switch(selector) {
         case mainConstants.actionBar.HOME:
-
+            DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
         break;
         case mainConstants.actionBar.SEARCH:
 
@@ -61,7 +56,7 @@ async function selectPage(selector) {
 
         break;
         case mainConstants.actionBar.PROFILE:
-            simpleAdd(mainGlobalVariables.page.mainContentPage, "profile.html");
+            DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
         break;
         default:
             throw new Error("Action "+selector+" not supported!");
