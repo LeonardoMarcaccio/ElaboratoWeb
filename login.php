@@ -13,7 +13,7 @@
 
 <body>
     <div class="InteractionPane">
-        <form name="SignInForm" action="" method="get">
+        <form name="SignInForm" action="" method="post">
             <h1>PlayPal</h1>
             
             <label for="emailSingIn">Email:</label><br>

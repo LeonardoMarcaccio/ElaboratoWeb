@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2024 at 03:44 PM
+-- Generation Time: Jan 22, 2024 at 04:54 PM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -24,17 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
---
-
-CREATE TABLE `admin` (
-  `Username` char(1) NOT NULL,
-  `Name` char(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `comment`
 --
 
@@ -46,23 +35,24 @@ CREATE TABLE `comment` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `community`
+-- Table structure for table `commuity`
 --
 
-CREATE TABLE `community` (
+CREATE TABLE `commuity` (
   `Name` char(1) NOT NULL,
   `Image` varchar(100) NOT NULL,
   `Description` varchar(500) NOT NULL,
-  `Username` char(1) NOT NULL
+  `Username` char(1) NOT NULL,
+  `Fou_Username` char(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `friendship`
+-- Table structure for table `frindship`
 --
 
-CREATE TABLE `friendship` (
+CREATE TABLE `frindship` (
   `Fri_Username` char(1) NOT NULL,
   `Username` char(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -132,20 +122,13 @@ CREATE TABLE `user` (
   `Gender` varchar(20) DEFAULT NULL,
   `Biography` varchar(20) DEFAULT NULL,
   `PersonalWebsite` varchar(100) DEFAULT NULL,
-  `Phonenumbers` varchar(15) DEFAULT NULL,
-  `Name` char(1) DEFAULT NULL
+  `Pfp` varchar(100) DEFAULT NULL,
+  `Phonenumbers` varchar(15) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `admin`
---
-ALTER TABLE `admin`
-  ADD PRIMARY KEY (`Name`,`Username`),
-  ADD KEY `FKAdm_Use` (`Username`);
 
 --
 -- Indexes for table `comment`
@@ -154,16 +137,17 @@ ALTER TABLE `comment`
   ADD KEY `FKAnswer` (`Username`,`Date`);
 
 --
--- Indexes for table `community`
+-- Indexes for table `commuity`
 --
-ALTER TABLE `community`
+ALTER TABLE `commuity`
   ADD PRIMARY KEY (`Name`),
-  ADD KEY `FKFound` (`Username`);
+  ADD KEY `FKAdmin` (`Username`),
+  ADD KEY `FKFound` (`Fou_Username`);
 
 --
--- Indexes for table `friendship`
+-- Indexes for table `frindship`
 --
-ALTER TABLE `friendship`
+ALTER TABLE `frindship`
   ADD PRIMARY KEY (`Fri_Username`,`Username`),
   ADD KEY `FKFriend2` (`Username`);
 
@@ -203,28 +187,22 @@ ALTER TABLE `user`
 --
 
 --
--- Constraints for table `admin`
---
-ALTER TABLE `admin`
-  ADD CONSTRAINT `FKAdm_Com` FOREIGN KEY (`Name`) REFERENCES `community` (`Name`),
-  ADD CONSTRAINT `FKAdm_Use` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`);
-
---
 -- Constraints for table `comment`
 --
 ALTER TABLE `comment`
   ADD CONSTRAINT `FKAnswer` FOREIGN KEY (`Username`,`Date`) REFERENCES `thread` (`Username`, `Date`);
 
 --
--- Constraints for table `community`
+-- Constraints for table `commuity`
 --
-ALTER TABLE `community`
-  ADD CONSTRAINT `FKFound` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`);
+ALTER TABLE `commuity`
+  ADD CONSTRAINT `FKAdmin` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`),
+  ADD CONSTRAINT `FKFound` FOREIGN KEY (`Fou_Username`) REFERENCES `user` (`Username`);
 
 --
--- Constraints for table `friendship`
+-- Constraints for table `frindship`
 --
-ALTER TABLE `friendship`
+ALTER TABLE `frindship`
   ADD CONSTRAINT `FKFriend1` FOREIGN KEY (`Fri_Username`) REFERENCES `user` (`Username`),
   ADD CONSTRAINT `FKFriend2` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`);
 
@@ -232,20 +210,20 @@ ALTER TABLE `friendship`
 -- Constraints for table `join`
 --
 ALTER TABLE `join`
-  ADD CONSTRAINT `FKJoi_Com` FOREIGN KEY (`Name`) REFERENCES `community` (`Name`),
+  ADD CONSTRAINT `FKJoi_Com` FOREIGN KEY (`Name`) REFERENCES `commuity` (`Name`),
   ADD CONSTRAINT `FKJoi_Use` FOREIGN KEY (`Username`) REFERENCES `user` (`Username`);
 
 --
 -- Constraints for table `message`
 --
 ALTER TABLE `message`
-  ADD CONSTRAINT `FKChat` FOREIGN KEY (`Fri_Username`,`Username`) REFERENCES `friendship` (`Fri_Username`, `Username`);
+  ADD CONSTRAINT `FKChat` FOREIGN KEY (`Fri_Username`,`Username`) REFERENCES `frindship` (`Fri_Username`, `Username`);
 
 --
 -- Constraints for table `post`
 --
 ALTER TABLE `post`
-  ADD CONSTRAINT `FKIn` FOREIGN KEY (`Name`) REFERENCES `community` (`Name`);
+  ADD CONSTRAINT `FKIn` FOREIGN KEY (`Name`) REFERENCES `commuity` (`Name`);
 
 --
 -- Constraints for table `thread`
