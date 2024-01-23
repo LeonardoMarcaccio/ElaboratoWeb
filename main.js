@@ -1,6 +1,4 @@
 let assetPrototypes = new Map();
-let headerEnd;
-let pageElementCount;
 
 const mainConstants = {
     actionBar: {
@@ -71,11 +69,8 @@ async function selectPage(selector) {
 }
 
 async function mainPageInit() {
-
-    simpleAdd(document.body, "header.html");
-    headerEnd = document.body.childElementCount;
     
-    let initialAssetArr = ["footer.html"];
+    let initialAssetArr = ["header.html","footer.html"];
     for(let asset in initialAssetArr) {
         let obtainedAsset = await AssetManager.loadAsset(initialAssetArr[asset]);
         DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
