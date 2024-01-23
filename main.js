@@ -20,7 +20,8 @@ let mainGlobalVariables = {
         loadingBanner: null
     },
     buttonData: {
-        lastSelection: null
+        lastSelection: null,
+        selector:null
     }
 }
 
@@ -29,38 +30,8 @@ function flushMainContentPage() {
 }
 
 async function selectPage(selector) {
-    let functionSelection;
-    flushMainContentPage();
-    if (mainGlobalVariables.lastSelection != null) {
-        document.getElementById("footer-" + mainGlobalVariables.lastSelection).disabled = false;
-    }
-    document.getElementById("footer-" + selector).disabled = true;
-    mainGlobalVariables.lastSelection = selector;
-
-    /*
-    SWITCH REPLACEMENT
-    DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
-    */
-
-    switch(selector) {
-        case mainConstants.actionBar.HOME:
-            DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
-        break;
-        case mainConstants.actionBar.SEARCH:
-
-        break;
-        case mainConstants.actionBar.POST:
-
-        break;
-        case mainConstants.actionBar.CHAT:
-
-        break;
-        case mainConstants.actionBar.PROFILE:
-            DOMUtilities.loadAndAdd(mainGlobalVariables.page.mainContentPage, selector + ".html");
-        break;
-        default:
-            throw new Error("Action "+selector+" not supported!");
-    }
+    mainGlobalVariables.selector = selector;
+    documentUtilities.addScriptFile("./components/footer/footer.js", () => {});
 }
 
 async function mainPageInit() {
