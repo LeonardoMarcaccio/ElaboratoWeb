@@ -15,6 +15,16 @@ const deviceUtilities = {
     }
 }
 
+const genericUtilities = {
+    namespaceAsVector: (namespace) => {
+        let resultingVector = [];
+        for(let singleProperty in namespace) {
+            resultingVector.push(singleProperty);
+        }
+        return resultingVector;
+    }
+}
+
 const cookieUtilities = {
     addCookie: (name, value, expiration, path) => {
         if (name instanceof String
@@ -48,7 +58,7 @@ const documentUtilities = {
             throw new Error("Invalid path: "+pathToFile);
         }
     },
-    addScriptFile: (pathToFile, onLoadFunc) => {
+    addScriptFile: (pathToFile, onLoadFunc = () => {}) => {
         let scriptTag = document.createElement("script");   //NOSONAR
         scriptTag.src = pathToFile;
         if (onLoadFunc instanceof Function) {
