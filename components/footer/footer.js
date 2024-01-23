@@ -18,16 +18,23 @@ for (let button in footerValues.buttons) {
 }
 
 document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE, (evt) => {
-    if (genericUtilities
-        .namespaceAsVector(mainPageLocChanges.mainLocations).includes(evt)) {
-        let namespaceKeys = genericUtilities.namespaceAsVector(footerValues.buttons);
-        for(let element in namespaceKeys) {
-            if (footerValues.buttons[element].id == evt.detail) {
-                if (footerValues.lastActiveBtn != null) {
-                    lastActiveBtn.disabled = false;
-                    footerValues.buttons[element].disabled = true;
-                }
-            }
+    let supportedEvents = [];
+    for(const supportedEKey in events.actionBar) {
+        supportedEvents.push(events.actionBar[supportedEKey]);
+    }
+    if (supportedEvents.includes(evt.detail)) {
+        let namespaceKeys = [];
+        for(const supportedEKey in footerValues.buttons) {
+            namespaceKeys.push(footerValues.buttons[supportedEKey]);
         }
+        namespaceKeys.forEach((namespaceKey) =>{
+                if (namespaceKey.id == evt.detail) {
+                    if (footerValues.lastActiveBtn != null) {
+                        lastActiveBtn.disabled = false;
+                    }
+                    namespaceKey.disabled = true;
+                    footerValues.lastActiveBtn = namespaceKey;
+                }
+        });
     }
 })
