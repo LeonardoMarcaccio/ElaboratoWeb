@@ -1,5 +1,17 @@
 <?php
-    function UserToJSON(
+  function UserToJSON(    //NOSONAR
+    $username,
+    $email,
+    $password,
+    $firstName,
+    $lastName,
+    $gender,
+    $biography,
+    $personalWebsite,
+    $pfp,
+    $phoneNumbers
+    ) {
+      $user = new User(
         $username,
         $email,
         $password,
@@ -10,26 +22,17 @@
         $personalWebsite,
         $pfp,
         $phoneNumbers
-    ) {
-        $user = new User(
-            $username,
-            $email,
-            $password,
-            $firstName,
-            $lastName,
-            $gender,
-            $biography,
-            $personalWebsite,
-            $pfp,
-            $phoneNumbers
-        );
-
-        return json_encode($user);
+      );
+      
+      return json_encode($user);
     }
-
-    function ErrorToJSON($errorCode, $errorMessage){
-        $error=new Error($errorCode, $errorMessage);
-        return json_encode($error);
-    }
-?>
     
+  function generateJSONResponse($code, $message, $dataName = null, $data = null) {
+    $jsonObject = new stdClass();
+    $jsonObject->code = $code;
+    $jsonObject->message = $message;
+    if ($dataName != null || $data != null) {
+      $jsonObject->{$dataName} = $data;
+    }
+    return json_encode($jsonObject);
+  }
