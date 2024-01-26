@@ -5,8 +5,7 @@
 
   try {
     assertRequestMatch('POST');
-    assertSetCredentials();
-    
+    $usrObj = jSONtoUser(file_get_contents("php://input"));
   } catch (Error $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getCode(), $thrownError->getMessage()));
