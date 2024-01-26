@@ -68,7 +68,7 @@
 
   function checkUsernameValidity($username) {
     // Length check & no punctuation check
-    return new UsernameValidityReport(strlen($username) > 8, preg_match('/[!@#$%^&*(),.?":{}|<>]/', $username));
+    return new UsernameValidityReport(strlen($username) < 50, !preg_match('/[!@#$%^&*(),.?":{}|<>]/', $username));
   }
   function checkPasswordValidity($password) {
     // Length check
