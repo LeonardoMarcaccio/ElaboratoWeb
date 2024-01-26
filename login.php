@@ -9,7 +9,7 @@
 
 </style>
 
-<script src=""></script>
+<script src="registration.js"></script>
 
 <body>
     <div class="InteractionPane">

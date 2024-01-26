@@ -1,4 +1,3 @@
-
 function XHRRequest() {
     const xhr = new XMLHttpRequest();
     
