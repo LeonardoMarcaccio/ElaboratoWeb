@@ -7,7 +7,7 @@
       $assArray['gender'], $assArray['biography'], $assArray['personalWebsite'],
       $assArray['pfp'], $assArray['phoneNumbers']);
     } else {
-      throw new Error("Unauthorized", 401);
+      throw new ApiError("Ok", 200, "Invalid user data", 401);
     }
   }
     
