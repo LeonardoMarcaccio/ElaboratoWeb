@@ -1,7 +1,7 @@
 <?php
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/user.php'; //NOSONAR
 
-  class UsernameValidityReport {
+  class UsernameValidityReport implements JsonSerializable {
     private $lengthCheckPassed;
     private $validCharacterPassed;
 
@@ -16,8 +16,15 @@
     public function getValidCharacterPassed() {
       return $this->validCharacterPassed;
     }
+
+    public function jsonSerialize() {
+      return [
+          'lengthCheckPassed' => $this->lengthCheckPassed,
+          'validCharacterPassed' => $this->validCharacterPassed,
+      ];
   }
-  class EmailValidityReport {
+  }
+  class EmailValidityReport implements JsonSerializable {
     private $atCheckPassed;
 
     public function __construct($atCheckPassed) {
@@ -27,8 +34,12 @@
     public function getValidCharacterPassed() {
       return $this->atCheckPassed;
     }
+
+    public function jsonSerialize() {
+      return ['atCheckPassed' => $this->atCheckPassed];
+    }
   }
-  class PasswordValidityReport {
+  class PasswordValidityReport implements JsonSerializable {
     private $lengthCheckPassed;
     private $capitalCheckPassed;
     private $nonCapitalCheckPassed;
@@ -64,11 +75,83 @@
     public function getPunctuationCheckPassed() {
       return $this->punctuationCheckPassed;
     }
+
+    public function jsonSerialize() {
+      return ['lengthCheckPassed' => $this->lengthCheckPassed,
+        'capitalCheckPassed' => $this->capitalCheckPassed,
+        'nonCapitalCheckPassed' => $this->nonCapitalCheckPassed,
+        'numberCheckPassed' => $this->numberCheckPassed,
+        'specialCharCheckPassed' => $this->specialCharCheckPassed,
+        'punctuationCheckPassed' => $this->punctuationCheckPassed];
+    }
+  }
+  class NonEssValidity implements JsonSerializable {
+    private $firstnameValid;
+    private $lastnameValid;
+    private $genderValid;
+    private $biographyValid;
+    private $personalWebsiteValid;
+    private $profilePicValid;
+    private $phoneNumbersValid;
+
+    public function __construct($firstnameValid, $lastnameValid, $genderValid,
+      $biographyValid, $personalWebsiteValid, $profilePicValid, $phoneNumbersValid) {
+      $this->firstnameValid = $firstnameValid;
+      $this->lastnameValid = $lastnameValid;
+      $this->genderValid = $genderValid;
+      $this->biographyValid = $biographyValid;
+      $this->personalWebsiteValid = $personalWebsiteValid;
+      $this->profilePicValid = $profilePicValid;
+      $this->phoneNumbersValid = $phoneNumbersValid;
+    }
+
+    public function getFirstnameValid() {
+      return $this->firstnameValid;
+    }
+    public function getCapitalCheckPassed() {
+      return $this->lastnameValid;
+    }
+    public function getGenderValid() {
+      return $this->genderValid;
+    }
+    public function getBiographyValid() {
+      return $this->biographyValid;
+    }
+    public function getPersonalWebsiteValid() {
+      return $this->personalWebsiteValid;
+    }
+    public function getProfilePicValid() {
+      return $this->profilePicValid;
+    }
+    public function getPhoneNumbersValid() {
+      return $this->phoneNumbersValid;
+    }
+
+    public function jsonSerialize() {
+      return ['firstnameValid' => $this->firstnameValid,
+      'lastnameValid' => $this->lastnameValid,
+      'genderValid' => $this->genderValid,
+      'biographyValid' => $this->biographyValid,
+      'personalWebsiteValid' => $this->personalWebsiteValid,
+      'profilePicValid' => $this->profilePicValid,
+      'phoneNumbersValid' => $this->phoneNumbersValid];
+    }
   }
 
+  function standardStringValidity($stringToCheck, $maximumLength = null, $mustNotMatchRegex = null) {
+    $result = false;
+    if ($maximumLength !== null) {
+      $result = $result || (strlen($stringToCheck) < $maximumLength);
+    }
+    if ($mustNotMatchRegex !== null) {
+      $result = $result || !preg_match($mustNotMatchRegex, $stringToCheck);
+    }
+    return $result;
+  }
   function checkUsernameValidity($username) {
     // Length check & no punctuation check
-    return new UsernameValidityReport(strlen($username) < 50, !preg_match('/[!@#$%^&*(),.?":{}|<>]/', $username));
+    return new UsernameValidityReport(standardStringValidity($username, 50),
+      standardStringValidity($username, '/[!@#$%^&*(),.?":{}|<>]/')); // NOSONAR
   }
   function checkPasswordValidity($password) {
     // Length check
@@ -89,4 +172,19 @@
   function checkEmailValidity($email) {
     // @ check
     return new EmailValidityReport(strpos($email, '@'));
+  }
+  function checkNonEssValidity(User $userContainer) {
+    $firstNameCheck = standardStringValidity($userContainer->getFirstName(), 50,
+      '/[!@#$%^&*(),.?":{}|<>]/');
+    $lastNameCheck = standardStringValidity($userContainer->getLastName(), 50,
+      '/[!@#$%^&*(),.?":{}|<>]/');
+    $genderCheck = true;
+    $biographyValid = standardStringValidity($userContainer->getBiography(), 500);
+    $personalWebsiteCheck = standardStringValidity($userContainer->getPersonalWebsite(), 500);
+    $profilePicCheck = standardStringValidity($userContainer->getPfp(), 500);
+    $phoneNumberCheck = true;     // TODO: Check for each number if it conforms with standards.
+
+    return new NonEssValidity($firstNameCheck, $lastNameCheck,
+      $genderCheck, $biographyValid, $personalWebsiteCheck,
+      $profilePicCheck, $phoneNumberCheck);
   }
