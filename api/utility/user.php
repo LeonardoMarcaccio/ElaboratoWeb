@@ -1,15 +1,15 @@
 <?php
   class User {                    //NOSONAR
-    private $username;
-    private $email;
-    private $password;
-    private $firstName;
-    private $lastName;
-    private $gender;
-    private $biography;
-    private $personalWebsite;
-    private $pfp;
-    private $phoneNumbers;
+    private $username;            // Essential
+    private $email;               // Essential
+    private $password;            // Essential
+    private $firstName;           // Non Essential
+    private $lastName;            // Non Essential
+    private $gender;              // Non Essential
+    private $biography;           // Non Essential
+    private $personalWebsite;     // Non Essential
+    private $pfp;                 // Non Essential
+    private $phoneNumbers;        // Non Essential
 
     public function __construct(  //NOSONAR
       $username, $email, $password, $firstName,
@@ -85,5 +85,9 @@
     }
     public function setPhoneNumbers($phoneNumbers) {
       $this->phoneNumbers = $phoneNumbers;
+    }
+
+    public function expose() {
+      return get_object_vars($this);
     }
   }
