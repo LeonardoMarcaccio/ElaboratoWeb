@@ -6,14 +6,13 @@
 
   try {
     assertRequestMatch('POST');
-    $usrObj;
     try {
       $usrObj = jSONtoUser(file_get_contents("php://input"));
       $report = performCredentialReport($usrObj);
       if ($report->allTestPassed()) {
         // Here a query should be performed
       }
-      die(json_encode($report));
+      exit(generateJSONResponse(401, "Invalid Information", $report));
     } catch (Error $thrownError) {
       throw new ApiError("Ok", 200, "Invalid JSON Format", 401);
     }

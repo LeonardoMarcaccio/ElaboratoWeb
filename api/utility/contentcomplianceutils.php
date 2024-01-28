@@ -2,9 +2,10 @@
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/user.php'; //NOSONAR
   require_once 'classes/reports/ComplianceTest.php';                //NOSONAR
   require_once 'classes/reports/EmailValidityReport.php';           //NOSONAR
-  require_once 'classes/reports/NonEssentialValidityReport.php';    //NOSONAR
+  require_once 'classes/reports/FullComplianceReport.php';          //NOSONAR
   require_once 'classes/reports/PasswordValidityReport.php';        //NOSONAR
   require_once 'classes/reports/UsernameValidityReport.php';        //NOSONAR
+  require_once 'classes/reports/NonEssentialValidityReport.php';    //NOSONAR
 
   function standardStringValidity($stringToCheck, $maximumLength = null, $mustNotMatchRegex = null) {
     $result = false;
@@ -55,4 +56,14 @@
     return new NonEssValidity($firstNameCheck, $lastNameCheck,
       $genderCheck, $biographyValid, $personalWebsiteCheck,
       $profilePicCheck, $phoneNumberCheck);
+  }
+
+  function performCredentialReport($usrObj) {
+    $passwdValidityReport = checkPasswordValidity($usrObj->getPassword());
+    $unameValidityReport = checkUsernameValidity($usrObj->getUsername());
+    $emailValidityReport = checkEmailValidity($usrObj->getEmail());
+    $nonEssentialDataValidityReport = checkNonEssValidity($usrObj);
+
+    return new FullComplianceReport($emailValidityReport, $passwdValidityReport,
+      $unameValidityReport, $nonEssentialDataValidityReport);
   }

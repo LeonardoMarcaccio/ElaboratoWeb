@@ -11,7 +11,7 @@
     }
   }
     
-  function generateJSONResponse($code, $message, $dataName = null, $data = null) {
+  function generateJSONResponse($code, $message, $data = null, $dataName = "response") {
     $jsonObject = new stdClass();
     $jsonObject->code = $code;
     $jsonObject->message = $message;
