@@ -3,6 +3,7 @@
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/jsonHelper.php"; //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/requestcomplianceutils.php"; //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/contentcomplianceutils.php"; //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/classes/reports/FullComplianceReport.php"; //NOSONAR
 
   function performCredentialReport($usrObj) {
     $passwdValidityReport = checkPasswordValidity($usrObj->getPassword());
@@ -10,13 +11,8 @@
     $emailValidityReport = checkEmailValidity($usrObj->getEmail());
     $nonEssentialDataValidityReport = checkNonEssValidity($usrObj);
 
-    $reportObj = new stdClass();
-    $reportObj->passwdValidityReport = $passwdValidityReport;
-    $reportObj->unameValidityReport = $unameValidityReport;
-    $reportObj->emailValidityReport = $emailValidityReport;
-    $reportObj->nonEssentialDataValidityReport = $nonEssentialDataValidityReport;
-
-    return $reportObj;
+    return new FullComplianceReport($emailValidityReport, $passwdValidityReport,
+      $unameValidityReport, $nonEssentialDataValidityReport);
   }
 
   try {
