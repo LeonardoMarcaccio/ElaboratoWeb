@@ -20,6 +20,19 @@
       $this->nonEssentialValidityReport = $nonEssentialValidityReport;
     }
 
+    public function getEmailValidityReport() {
+      return $this->emailValidityReport;
+    }
+    public function getPasswordValidityReport() {
+      return $this->passwordValidityReport;
+    }
+    public function getUsernameValidityReport() {
+      return $this->usernameValidityReport;
+    }
+    public function nonEssentialValidityReport() {
+      return $this->nonEssentialValidityReport;
+    }
+
     public function allTestPassed() {
       return $this->passwordValidityReport->allTestPassed()
         && $this->usernameValidityReport->allTestPassed()
