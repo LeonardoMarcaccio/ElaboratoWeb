@@ -9,21 +9,14 @@
     $usrObj;
     try {
       $usrObj = jSONtoUser(file_get_contents("php://input"));
+      $report = performCredentialReport($usrObj);
+      if ($report->allTestPassed()) {
+        // Here a query should be performed
+      }
+      die(json_encode($report));
     } catch (Error $thrownError) {
       throw new ApiError("Ok", 200, "Invalid JSON Format", 401);
     }
-    
-    /*if (!$unameValidityReport->getLengthCheckPassed() //NOSONAR
-      || !$unameValidityReport->getValidCharacterPassed()) {
-        throw new ApiError("Ok", 200, "Invalid characters in username", 401);
-    }
-    if (!$emailValidityReport->getValidCharacterPassed()) {
-      throw new ApiError("Ok", 200, "Provided email is invalid!", 401);
-    }
-    if (!$passwdValidityReport->getLengthCheckPassed()
-      || !$passwdValidityReport->getCapitalCheckPassed()) {
-
-    }*/
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
