@@ -15,7 +15,7 @@
     $jsonObject = new stdClass();
     $jsonObject->code = $code;
     $jsonObject->message = $message;
-    if ($dataName != null || $data != null) {
+    if ($dataName != null && $data != null) {
       $jsonObject->{$dataName} = $data;
     }
     return json_encode($jsonObject);
