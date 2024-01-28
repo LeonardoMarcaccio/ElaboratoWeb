@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER["DOCUMENT_ROOT"]."/Elab/api/utility/genericutils.php"; //NOSONAR
+require_once $_SERVER["DOCUMENT_ROOT"]."/Elab/api/utility/safetyutils.php"; //NOSONAR
 
 $con = new mysqli('localhost', 'root', '', 'immagini', 3306);
 if ($con->connect_error) {
@@ -17,5 +17,3 @@ $query->execute();
 
 header("Location: http://localhost/img.php");
 die();
-
-?>

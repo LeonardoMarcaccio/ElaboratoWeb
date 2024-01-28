@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER["DOCUMENT_ROOT"]."/Elab/api/utility/genericutils.php"; //NOSONAR
+require_once $_SERVER["DOCUMENT_ROOT"]."/Elab/api/utility/safetyutils.php"; //NOSONAR
 
 function grab($fileName) {
     $con = new mysqli('localhost', 'root', '', 'immagini', 3306);
@@ -22,5 +22,3 @@ function grab($fileName) {
     <img src='$path'>
     ";
 }
-
-?>
