@@ -1,5 +1,5 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/user.php'; //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/user.php'; //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php'; //NOSONAR
   require_once 'classes/reports/ComplianceTest.php';                //NOSONAR
   require_once 'classes/reports/EmailValidityReport.php';           //NOSONAR
