@@ -7,7 +7,7 @@
 
   try {
     assertRequestMatch('POST');
-    $data = jSONtoUser(file_get_contents("php://input"));
+    $data = jsonToRegistration(file_get_contents("php://input"));
     $report = performCredentialReport($data);
     exit(generateJsonResponse("Ok", 200, $report));
   } catch (ApiError $thrownError) {

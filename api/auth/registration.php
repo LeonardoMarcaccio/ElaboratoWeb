@@ -6,7 +6,7 @@
 
   try {
     assertRequestMatch('POST');
-    $usrObj = jSONtoUser(file_get_contents("php://input"));
+    $usrObj = jsonToRegistration(file_get_contents("php://input"));
     $report = performCredentialReport($usrObj);
     if ($report->allTestPassed()) {
       mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -40,4 +40,3 @@
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
   }
-

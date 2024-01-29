@@ -1,6 +1,7 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/user.php'; //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php'; //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/EssentialUserData.php'; //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/UserData.php'; //NOSONAR
   require_once 'classes/reports/ComplianceTest.php';                //NOSONAR
   require_once 'classes/reports/EmailValidityReport.php';           //NOSONAR
   require_once 'classes/reports/FullComplianceReport.php';          //NOSONAR
@@ -46,7 +47,7 @@
     return new EmailValidityReport(filter_var($email, FILTER_VALIDATE_EMAIL) !== false);
   }
 
-  function checkNonEssValidity(User $userContainer) {
+  function checkNonEssValidity(UserData $userContainer) {
     $firstNameCheck = standardStringValidity($userContainer->getFirstName(), 50,
       '/[!@#$%^&*(),.?":{}|<>]/');
     $lastNameCheck = standardStringValidity($userContainer->getLastName(), 50,
