@@ -3,9 +3,9 @@
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
       return new User($assArray['username'], $assArray['email'],
-      $assArray['password'], $assArray['firstName'], $assArray['lastName'],
-      $assArray['gender'], $assArray['biography'], $assArray['personalWebsite'],
-      $assArray['pfp'], $assArray['phoneNumbers']);
+      $assArray['password'], $assArray['firstname'], $assArray['lastname'],
+      $assArray['gender'], $assArray['biography'], $assArray['personalwebsite'],
+      $assArray['pfp'], $assArray['phonenumbers']);
     } else {
       throw new ApiError("Ok", 200, "Invalid user data", 401);
     }
