@@ -3,7 +3,7 @@
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2              
 -- * Generator date: Sep 14 2021              
--- * Generation date: Mon Jan 29 22:05:00 2024 
+-- * Generation date: Mon Jan 29 22:14:51 2024 
 -- * LUN file: C:\xampp\htdocs\Elab\DB\PlayPal.lun 
 -- * Schema: PlayPal/1-2-4 
 -- ********************************************* 
@@ -31,15 +31,15 @@ create table Community (
      Adm_Username char(1) not null,
      constraint IDCommuity primary key (Name));
 
-create table Sessione (
-     Token varchar(50) not null,
-     Username char(1) not null,
-     Gen_Username char(1) not null);
-
 create table Friendship (
      Fri_Username char(1) not null,
      Username char(1) not null,
      constraint IDFriendship primary key (Username, Fri_Username));
+
+create table `Join` (
+     Username char(1) not null,
+     Name char(1) not null,
+     constraint IDJoin primary key (Name, Username));
 
 create table Message (
      Username char(1) not null,
@@ -55,6 +55,11 @@ create table Post (
      Tags varchar(15),
      Name char(1) not null);
 
+create table Sessione (
+     Token varchar(50) not null,
+     Username char(1) not null,
+     Gen_Username char(1) not null);
+
 create table Thread (
      Username char(1) not null,
      Date date not null,
@@ -62,7 +67,7 @@ create table Thread (
      constraint IDThread primary key (Username, Date));
 
 create table User (
-     Username char(1) not null,
+     Username varchar(50) not null,
      Email varchar(30) not null,
      Password varchar(30) not null,
      FirstName varchar(30),
@@ -70,16 +75,10 @@ create table User (
      Gender varchar(20),
      Biography varchar(20),
      PersonalWebsite varchar(100),
-     Pfp char(1),
+     Pfp varchar(2083),
      Phonenumbers varchar(15),
-     Token varchar(1),
-     Tries char(1) default '0' not null,
+     Tries int default 0 not null,
      constraint IDUser primary key (Username));
-
-create table `Join` (
-     Username char(1) not null,
-     Name char(1) not null,
-     constraint IDJoin primary key (Name, Username));
 
 
 -- Constraints Section
@@ -97,16 +96,20 @@ alter table Community add constraint FKAdmin
      foreign key (Adm_Username)
      references User (Username);
 
-alter table Sessione add constraint FKGenera
-     foreign key (Gen_Username)
-     references User (Username);
-
 alter table Friendship add constraint FKFriend1
      foreign key (Username)
      references User (Username);
 
 alter table Friendship add constraint FKFriend2
      foreign key (Fri_Username)
+     references User (Username);
+
+alter table `Join` add constraint FKJoi_Com
+     foreign key (Name)
+     references Community (Name);
+
+alter table `Join` add constraint FKJoi_Use
+     foreign key (Username)
      references User (Username);
 
 alter table Message add constraint FKChat
@@ -117,15 +120,11 @@ alter table Post add constraint FKIn
      foreign key (Name)
      references Community (Name);
 
-alter table Thread add constraint FKCrea
-     foreign key (Username)
+alter table Sessione add constraint FKGenera
+     foreign key (Gen_Username)
      references User (Username);
 
-alter table `Join` add constraint FKJoi_Com
-     foreign key (Name)
-     references Community (Name);
-
-alter table `Join` add constraint FKJoi_Use
+alter table Thread add constraint FKCrea
      foreign key (Username)
      references User (Username);
 
