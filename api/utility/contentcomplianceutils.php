@@ -1,5 +1,6 @@
 <?php
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/user.php'; //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php'; //NOSONAR
   require_once 'classes/reports/ComplianceTest.php';                //NOSONAR
   require_once 'classes/reports/EmailValidityReport.php';           //NOSONAR
   require_once 'classes/reports/FullComplianceReport.php';          //NOSONAR
@@ -13,35 +14,38 @@
       $result = $result || (strlen($stringToCheck) < $maximumLength);
     }
     if ($mustNotMatchRegex !== null) {
-      $result = $result || !preg_match($mustNotMatchRegex, $stringToCheck);
+      $result = $result || (preg_match($mustNotMatchRegex, $stringToCheck) !== false);
     }
     return $result;
   }
   function checkUsernameValidity($username) {
     // Length check & no punctuation check
     return new UsernameValidityReport(standardStringValidity($username, 50),
-      standardStringValidity($username, '/[!@#$%^&*(),.?":{}|<>]/')); // NOSONAR
+      standardStringValidity($username, null, '/[!@#$%^&*(),.?":{}|<>]/')); // NOSONAR
   }
+
   function checkPasswordValidity($password) {
     // Length check
     $lengthCheck = strlen($password) > 8;
     // Capital check
-    $capitalCheck = preg_match('/[A-Z]/', $password);
+    $capitalCheck = preg_match('/[A-Z]/', $password) > 0;
     // Non-capital check
-    $nonCapitalCheck = preg_match('/[a-z]/', $password);
+    $nonCapitalCheck = preg_match('/[a-z]/', $password) > 0;
     // Number check
-    $numberCheck = preg_match('/\d/', $password);
+    $numberCheck = preg_match('/\d/', $password) > 0;
     // SpecialChar check
-    $specialCharCheck = preg_match('/[^a-zA-Z0-9]/', $password);
+    $specialCharCheck = preg_match('/[^a-zA-Z0-9]/', $password) > 0;
     // Punctuation check
-    $punctuationCheck = preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password);
+    $punctuationCheck = preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password) > 0;
     // Se la password supera tutti i controlli, è considerata sicura
     return new PasswordValidityReport($lengthCheck, $capitalCheck, $nonCapitalCheck, $numberCheck, $specialCharCheck, $punctuationCheck);
   }
+
   function checkEmailValidity($email) {
     // @ check
-    return new EmailValidityReport(strpos($email, '@'));
+    return new EmailValidityReport(filter_var($email, FILTER_VALIDATE_EMAIL) !== false);
   }
+
   function checkNonEssValidity(User $userContainer) {
     $firstNameCheck = standardStringValidity($userContainer->getFirstName(), 50,
       '/[!@#$%^&*(),.?":{}|<>]/');
