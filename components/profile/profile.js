@@ -1,4 +1,4 @@
-const defaultSize = mainGlobalVariables.page.mainContentPage.childElementCount;
+let profilePageLoader = new PageLoader(mainGlobalVariables.page.mainContentPage.childElementCount)
 
 let profileValues = {
     buttons: {
@@ -26,19 +26,6 @@ for (let button in profileValues.buttons) {
 for(let eventEntry in profileEvents) {
     let eventValue = profileEvents[eventEntry];
     document.addEventListener(("profile-" + eventValue), async (evt) => {
-        DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, defaultSize);
-        console.log(eventValue);
-
-        let lambdaOperation = null;
-
-        if (eventValue == profileEvents.SETTINGS) {
-            lambdaOperation = async () => {
-                let obtainedAsset = await AssetManager.loadAsset(eventValue + ".html");
-                DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, obtainedAsset);
-                //documentUtilities.addScriptFile("/components/" + eventValue + "/" + eventValue + ".js");
-            }
-
-            await lambdaOperation();
-        }
+        profilePageLoader.loadPage(eventValue, mainGlobalVariables.page.mainContentPage);
     });
 }

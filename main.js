@@ -1,5 +1,5 @@
 let assetPrototypes = new Map();
-let firstLoad = new Map();
+let mainPageLoader = new PageLoader(0);
 
 const events = {
   actionBar: {
@@ -48,29 +48,9 @@ function flushMainContentPage() {
 }
 
 async function switchView(page) {
-  let lambdaOperation = null;
-  if (!firstLoad.has(page)) {
-    lambdaOperation = async () => {
-      let obtainedAsset = await AssetManager.loadAsset(page + ".html");
-      DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, obtainedAsset);
-      documentUtilities.addScriptFile("/components/" + page + "/" + page + ".js");
-    }    
-  } else {
-    lambdaOperation = async () => {
-      let stack = firstLoad.get(page).slice();
-      while (stack.length > 0) {
-        mainGlobalVariables.page.mainContentPage.appendChild(stack.pop());
-      }
-    }
-  }
-  let tmp = flushMainContentPage();
-  if (mainGlobalVariables.buttonData.lastSelection != null && !firstLoad.has(mainGlobalVariables.buttonData.lastSelection)) {
-    firstLoad.set(mainGlobalVariables.buttonData.lastSelection, tmp);
-  }
-  await lambdaOperation();
+  mainPageLoader.loadPage(page, mainGlobalVariables.page.mainContentPage);
   let pageChangeEvt = new CustomEvent(events.genericActions.MAINCONTENTPAGECHANGE, {detail: ("footer-" + page)});
   document.dispatchEvent(pageChangeEvt);
-  mainGlobalVariables.buttonData.lastSelection = page;
 }
 
 function registerActionBarEvents() {

@@ -168,3 +168,38 @@ const JSONUtils = {
     buildPost: () => {}
   }
 }
+
+class PageLoader {
+  pageCache = new Map();
+  prevPage = null;
+  remainingAmount;
+
+  constructor (remainingAmount) {
+    this.remainingAmount = remainingAmount;
+  }
+
+  async loadPage (page, base) {
+    let lambdaOperation = null;
+    if (!this.pageCache.has(page)) {
+      lambdaOperation = async () => {
+        let obtainedAsset = await AssetManager.loadAsset(page + ".html");
+        DOMUtilities.addChildElementToNode(base, obtainedAsset);
+        documentUtilities.addScriptFile("/components/" + page + "/" + page + ".js");
+      }
+    } else {
+      lambdaOperation = async () => {
+        let stack = this.pageCache.get(page).slice();
+        while (stack.length > 0) {
+          base.appendChild(stack.pop());
+        }
+      }
+    }
+    let tmp = DOMUtilities.removeChildElementsToNode(base, this.remainingAmount);
+    //  Only sets the first time a page is loaded, subject to change
+    if (this.prevPage != null && !this.pageCache.has(this.prevPage)) {
+      this.pageCache.set(this.prevPage, tmp);
+    }
+    await lambdaOperation();
+    this.prevPage = page;
+  }
+}
