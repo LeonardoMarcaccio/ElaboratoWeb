@@ -20,7 +20,7 @@ for (let button in footerValues.buttons) {
 document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE, (evt) => {
     let supportedEvents = [];
     for(const supportedEKey in events.actionBar) {
-        supportedEvents.push(events.actionBar[supportedEKey]);
+        supportedEvents.push("footer-" + events.actionBar[supportedEKey]);
     }
     if (supportedEvents.includes(evt.detail)) {
         let namespaceKeys = [];
@@ -30,7 +30,7 @@ document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE, (evt) => 
         namespaceKeys.forEach((namespaceKey) =>{
                 if (namespaceKey.id == evt.detail) {
                     if (footerValues.lastActiveBtn != null) {
-                        lastActiveBtn.disabled = false;
+                        footerValues.lastActiveBtn.disabled = false;
                     }
                     namespaceKey.disabled = true;
                     footerValues.lastActiveBtn = namespaceKey;

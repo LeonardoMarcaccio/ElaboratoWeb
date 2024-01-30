@@ -46,7 +46,8 @@ const cookieUtilities = {
   }
 }
 
-const documentUtilities = {
+let documentUtilities = {
+  scriptCache: new Array(),
   addCssFile: (pathToFile) => {
     if (typeof pathToFile === 'string') {
       let css = document.createElement("link");
@@ -58,12 +59,15 @@ const documentUtilities = {
     }
   },
   addScriptFile: (pathToFile, onLoadFunc = () => {}) => {
-    let scriptTag = document.createElement("script");   //NOSONAR
-    scriptTag.src = pathToFile;
-    if (onLoadFunc instanceof Function) {
-      scriptTag.onload = () => onLoadFunc.call();
+    if (!documentUtilities.scriptCache.includes(pathToFile)) {
+      let scriptTag = document.createElement("script");   //NOSONAR
+      scriptTag.src = pathToFile;
+      if (onLoadFunc instanceof Function) {
+        scriptTag.onload = () => onLoadFunc.call();
+      }
+      document.body.appendChild(scriptTag);
+      documentUtilities.scriptCache.push(pathToFile);
     }
-    document.body.appendChild(scriptTag);
   }
 }
 
@@ -129,9 +133,11 @@ const DOMUtilities = {
     elementToAdd.appendChild(tmp.content);
   },
   removeChildElementsToNode: (elementToRemove, remaining) => {
+    let reverseStack = new Array();
     while (elementToRemove.childElementCount > remaining) {
-      elementToRemove.removeChild(elementToRemove.lastChild);
+      reverseStack.push(elementToRemove.removeChild(elementToRemove.lastChild));
     }
+    return reverseStack;
   },
   customAdd: (elementToAdd, node, func) => {
     let tmp = document.createElement("template");
