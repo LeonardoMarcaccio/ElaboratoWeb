@@ -3,9 +3,9 @@
 -- *--------------------------------------------
 -- * DB-MAIN version: 11.0.2              
 -- * Generator date: Sep 14 2021              
--- * Generation date: Mon Jan 22 16:46:41 2024 
+-- * Generation date: Mon Jan 29 22:14:51 2024 
 -- * LUN file: C:\xampp\htdocs\Elab\DB\PlayPal.lun 
--- * Schema: PlayPal/1-2-2 
+-- * Schema: PlayPal/1-2-4 
 -- ********************************************* 
 
 
@@ -23,37 +23,42 @@ create table Comment (
      Username char(1) not null,
      Date date not null);
 
-create table Commuity (
+create table Community (
      Name char(1) not null,
      Image varchar(100) not null,
      Description varchar(500) not null,
      Username char(1) not null,
-     Fou_Username char(1) not null,
+     Adm_Username char(1) not null,
      constraint IDCommuity primary key (Name));
 
-create table Frindship (
+create table Friendship (
      Fri_Username char(1) not null,
      Username char(1) not null,
-     constraint IDFrindship primary key (Fri_Username, Username));
+     constraint IDFriendship primary key (Username, Fri_Username));
 
-create table Join (
+create table `Join` (
      Username char(1) not null,
      Name char(1) not null,
      constraint IDJoin primary key (Name, Username));
 
 create table Message (
-     Fri_Username char(1) not null,
      Username char(1) not null,
+     Fri_Username char(1) not null,
      Sender char(1) not null,
      Timestamp date not null,
      Text varchar(500) not null,
-     constraint IDMessage primary key (Fri_Username, Username, Sender, Timestamp));
+     constraint IDMessage primary key (Username, Fri_Username, Sender, Timestamp));
 
 create table Post (
      Title varchar(50) not null,
      Image varchar(100),
      Tags varchar(15),
      Name char(1) not null);
+
+create table Sessione (
+     Token varchar(50) not null,
+     Username char(1) not null,
+     Gen_Username char(1) not null);
 
 create table Thread (
      Username char(1) not null,
@@ -62,16 +67,17 @@ create table Thread (
      constraint IDThread primary key (Username, Date));
 
 create table User (
-     Username char(1) not null,
+     Username varchar(50) not null,
      Email varchar(30) not null,
      Password varchar(30) not null,
-     First Name varchar(30),
-     Last Name varchar(30),
+     FirstName varchar(30),
+     LastName varchar(30),
      Gender varchar(20),
      Biography varchar(20),
-     Personal Website varchar(100),
-     Pfp varchar(100),
+     PersonalWebsite varchar(100),
+     Pfp varchar(2083),
      Phonenumbers varchar(15),
+     Tries int default 0 not null,
      constraint IDUser primary key (Username));
 
 
@@ -82,37 +88,41 @@ alter table Comment add constraint FKAnswer
      foreign key (Username, Date)
      references Thread (Username, Date);
 
-alter table Commuity add constraint FKAdmin
+alter table Community add constraint FKFound
      foreign key (Username)
      references User (Username);
 
-alter table Commuity add constraint FKFound
-     foreign key (Fou_Username)
+alter table Community add constraint FKAdmin
+     foreign key (Adm_Username)
      references User (Username);
 
-alter table Frindship add constraint FKFriend2
+alter table Friendship add constraint FKFriend1
      foreign key (Username)
      references User (Username);
 
-alter table Frindship add constraint FKFriend1
+alter table Friendship add constraint FKFriend2
      foreign key (Fri_Username)
      references User (Username);
 
-alter table Join add constraint FKJoi_Com
+alter table `Join` add constraint FKJoi_Com
      foreign key (Name)
-     references Commuity (Name);
+     references Community (Name);
 
-alter table Join add constraint FKJoi_Use
+alter table `Join` add constraint FKJoi_Use
      foreign key (Username)
      references User (Username);
 
 alter table Message add constraint FKChat
-     foreign key (Fri_Username, Username)
-     references Frindship (Fri_Username, Username);
+     foreign key (Username, Fri_Username)
+     references Friendship (Username, Fri_Username);
 
 alter table Post add constraint FKIn
      foreign key (Name)
-     references Commuity (Name);
+     references Community (Name);
+
+alter table Sessione add constraint FKGenera
+     foreign key (Gen_Username)
+     references User (Username);
 
 alter table Thread add constraint FKCrea
      foreign key (Username)

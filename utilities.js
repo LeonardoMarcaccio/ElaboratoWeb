@@ -149,3 +149,22 @@ const DOMUtilities = {
     DOMUtilities.addChildElementToNode(src, obtainedAsset);
   }
 }
+
+const JSONUtils = {
+  registration: {
+    buildRegistration: (username, email, password, firstname = null, lastname = null,   //NOSONAR
+      gender = null, biography = null, personalwebsite = null, pfp = null, phonenumbers = []) => {
+      return {"username":username, "email":email, "password":password, "firstname":firstname,
+        "lastname":lastname, "gender":gender, "biography":biography,
+        "personalwebsite":personalwebsite, "pfp":pfp, "phonenumbers":phonenumbers};
+    }
+  },
+  login: {
+    buildLogin: (email, password) => {
+      return {"email":email, "password":password};
+    }
+  },
+  post: {
+    buildPost: () => {}
+  }
+}

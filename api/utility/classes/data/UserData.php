@@ -1,8 +1,5 @@
 <?php
-  class User {                    //NOSONAR
-    private $username;            // Essential
-    private $email;               // Essential
-    private $password;            // Essential
+  class UserData extends EssentialUserData {        //NOSONAR
     private $firstName;           // Non Essential
     private $lastName;            // Non Essential
     private $gender;              // Non Essential
@@ -14,9 +11,7 @@
     public function __construct(  //NOSONAR
       $username, $email, $password, $firstName,
       $lastName, $gender, $biography, $personalWebsite, $pfp, $phoneNumbers) {
-      $this->username=$username;
-      $this->email=$email;
-      $this->password=$password;
+      parent::__construct($username, $email, $password);
       $this->firstName=$firstName;
       $this->lastName=$lastName;
       $this->gender=$gender;
@@ -26,24 +21,6 @@
       $this->phoneNumbers=$phoneNumbers;
     }
 
-    public function getUsername() {
-      return $this->username;
-    }
-    public function setUsername($username) {
-      $this->username = $username;
-    }
-    public function getEmail() {
-      return $this->email;
-    }
-    public function setEmail($email) {
-      $this->email = $email;
-    }
-    public function getPassword() {
-      return $this->password;
-    }
-    public function setPassword($password) {
-      $this->password = $password;
-    }
     public function getFirstName() {
       return $this->firstName;
     }
@@ -85,9 +62,5 @@
     }
     public function setPhoneNumbers($phoneNumbers) {
       $this->phoneNumbers = $phoneNumbers;
-    }
-
-    public function expose() {
-      return get_object_vars($this);
     }
   }

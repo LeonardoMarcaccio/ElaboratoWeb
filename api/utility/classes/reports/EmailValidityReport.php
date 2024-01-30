@@ -2,21 +2,21 @@
   require_once 'ComplianceTest.php';                //NOSONAR
 
   class EmailValidityReport extends ComplianceTest {
-    private $atCheckPassed;
+    private $emailValid;
 
-    public function __construct($atCheckPassed) {
-      $this->atCheckPassed = $atCheckPassed;
+    public function __construct($emailValid) {
+      $this->emailValid = $emailValid;
     }
 
     public function getValidCharacterPassed() {
-      return $this->atCheckPassed;
+      return $this->emailValid;
     }
 
     public function jsonSerialize() {
-      return array_merge(parent::jsonSerialize(), 
-        ['atCheckPassed' => $this->atCheckPassed]);
+      return array_merge(parent::jsonSerialize(),
+        ['emailValid' => $this->emailValid]);
     }
     public function allTestPassed() {
-      return $this->atCheckPassed;
+      return $this->emailValid;
     }
   }
