@@ -1,5 +1,4 @@
 let assetPrototypes = new Map();
-let mainPageLoader = new PageLoader(0);
 
 const events = {
   actionBar: {
@@ -43,27 +42,7 @@ let mainGlobalVariables = {
   }
 }
 
-function flushMainContentPage() {
-  return DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, 0);
-}
-
-async function switchView(page) {
-  mainPageLoader.loadPage(page, mainGlobalVariables.page.mainContentPage);
-  let pageChangeEvt = new CustomEvent(events.genericActions.MAINCONTENTPAGECHANGE, {detail: ("footer-" + page)});
-  document.dispatchEvent(pageChangeEvt);
-}
-
-function registerActionBarEvents() {
-  for(let eventEntry in events.actionBar) {
-    let eventValue = events.actionBar[eventEntry];
-    document.addEventListener("footer-" + eventValue, (evt) => {
-      switchView(eventValue);
-    });
-  }
-}
-
 async function mainPageInit() {
-  registerActionBarEvents();
 
   let initialAssetArr = ["header.html","footer.html"];
   for(let asset in initialAssetArr) {
@@ -78,7 +57,6 @@ async function mainPageInit() {
   document.body.insertBefore(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.footer);
   mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
   mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
-
   documentUtilities.addScriptFile("./components/footer/footer.js");
 }
 

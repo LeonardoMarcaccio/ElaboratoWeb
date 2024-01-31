@@ -172,34 +172,100 @@ const JSONUtils = {
 class PageLoader {
   pageCache = new Map();
   prevPage = null;
+  base;
   remainingAmount;
 
-  constructor (remainingAmount) {
+  constructor (base, remainingAmount) {
+    this.base = base;
     this.remainingAmount = remainingAmount;
   }
 
-  async loadPage (page, base) {
+  async loadPage (page) {
     let lambdaOperation = null;
     if (!this.pageCache.has(page)) {
       lambdaOperation = async () => {
         let obtainedAsset = await AssetManager.loadAsset(page + ".html");
-        DOMUtilities.addChildElementToNode(base, obtainedAsset);
+        DOMUtilities.addChildElementToNode(this.base, obtainedAsset);
         documentUtilities.addScriptFile("/components/" + page + "/" + page + ".js");
       }
     } else {
       lambdaOperation = async () => {
         let stack = this.pageCache.get(page).slice();
         while (stack.length > 0) {
-          base.appendChild(stack.pop());
+          this.base.appendChild(stack.pop());
         }
       }
     }
-    let tmp = DOMUtilities.removeChildElementsToNode(base, this.remainingAmount);
-    //  Only sets the first time a page is loaded, subject to change
-    if (this.prevPage != null && !this.pageCache.has(this.prevPage)) {
-      this.pageCache.set(this.prevPage, tmp);
-    }
+    this.flushPage();
     await lambdaOperation();
     this.prevPage = page;
+  }
+
+  flushPage () {
+    let tmp = DOMUtilities.removeChildElementsToNode(this.base, this.remainingAmount);
+    //  The change occured
+    if (this.prevPage != null /*&& !this.pageCache.has(this.prevPage)*/) {
+      this.pageCache.set(this.prevPage, tmp);
+    }
+    this.prevPage = null;
+  }
+}
+
+class ButtonHandler {
+  loader = null;
+  eventList = null;
+  buttonList = [];
+  prefix = null;
+  generalChange = null;
+  length = 0;
+  lastActiveBtn = null;
+
+  constructor (loader, eventList, prefix, generalChange) {
+    this.loader = loader;
+    this.eventList = eventList;
+    this.prefix = prefix;
+    this.generalChange = generalChange;
+    this.length = this.eventList.length;
+
+    for (let i=0; i<this.length; i++) {
+      this.buttonList[i] = document.getElementById(this.prefix + this.eventList[i]);
+    }
+  }
+
+  activate() {
+    for (let i=0; i<this.length; i++) {
+      let btn = this.buttonList[i];
+      btn.onclick = (btn) => {
+          let evt = new CustomEvent(this.buttonList[i].id, {detail: btn.currentTarget});
+          document.dispatchEvent(evt);
+      }
+    }
+
+    for(let i=0; i<this.length; i++) {
+      let eventValue = this.eventList[i];
+      document.addEventListener((this.prefix + eventValue), async (evt) => {
+          this.loader.loadPage(eventValue);
+          let pageChangeEvt = new CustomEvent(this.generalChange, {detail: (this.prefix + eventValue)});
+          document.dispatchEvent(pageChangeEvt);
+      });
+    }
+
+    document.addEventListener(this.generalChange, (evt) => {
+      let supportedEvents = [];
+      for(let i=0; i<this.length; i++) {
+          supportedEvents.push(this.prefix + this.eventList[i]);
+      }
+      if (supportedEvents.includes(evt.detail)) {
+        this.buttonList.forEach((namespaceKey) =>{
+          if (namespaceKey.id == evt.detail) {
+              if (this.lastActiveBtn != null) {
+                  this.lastActiveBtn.disabled = false;
+              }
+              namespaceKey.disabled = true;
+              this.lastActiveBtn = namespaceKey;
+          }
+        });
+      }
+    })
   }
 }
