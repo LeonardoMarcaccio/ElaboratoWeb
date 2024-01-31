@@ -61,3 +61,23 @@
         DB_CONNECTION_ERROR, 500);
     }
   }
+
+  function getRecentPost($n_post, $username, mysqli $database) {
+    $query = $database->prepare("SELECT name FROM `Join` WHERE username=?");
+    $query->bind_param("s", $username);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
+    
+    $communities = $query->get_result();
+    
+    $query = $database->prepare("SELECT * FROM post LIMIT ? WHERE name IN ? ORDER BY date DESC");
+    $query->bind_param("is", $n_post, $communities);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
+
+    return $query->get_result();
+  }

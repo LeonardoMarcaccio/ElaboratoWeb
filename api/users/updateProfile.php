@@ -21,17 +21,18 @@ function updateProfileQuery($jsonString) {
         );
         
         $query->bind_param(
-            "s", $assArray['email'],
-            "s", $assArray['password'],
-            "s", $assArray['firstname'],
-            "s", $assArray['lastname'],
-            "s", $assArray['gender'],
-            "s", $assArray['gender'],
-            "s", $assArray['biography'],
-            "s", $assArray['personalwebsite'],
-            "s", $assArray['pfp'],
-            "s", $assArray['phonenumbers'],
-            "s", $assArray['username']
+            "sssssssssss",
+            $assArray['email'],
+            $assArray['password'],
+            $assArray['firstname'],
+            $assArray['lastname'],
+            $assArray['gender'],
+            $assArray['gender'],
+            $assArray['biography'],
+            $assArray['personalwebsite'],
+            $assArray['pfp'],
+            $assArray['phonenumbers'],
+            $assArray['username']
         );
         
         $query->execute();
