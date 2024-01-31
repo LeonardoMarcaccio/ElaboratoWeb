@@ -8,6 +8,7 @@
     assertRequestMatch('POST');
     $usrObj = jsonToRegistration(file_get_contents("php://input"));
     $report = performCredentialReport($usrObj);
+    $database = null;
     if ($report->allTestPassed()) {
       mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
@@ -39,4 +40,8 @@
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
+  } finally {
+    if ($database instanceof mysqli) {
+      $database->close();
+    }
   }
