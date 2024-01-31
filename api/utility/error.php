@@ -5,8 +5,12 @@
 
       public function __construct($errorString, $errorCode, $apiErrorMessage = null, $apiErrorCode = null) {
         parent::__construct($errorString, $errorCode);
-        $this->apiErrorMessage = $apiErrorMessage;
-        $this->apiErrorCode = $apiErrorCode;
+        $this->apiErrorMessage = $apiErrorMessage !== null
+          ? $apiErrorMessage
+          : $errorString;
+        $this->apiErrorCode = $apiErrorCode !== null
+          ? $apiErrorCode
+          : $errorCode;
     }
 
     public function getApiMessage() {
