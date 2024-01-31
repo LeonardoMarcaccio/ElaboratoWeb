@@ -1,4 +1,11 @@
 <?php
+  define("DB_CONNECTION_ERROR", "Error while contacting database");
+  define("DB_CONNECTION_ERROR_CODE", 500);
+  define("HTTP_BAD_REQUEST_ERROR", "Bad Request");
+  define("HTTP_BAD_REQUEST_ERROR_CODE", 400);
+  define("HTTP_UNAUTHORIZED_ERROR_CODE", "Unauthorized");
+  define("HTTP_UNAUTHORIZED_ERROR", 400);
+
     class ApiError extends Exception {
       private $apiErrorMessage;
       private $apiErrorCode;

@@ -1,5 +1,5 @@
 <?php
-  define("DB_CONNECTION_ERROR", "Error while contacting database");
+  define("DEFAULT_TOKEN_TTL", 36000);
 
   function checkUserPresence($username, mysqli $database) {
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
@@ -43,14 +43,47 @@
     return strcmp($friendshipA['Username'], $friendshipB['Username'])
       && strcmp($friendshipA['Fri_Username'], $friendshipB['Fri_Username']);
   }
+  
+  function deleteOldTokens(mysqli $database, $ttlHours) {
+    $timestampLimit = time() - ($ttlHours * 3600);
+    $sql = "DELETE FROM sessione WHERE TIMESTAMPDIFF(SECOND, Timestamp, NOW()) > ?";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param("i", $timestampLimit);
+    $stmt->execute();
+  }
+  function checkTokenValidity($token, $username, mysqli $database) {
+    deleteOldTokens($database, DEFAULT_TOKEN_TTL);
+    $sql = "SELECT Timestamp FROM sessione WHERE Token = ? AND Username = ?";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param("ss", $token, $username);
+    $stmt->execute();
+    $stmt->bind_result($timestamp);
+    $stmt->fetch();
 
-  function checkTokenValidity($token, mysqli $database) {
-    $query = $database->prepare("INSERT INTO Sessione (Token, Username) VALUES (?, ?)");
-    $query->bind_param("ss", $dbUser, $token);
-    if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                //NOSONAR
-        DB_CONNECTION_ERROR, 500);
+    if ($timestamp !== null) {
+        $passedTime = time() - strtotime($timestamp);
+        return $passedTime <= DEFAULT_TOKEN_TTL;
     }
+
+    return false;
+  }
+  function getNicknameByToken($token, mysqli $database) {
+    $sql = "SELECT Nickname FROM sessione WHERE Token = ?";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param("s", $token);
+    $stmt->execute();
+    $stmt->bind_result($nickname);
+    $stmt->fetch();
+    return ($nickname !== null) ? $nickname : false;
+  }
+  function areFriends($user1, $user2, mysqli $database) {
+    $sql = "SELECT COUNT(*) FROM friendship WHERE (Fri_Username = ? AND Username = ?) OR (Fri_Username = ? AND Username = ?)";
+    $stmt = $database->prepare($sql);
+    $stmt->bind_param("ssss", $user1, $user2, $user2, $user1);
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    return $count > 0;
   }
 
   function assignTokenToUser($dbUser, $token, mysqli $database) {
