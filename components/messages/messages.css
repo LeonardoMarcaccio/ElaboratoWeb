@@ -1,0 +1,32 @@
+#page-dm-upper {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    background-color: rgb(200, 200, 200);
+}
+
+#page-dm-lower {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    background-color: rgb(200, 200, 200);
+    max-height: 5.5vh;
+}
+
+#page-dm-lower > input {
+    font-size: 1rem;
+    height: 5vh;
+    flex-grow: 2;
+    border: none;
+    background-color: transparent;
+}
+
+.message-sent {
+    text-align: right;
+}
+
+.message-received {
+    text-align: left;
+}

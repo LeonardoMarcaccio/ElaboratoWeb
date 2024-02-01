@@ -202,6 +202,10 @@ class PageLoader {
   }
 
   flushPage () {
+    let bar = document.getElementById("page-dm-lower");
+    if (bar != null) {
+      document.body.removeChild(bar);
+    }
     let tmp = DOMUtilities.removeChildElementsToNode(this.base, this.remainingAmount);
     //  The change occured
     if (this.prevPage != null /*&& !this.pageCache.has(this.prevPage)*/) {
