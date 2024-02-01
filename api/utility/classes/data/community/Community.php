@@ -2,28 +2,29 @@
   require_once '/api/utility/classes/data/EncodedImage.php';                //NOSONAR
 
   class Community implements JsonSerializable {
-    private $communityName;
-    private $communityDescription;
-    private $communityImage;
+    private $name;
+    private $description;
+    private $image;
 
-    public function __construct($communityName, $communityDescription, EncodedImage $communityImage) {
-      $this->communityName = $communityName;
-      $this->communityDescription = $communityDescription;
-      $this->communityImage = $communityImage;
+    public function __construct($name, $description, $image) {
+      $this->name = $name;
+      $this->description = $description;
+      $this->image = $image;
     }
 
     public function getCommunityName() {
-      return $this->communityName;
+      return $this->name;
     }
     public function getCommunityDescription() {
-      return $this->communityDescription;
+      return $this->description;
     }
     public function getCommunityImage() {
-      return $this->communityImage;
+      return $this->image;
     }
 
     public function jsonSerialize() {
-      return [$this->communityName, $this->communityDescription,
-        $this->communityImage];
+      return ['communityName' => $this->name,
+        'description' => $this->description,
+        'image' => $this->image];
     }
   }
