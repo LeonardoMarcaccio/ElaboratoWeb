@@ -49,7 +49,8 @@
       $postName = attemptValExtraction($assArray, 'name');
       $postUsername = attemptValExtraction($assArray, 'username');
       $postImageUrl = attemptValExtraction($assArray, 'image');    // TODO: Conversion to image!!!!
-      return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl);
+      $postId = attemptValExtraction($assArray, 'id');
+      return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
     } else {
       throw new ApiError("Ok", 200, "Invalid user data", 401);
     }
@@ -57,6 +58,11 @@
   function jsonToComment($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
+      $commentDate = attemptValExtraction($assArray, 'date');
+      $commentContent = attemptValExtraction($assArray, 'content');
+      $commentUsername = attemptValExtraction($assArray, 'username');
+      $commentId = attemptValExtraction($assArray, 'id');
+      return new Comment($commentDate, $commentContent, $commentUsername, $commentId);
     } else {
       throw new ApiError("Ok", 200, "Invalid user data", 401);
     }
