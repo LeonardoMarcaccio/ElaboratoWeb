@@ -1,14 +1,16 @@
 <?php
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/error.php"; //NOSONAR
-  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/jsonHelper.php"; //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/jsonhelper.php"; //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/requestcomplianceutils.php"; //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/contentcomplianceutils.php"; //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/classes/reports/FullComplianceReport.php"; //NOSONAR
 
   try {
+    $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
+    $requestBody = file_get_contents("php://input");
     switch($_SERVER['REQUEST_METHOD']) {
       case 'POST':
-        communityPostRequest();
+        communityPostRequest($requestBody, $database);
       break;
       case 'GET':
         communityGetRequest();
@@ -17,17 +19,17 @@
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
+  } finally {
+    $database->close();
   }
 
-  function communityPostRequest() {
-    if(!isset($_SERVER['type'])
-      && !isset($_SERVER['target'])) {
+  function communityPostRequest($requestBody, $database) {
+    if(!isset($_SERVER['type'])) {
       throw new ApiError("Bad Request", 400);
     }
     switch($_SERVER['type']) {
       case "community":
-        //community creation function
-        //createCommunity($targetCommunityName, $requestBody);
+        createCommunity($requestBody, $database);
       break;
       case "post":
         //post creation function
@@ -67,4 +69,13 @@
         //createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
       break;
     }
+  }
+
+  function createCommunity($requestBody, mysqli $database) {
+    $communityBody = jsonToCommunity($requestBody);
+    $statement = $database->prepare("INSERT INTO community (Name, Image, Description, Username) VALUES (?, ?, ?, ?)");
+    $statement->bind_param("ssss", $communityBody->getCommunityName(),
+      $communityBody->getCommunityImage(),
+      $communityBody->getCommunityDescription(),
+      getNicknameByToken($_COOKIE["token"], $database));
   }
