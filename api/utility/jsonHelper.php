@@ -1,7 +1,10 @@
 <?php
+  require_once '/api/utility/classes/data/Image.php';                //NOSONAR
+
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);
   define("USER_STRANGER", 0);
+  define("USER_CONTENT_FOLDER", 0);
 
   function jsonToRegistration($jsonString) {
     $assArray = json_decode($jsonString, true);
@@ -21,6 +24,16 @@
       $assArray['password']);
     } else {
       throw new ApiError("Ok", 200, "Invalid user data", 401);
+    }
+  }
+
+  function jsonToCommunity($jsonString) {
+    $assArray = json_decode($jsonString, true);
+    if ($assArray !== null) {
+      $communityName = attemptValExtraction($assArray, 'communityname');
+      $communityImage = attemptValExtraction($assArray, 'communityImage');
+      $communityDescription = attemptValExtraction($assArray, 'communityDescription');
+      return new Community($communityName, $communityDescription, $communityImage);
     }
   }
     
@@ -51,4 +64,19 @@
         $userJson->personalwebsite = $userContainer->getPersonalWebsite();
     }
     return $userJson;
+  }
+
+  function attemptValExtraction($associativeArray, $key, $nonPresentReturn = null) {
+    return array_key_exists($key, $associativeArray)
+      ? $associativeArray[$key]
+      : $nonPresentReturn;
+  }
+
+  function decodeAndStoreImage(EncodedImage $image, $prefix = "img-") {
+    $decodedImage = base64_decode($image->getEncodedImageString());
+    $fileId = null;
+    do {
+      $fileId = uniqid($prefix);
+    } while (file_exists(USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension()));
+    
   }
