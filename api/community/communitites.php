@@ -46,14 +46,24 @@
     }
   }
 
-  function createCommunity($communityName, $image, $description, $founderUsername, mysqli $database) {
+  function createCommunity($requestBody, mysqli $database) {
+    $communityBody = jsonToCommunity($requestBody);
+    $statement = $database->prepare("INSERT INTO community (Name, Image, Description, Username) VALUES (?, ?, ?, ?)");
+    $statement->bind_param("ssss", $communityBody->getCommunityName(),
+      $communityBody->getCommunityImage(),
+      $communityBody->getCommunityDescription(),
+      getNicknameByToken($_COOKIE["token"], $database));
+  }
+
+  // FIXME: merge functions
+  /*function createCommunity($communityName, $image, $description, $founderUsername, mysqli $database) {
     $query = $database->prepare("INSERT INTO community VALUES(?, ?, ?, ?)");
     $query->bind_param("ssss", $communityName, $image, $description, $founderUsername);
     if (!$query->execute()) {
       throw new ApiError("Internal Server Error", 500,                
         DB_CONNECTION_ERROR, 500);
     }
-  }
+  }*/
 
   function createPost($content, $title, $image, $communityName, $username, mysqli $database) {
     $query = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?, ?, ?, ?)");
@@ -137,13 +147,4 @@
         //createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
       break;
     }
-  }
-
-  function createCommunity($requestBody, mysqli $database) {
-    $communityBody = jsonToCommunity($requestBody);
-    $statement = $database->prepare("INSERT INTO community (Name, Image, Description, Username) VALUES (?, ?, ?, ?)");
-    $statement->bind_param("ssss", $communityBody->getCommunityName(),
-      $communityBody->getCommunityImage(),
-      $communityBody->getCommunityDescription(),
-      getNicknameByToken($_COOKIE["token"], $database));
   }
