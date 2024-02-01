@@ -1,7 +1,7 @@
 <?php
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/requestcomplianceutils.php'; //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php';             //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php';            //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/error.php';                  //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/dbutils.php";                //NOSONAR
 
@@ -15,7 +15,7 @@
         && checkTokenValidity($_COOKIE["token"], $usrObj->getUsername(), $database)) {
         exit(generateJSONResponse(200, "Ok"));
       }
-      $token = generateToken();
+      $token = generateUniqueToken($database);
       $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Username, Timestamp) VALUES (?, ?, NOW())");
       $tokenQuery->bind_param("ss", $token, $usrObj->getUsername());
       setcookie("token", $token, DEFAULT_TOKEN_TTL);
