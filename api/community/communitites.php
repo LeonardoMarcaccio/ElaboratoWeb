@@ -55,6 +55,17 @@
       getNicknameByToken($_COOKIE["token"], $database));
   }
 
+  function modifyCommunity($requestBody, mysqli $database) {
+    $communityBody = jsonToCommunity($requestBody);
+    $statement = $database->prepare("UPDATE community SET Image = ?, Description = ? WHERE Name = ?");
+    $statement->bind_param(
+      "sss",
+      $communityBody->getCommunityImage(),
+      $communityBody->getCommunityDescription(),
+      $communityBody->getCommunityName()
+    );
+  }
+
   // FIXME: merge functions
   /*function createCommunity($communityName, $image, $description, $founderUsername, mysqli $database) {
     $query = $database->prepare("INSERT INTO community VALUES(?, ?, ?, ?)");
@@ -72,6 +83,20 @@
       throw new ApiError("Internal Server Error", 500,                
         DB_CONNECTION_ERROR, 500);
     }
+  }
+
+  function modifyComment($requestBody, mysqli $database) {
+    $postBody = jsonToPost($requestBody);
+
+
+
+    $statement = $database->prepare("UPDATE post SET Date = NOW(), Content = ?, Image = ? WHERE PostID = ?");
+    $statement->bind_param(
+      "sss",
+      $postBody->getContent(),
+      $postBody->getImageUrl(),
+      $postBody->getID()
+    );
   }
 
   function createComment($postID, $content, $username, mysqli $database) {
@@ -99,6 +124,7 @@
     }
   }
 
+  
   function createSubcomment($originID, $content, $username, mysqli $database) {
     $query = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?)");
     $query->bind_param("ss", $content, $username);
@@ -106,7 +132,7 @@
       throw new ApiError("Internal Server Error", 500,                
         DB_CONNECTION_ERROR, 500);
     }
-
+    
     $query = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
@@ -120,10 +146,20 @@
     $query->bind_param("ss", $commentID, $originID);
     if (!$query->execute()) {
       throw new ApiError("Internal Server Error", 500,                
-        DB_CONNECTION_ERROR, 500);
+      DB_CONNECTION_ERROR, 500);
     }
   }
 
+  function modifyPost($requestBody, mysqli $database) {
+    $commentBody = jsonToComment($requestBody);
+    $statement = $database->prepare("UPDATE comment SET Date = NOW(), Content = ? WHERE CommentID = ?");
+    $statement->bind_param(
+      "ss",
+      $commentBody->getContent(),
+      $commentBody->getID()
+    );
+  }
+  
   function communityGetRequest() {
     if(!isset($_SERVER['type'])
       && !isset($_SERVER['target'])) {
@@ -147,4 +183,38 @@
         //createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
       break;
     }
+  }
+
+  function getCommunities($targetCommunityName, $requestBody, $pages, $maxPerPage, mysqli $database) {
+    $query = $database->prepare("SELECT * FROM community WHERE name=?");
+    $query->bind_param("s", $targetCommunityName);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
+    return $query->get_result();
+  }
+
+  function getCommunityPost($targetCommunityName, $requestBody, $pages, $maxPerPage, mysqli $database) {
+    $n = $pages*$maxPerPage;
+    $query = $database->prepare("SELECT * FROM post LIMIT ? WHERE name=? ORDER BY date DESC");
+    $query->bind_param("is", $n, $targetCommunityName);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
+
+    return $query->get_result();
+  }
+
+  function getPostComment($targetPostID, $requestBody, $pages, $maxPerPage, mysqli $database) {
+    $n = $pages*$maxPerPage;
+    $query = $database->prepare("SELECT * FROM answer LIMIT ? WHERE postID=? ORDER BY date DESC");
+    $query->bind_param("is", $n, $targetPostID);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
+
+    return $query->get_result();
   }
