@@ -1,5 +1,6 @@
 <?php
   require_once '/api/utility/classes/data/Image.php';                //NOSONAR
+  require_once '/api/utility/classes/data/community/Post.php';                //NOSONAR
 
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);
@@ -30,10 +31,34 @@
   function jsonToCommunity($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
-      $communityName = attemptValExtraction($assArray, 'communityname');
-      $communityImage = attemptValExtraction($assArray, 'communityImage');
-      $communityDescription = attemptValExtraction($assArray, 'communityDescription');
+      $communityName = attemptValExtraction($assArray, 'name');
+      $communityImage = attemptValExtraction($assArray, 'image');
+      $communityDescription = attemptValExtraction($assArray, 'description');
       return new Community($communityName, $communityDescription, $communityImage);
+    } else {
+      throw new ApiError("Ok", 200, "Invalid user data", 401);
+    }
+  }
+
+  function jsonToPost($jsonString) {
+    $assArray = json_decode($jsonString, true);
+    if ($assArray !== null) {
+      $postDate = attemptValExtraction($assArray, 'date');
+      $postContent = attemptValExtraction($assArray, 'content');
+      $postTitle = attemptValExtraction($assArray, 'title');
+      $postName = attemptValExtraction($assArray, 'name');
+      $postUsername = attemptValExtraction($assArray, 'username');
+      $postImageUrl = attemptValExtraction($assArray, 'image');    // TODO: Conversion to image!!!!
+      return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl);
+    } else {
+      throw new ApiError("Ok", 200, "Invalid user data", 401);
+    }
+  }
+  function jsonToComment($jsonString) {
+    $assArray = json_decode($jsonString, true);
+    if ($assArray !== null) {
+    } else {
+      throw new ApiError("Ok", 200, "Invalid user data", 401);
     }
   }
     
@@ -75,8 +100,11 @@
   function decodeAndStoreImage(EncodedImage $image, $prefix = "img-") {
     $decodedImage = base64_decode($image->getEncodedImageString());
     $fileId = null;
+    $fullFilePath = null;
     do {
       $fileId = uniqid($prefix);
-    } while (file_exists(USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension()));
-    
+      $fullFilePath = USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension();
+    } while (file_exists($fullFilePath));
+    file_put_contents($fullFilePath, $decodedImage);
+    return $fullFilePath;
   }
