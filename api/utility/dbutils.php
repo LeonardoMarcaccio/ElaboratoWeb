@@ -43,6 +43,21 @@
     return strcmp($friendshipA['Username'], $friendshipB['Username'])
       && strcmp($friendshipA['Fri_Username'], $friendshipB['Fri_Username']);
   }
+
+  function generateUniqueToken(mysqli $database) {
+    $query = $database->prepare("SELECT * FROM sessione WHERE Token = ? LIMIT 1");
+    $generatedToken = null;
+    do {
+      $generatedToken = generateToken();
+      $query->bind_param("s", $generatedToken);
+      if (!$query->execute()) {
+        throw new ApiError("Internal Server Error", 500,                //NOSONAR
+          DB_CONNECTION_ERROR, 500);
+      }
+      $result = mysqli_fetch_assoc($query->get_result());
+    } while (!$result);
+    return $generatedToken;
+  }
   
   function deleteOldTokens(mysqli $database, $ttlHours) {
     $timestampLimit = time() - ($ttlHours * 3600);
