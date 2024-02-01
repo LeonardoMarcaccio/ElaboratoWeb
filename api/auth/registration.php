@@ -1,5 +1,6 @@
 <?php
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/error.php';                  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/dbutils.php';                  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/requestcomplianceutils.php'; //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/contentcomplianceutils.php'; //NOSONAR
@@ -12,6 +13,10 @@
     if ($report->allTestPassed()) {
       mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
+      if (isValueInColumn("user", "Username", $usrObj->getUsername(), $database)
+        || isValueInColumn("user", "Email", $usrObj->getEmail(), $database)) {
+          throw new ApiError("Conflict", 409);
+      }
       $registrationStatement = $database->prepare(
         "INSERT INTO user (Username, Email, Password, FirstName, LastName, Gender, Biography, PersonalWebsite, Pfp, Phonenumbers)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -34,7 +39,17 @@
           throw new ApiError("Internal Server Error", 500,
           "Error while contacting database", 500);
         }
-        exit(generateJSONResponse(200, "Ok", generateToken(32), "authToken"));
+        $token = generateUniqueToken($database);
+        $username = $usrObj->getUsername();
+        setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
+        $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Username, Timestamp) VALUES (?, ?, NOW())");
+        $tokenQuery->bind_param("ss", $token, $username);
+        
+        if (!$tokenQuery->execute()) {
+          throw new ApiError("Internal Server Error", 500,
+          "Error while contacting database", 500);
+        }
+        exit(generateJSONResponse(200, "Ok"));
       }
       exit(generateJSONResponse(401, "Invalid Information", $report));
   } catch (ApiError $thrownError) {

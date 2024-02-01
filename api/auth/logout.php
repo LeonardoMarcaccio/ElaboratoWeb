@@ -8,29 +8,23 @@
   try {
     assertRequestMatch('GET');
     $database = new mysqli("localhost", "root", "", "playpal");
-    
     if (isset($_COOKIE["token"])) {
-        $query = $database->prepare("SELECT Username FROM session WHERE token=?");
-        $query->bind_param("s", $_COOKIE["token"]);
-        if (!$query->execute()) {
-        throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
-        }
-        $user = $query->get_result();
         
-        if (mysqli_num_rows($result)==0) {
-            throw new ApiError("Unauthorized Access", 401);
-        }
-
-        $query = $database->prepare("DELETE session WHERE token=?");
-        $query->bind_param("s", $_COOKIE["token"]);
-        if (!$query->execute()) {
-        throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
-        }
-
-    } else {
+      if (!isValueInColumn("sessione", "Token", $_COOKIE["token"], $database)) {
         throw new ApiError("Unauthorized Access", 401);
+      }
+
+      $query = $database->prepare("DELETE FROM sessione WHERE token = ?");
+      $query->bind_param("s", $_COOKIE["token"]);
+      if (!$query->execute()) {
+        throw new ApiError("Internal Server Error", 500,                
+          DB_CONNECTION_ERROR, 500);
+      }
+
+      setcookie('token', '', -1, "/");
+      exit(generateJSONResponse(200, "Ok"));
+    } else {
+      throw new ApiError("Unauthorized Access", 401);
     }
 
   } catch (ApiError $thrownError) {

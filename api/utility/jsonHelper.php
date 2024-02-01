@@ -1,6 +1,6 @@
 <?php
-  require_once '/api/utility/classes/data/Image.php';                //NOSONAR
-  require_once '/api/utility/classes/data/community/Post.php';                //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/EncodedImage.php';    //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/community/Post.php';  //NOSONAR
 
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);

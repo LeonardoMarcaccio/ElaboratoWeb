@@ -1,5 +1,5 @@
 <?php
-  define("DEFAULT_TOKEN_TTL", 36000);
+  define("DEFAULT_TOKEN_TTL",  time() + 36000);
 
   function checkUserPresence($username, mysqli $database) {
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
@@ -29,6 +29,15 @@
     }
   }
 
+  function isValueInColumn($table, $columnName, $value, mysqli $database) {
+    $stmt = $database->prepare("SELECT COUNT(*) FROM $table WHERE $columnName = ?");
+    $stmt->bind_param("s", $value);
+    $stmt->execute();
+    $stmt->bind_result($count);
+    $stmt->fetch();
+    return $count > 0;
+  }
+
   function areUsersFriends($userA, $userB, mysqli $database) {
     $query = $database->prepare("SELECT * FROM friendship WHERE (Fri_Username=? OR Fri_Username=?) AND (Username=? OR Username=?) LIMIT 2");
     $query->bind_param("ssss", $userA, $userB, $userA, $userB);
@@ -55,7 +64,7 @@
           DB_CONNECTION_ERROR, 500);
       }
       $result = mysqli_fetch_assoc($query->get_result());
-    } while (!$result);
+    } while ($result);
     return $generatedToken;
   }
   
