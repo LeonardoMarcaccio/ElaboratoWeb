@@ -114,3 +114,12 @@
 
     return $query->get_result();
   }
+
+  function tokenRefresh ($token, $username, mysqli $database) {
+    $statement = $database->prepare("UPDATE session SET Date = NOW() WHERE Token = ? AND CommentID = ?");
+    $statement->bind_param(
+      "ss",
+      $token,
+      $username
+    );
+  }
