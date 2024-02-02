@@ -8,14 +8,16 @@
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
     $requestBody = file_get_contents("php://input");
+    $result = null;
     switch($_SERVER['REQUEST_METHOD']) {
       case 'POST':
-        communityPostRequest($requestBody, $database);
+        $result = communityPostRequest($requestBody, $database);
       break;
       case 'GET':
-        communityGetRequest();
+        $result = communityGetRequest();
       break;
     }
+    exit(generateJSONResponse(200, "Ok", $result));
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
@@ -27,23 +29,25 @@
     if(!isset($_SERVER['type'])) {
       throw new ApiError("Bad Request", 400);
     }
+    $result = null;
     switch($_SERVER['type']) {
       case "community":
         createCommunity($requestBody, $database);
       break;
       case "post":
         //post creation function
-        //createCommunityPost($targetCommunity, $requestBody);
+        //$result = createCommunityPost($targetCommunity, $requestBody);
       break;
       case "comment":
         //comment creation function
-        //createCommunityComment($targetCommentId, $requestBody);
+        //$result = createCommunityComment($targetCommentId, $requestBody);
       break;
       case "page":
         //page creation function
-        //createCommunityPage($targetCommunityName, $requestBody);
+        //$result = createCommunityPage($targetCommunityName, $requestBody);
       break;
     }
+    return $result;
   }
 
   function createCommunity($requestBody, mysqli $database) {
@@ -80,7 +84,7 @@
     $query = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?, ?, ?, ?)");
     $query->bind_param("sssss", $content, $title, $image, $communityName, $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
   }
@@ -95,7 +99,7 @@
       "sss",
       $postBody->getContent(),
       $postBody->getImageUrl(),
-      $postBody->getID()
+      $postBody->getId()
     );
   }
 
@@ -103,14 +107,14 @@
     $query = $database->prepare("INSERT INTO comment VALUES(NOW(), ?, ?)");
     $query->bind_param("ss", $content, $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
 
     $query = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
     
@@ -119,7 +123,7 @@
     $query = $database->prepare("INSERT INTO answer VALUES(?, ?)");
     $query->bind_param("ss", $commentID, $postID);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
   }
@@ -129,14 +133,14 @@
     $query = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?)");
     $query->bind_param("ss", $content, $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
     
     $query = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
     
@@ -145,7 +149,7 @@
     $query = $database->prepare("INSERT INTO subcomment VALUES(?, ?)");
     $query->bind_param("ss", $commentID, $originID);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
       DB_CONNECTION_ERROR, 500);
     }
   }
@@ -162,34 +166,36 @@
   
   function communityGetRequest() {
     if(!isset($_SERVER['type'])
-      && !isset($_SERVER['target'])) {
+      && !isset($_SERVER['target'])) {            //TODO: parametri per pages e maxperpage
       throw new ApiError("Bad Request", 400);
     }
+    $result = null;
     switch($_SERVER['type']) {
       case "community":
         //community creation function
-        //getCommunities($targetCommunityName, $requestBody, $pages, $maxPerPage);
+        //result = getCommunities($targetCommunityName, $requestBody, $pages, $maxPerPage);
       break;
       case "post":
         //post creation function
-        //createCommunityPost($targetCommunity, $requestBody, $pages, $maxPerPage);
+        //result = createCommunityPost($targetCommunity, $requestBody, $pages, $maxPerPage);
       break;
       case "comment":
         //comment creation function
-        //createCommunityComment($targetCommentId, $requestBody, $pages, $maxPerPage);
+        //result = createCommunityComment($targetCommentId, $requestBody, $pages, $maxPerPage);
       break;
       case "page":
         //page creation function
-        //createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
+        //result = createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
       break;
     }
+    return $result;
   }
 
   function getCommunities($targetCommunityName, $requestBody, $pages, $maxPerPage, mysqli $database) {
     $query = $database->prepare("SELECT * FROM community WHERE name=?");
     $query->bind_param("s", $targetCommunityName);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
     return $query->get_result();
@@ -200,7 +206,7 @@
     $query = $database->prepare("SELECT * FROM post LIMIT ? WHERE name=? ORDER BY date DESC");
     $query->bind_param("is", $n, $targetCommunityName);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
 
@@ -212,7 +218,7 @@
     $query = $database->prepare("SELECT * FROM answer LIMIT ? WHERE postID=? ORDER BY date DESC");
     $query->bind_param("is", $n, $targetPostID);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                
+      throw new ApiError("Internal Server Error", 500,
         DB_CONNECTION_ERROR, 500);
     }
 
