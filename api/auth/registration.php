@@ -42,7 +42,7 @@
         $token = generateUniqueToken($database);
         $username = $usrObj->getUsername();
         setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
-        $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Username, Timestamp) VALUES (?, ?, NOW())");
+        $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Date, Username) VALUES (?, NOW(), ?)");
         $tokenQuery->bind_param("ss", $token, $username);
         
         if (!$tokenQuery->execute()) {

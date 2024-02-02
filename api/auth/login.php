@@ -9,16 +9,24 @@
     assertRequestMatch('POST');
     $usrObj = jsonToLogin(file_get_contents("php://input"));
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
-    $queriedUser = checkUserPresence($usrObj, $database);
+    $queriedUser = checkUserPresence($usrObj->getUsername(), $database);
     if ($queriedUser !== false) {
       if (isset($_COOKIE["token"])
         && checkTokenValidity($_COOKIE["token"], $usrObj->getUsername(), $database)) {
         exit(generateJSONResponse(200, "Ok"));
       }
       $token = generateUniqueToken($database);
-      $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Username, Timestamp) VALUES (?, ?, NOW())");
-      $tokenQuery->bind_param("ss", $token, $usrObj->getUsername());
-      setcookie("token", $token, DEFAULT_TOKEN_TTL);
+      $username = $usrObj->getUsername();
+      $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Date, Username) VALUES (?, NOW(), ?)");
+      $tokenQuery->bind_param("ss", $token, $username);
+
+      if (!$tokenQuery->execute()) {
+        throw new ApiError("Internal Server Error", 500,                
+          DB_CONNECTION_ERROR, 500);
+      }
+
+      setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
+      exit(generateJSONResponse(200, "Ok"));
     }
   } catch (ApiError $thrownError) {
     echo $thrownError;

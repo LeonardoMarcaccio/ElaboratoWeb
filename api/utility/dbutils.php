@@ -1,7 +1,7 @@
 <?php
   define("DEFAULT_TOKEN_TTL",  time() + 36000);
 
-  function checkUserPresence($username, mysqli $database) {
+  function checkUserPresence(String $username, mysqli $database) {
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
     $query->bind_param("s", $username);
     if ($query->execute()) {
@@ -70,14 +70,14 @@
   
   function deleteOldTokens(mysqli $database, $ttlHours) {
     $timestampLimit = time() - ($ttlHours * 3600);
-    $sql = "DELETE FROM sessione WHERE TIMESTAMPDIFF(SECOND, Timestamp, NOW()) > ?";
+    $sql = "DELETE FROM sessione WHERE TIMESTAMPDIFF(SECOND, Date, NOW()) > ?";
     $stmt = $database->prepare($sql);
     $stmt->bind_param("i", $timestampLimit);
     $stmt->execute();
   }
   function checkTokenValidity($token, $username, mysqli $database) {
     deleteOldTokens($database, DEFAULT_TOKEN_TTL);
-    $sql = "SELECT Timestamp FROM sessione WHERE Token = ? AND Username = ?";
+    $sql = "SELECT Date FROM sessione WHERE Token = ? AND Username = ?";
     $stmt = $database->prepare($sql);
     $stmt->bind_param("ss", $token, $username);
     $stmt->execute();
@@ -85,7 +85,7 @@
     $stmt->fetch();
 
     if ($timestamp !== null) {
-        $passedTime = time() - strtotime($timestamp);
+      $passedTime = time() - strtotime($timestamp);
         return $passedTime <= DEFAULT_TOKEN_TTL;
     }
 
