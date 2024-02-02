@@ -42,13 +42,7 @@
         $token = generateUniqueToken($database);
         $username = $usrObj->getUsername();
         setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
-        $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Date, Username) VALUES (?, NOW(), ?)");
-        $tokenQuery->bind_param("ss", $token, $username);
-        
-        if (!$tokenQuery->execute()) {
-          throw new ApiError("Internal Server Error", 500,
-          "Error while contacting database", 500);
-        }
+        createSession($token, $username, $database);
         exit(generateJSONResponse(200, "Ok"));
       }
       exit(generateJSONResponse(401, "Invalid Information", $report));

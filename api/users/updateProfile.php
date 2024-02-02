@@ -35,7 +35,10 @@ function updateProfileQuery($jsonString) {
             $assArray['username']
         );
         
-        $query->execute();
+        if (!$query->execute()) {
+            throw new ApiError("Internal Server Error", 500,                
+                DB_CONNECTION_ERROR, 500);
+        }
 
         $con->close();
     } else {
