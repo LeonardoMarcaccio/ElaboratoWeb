@@ -1,0 +1,6 @@
+BEFORE ==> AFTER
+- assignTokenToUser($dbUser, $token, mysqli $database) ==> createSession($token, $username, mysqli $database)
+- checkTokenValidity($token, $username, mysqli $database) ==> checkTokenValidity($token, mysqli $database)
+- checkUserPresence($username, mysqli $database) ==> getUser($username, mysqli $database)
+- tutte le friend function ==> areFriends(?,?,?;??',waDQA)
+- 
