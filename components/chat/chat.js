@@ -1,7 +1,21 @@
+class DelayedChatLoader {
+    loadMethod = () => {};
+
+    updateLoadMethod(loadMethod = () => {}) {
+        this.loadMethod = loadMethod;
+    }
+
+    loadChat() {
+        this.loadMethod();
+    }
+}
+
+let chatLoader = new DelayedChatLoader();
+let messagePage = null;
 let friendCount = 3;
-userList = new Array();
-elem = document.getElementById("page-chat");
-chatCache = null;
+let userList = new Array();
+let elem = document.getElementById("page-chat");
+let chatCache = null;
 
 for (let i=0; i<friendCount; i++) {
     let tmp = document.createElement("button");
@@ -16,8 +30,20 @@ for (let i=0; i<friendCount; i++) {
     }
     document.addEventListener(tmp.id, async (evt) => {
         mainPageLoader.flushPage();
-        chatPageLoader.loadPage("messages");
+        let lambdaOperation = null;
+        if (messagePage == null) {
+            lambdaOperation = async () => {
+                messagePage = await AssetManager.loadAsset("messages.html");
+                DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, messagePage);
+                documentUtilities.addScriptFile("/components/messages/messages.js");
+              }
+        } else {
+            lambdaOperation = async () => {
+                DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, messagePage);
+              }
+        }
+        DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.mainContentPage.childElementCount);
+        await lambdaOperation();
+        chatLoader.loadChat();
     });
 }
-
-let chatPageLoader = new PageLoader(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.mainContentPage.childElementCount);
