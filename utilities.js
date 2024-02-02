@@ -205,6 +205,7 @@ class PageLoader {
     let bar = document.getElementById("page-dm-lower");
     if (bar != null) {
       document.body.removeChild(bar);
+      document.getElementById("navbar-illustration").removeChild(document.getElementById("user-dm"));
     }
     let tmp = DOMUtilities.removeChildElementsToNode(this.base, this.remainingAmount);
     //  The change occured
