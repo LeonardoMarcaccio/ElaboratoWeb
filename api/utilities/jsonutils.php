@@ -1,8 +1,8 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/EncodedImage.php';    //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/community/Post.php';  //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/EssentialUserData.php';  //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/UserData.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EncodedImage.php';    //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Post.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EssentialUserData.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/UserData.php';  //NOSONAR
 
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);
@@ -12,12 +12,19 @@
   function jsonToRegistration($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
-      return new UserData($assArray['username'], $assArray['email'],
-      $assArray['password'], $assArray['firstname'], $assArray['lastname'],
-      $assArray['gender'], $assArray['biography'], $assArray['personalwebsite'],
-      $assArray['pfp'], $assArray['phonenumbers']);
+      return new UserData(
+        attemptValExtraction($assArray, 'username'),
+        attemptValExtraction($assArray, 'email'),
+        attemptValExtraction($assArray, 'password'),
+        attemptValExtraction($assArray, 'firstname'),
+        attemptValExtraction($assArray, 'lastname'),
+        attemptValExtraction($assArray, 'gender'),
+        attemptValExtraction($assArray, 'biography'),
+        attemptValExtraction($assArray, 'personalwebsite'),
+        attemptValExtraction($assArray, 'pfp'),
+        attemptValExtraction($assArray, 'phonenumbers'));
     } else {
-      throw new ApiError("Ok", 200, "Invalid user data", 401);
+      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
   function jsonToLogin($jsonString) {
@@ -26,7 +33,7 @@
       return new EssentialUserData($assArray['username'], $assArray['email'],
       $assArray['password']);
     } else {
-      throw new ApiError("Ok", 200, "Invalid user data", 401);
+      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
 
@@ -38,7 +45,7 @@
       $communityDescription = attemptValExtraction($assArray, 'description');
       return new Community($communityName, $communityDescription, $communityImage);
     } else {
-      throw new ApiError("Ok", 200, "Invalid user data", 401);
+      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
 
@@ -54,7 +61,7 @@
       $postId = attemptValExtraction($assArray, 'id');
       return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
     } else {
-      throw new ApiError("Ok", 200, "Invalid user data", 401);
+      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
   function jsonToComment($jsonString) {
@@ -66,7 +73,7 @@
       $commentId = attemptValExtraction($assArray, 'id');
       return new Comment($commentDate, $commentContent, $commentUsername, $commentId);
     } else {
-      throw new ApiError("Ok", 200, "Invalid user data", 401);
+      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
     

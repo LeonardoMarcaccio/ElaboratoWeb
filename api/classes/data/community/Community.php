@@ -1,13 +1,11 @@
 <?php
-  require_once '/api/utility/classes/data/EncodedImage.php';                //NOSONAR
-
   class Community implements JsonSerializable {
     private $name;
     private $description;
     private $image;
     private $id;
 
-    public function __construct($name, $description, $image, $id = null) {
+    public function __construct($name, $description, $image = null, $id = null) {
       $this->name = $name;
       $this->description = $description;
       $this->image = $image;
