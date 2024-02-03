@@ -1,5 +1,5 @@
 <?php
-  class EssentialUserData {               //NOSONAR
+  class EssentialUserData {
     private $username;            // Essential
     private $email;               // Essential
     private $password;            // Essential

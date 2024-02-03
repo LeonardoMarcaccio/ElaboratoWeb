@@ -1,13 +1,12 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/requestcomplianceutils.php'; //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php';             //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/error.php';                  //NOSONAR
-  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/dbutils.php";                //NOSONAR
+  require_once $_SERVER["DOCUMENT_ROOT"] . "/api/utilities/requestcomplianceutils.php";   //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/generalUtils.php";          //NOSONAR
+  require_once $_SERVER["DOCUMENT_ROOT"] . "/api/utilities/jsonutils.php";   //NOSONAR
+  require_once $_SERVER["DOCUMENT_ROOT"] . "/api/classes/ApiError.php";   //NOSONAR
 
   try {
     assertRequestMatch('GET');
-    $database = new mysqli("localhost", "root", "", "playpal");
+    $database = new mysqli("localhost", "root", "", "playpal");         //NOSONAR
     if (isset($_COOKIE["token"])) {
         
       if (!isValueInColumn("sessione", "Token", $_COOKIE["token"], $database)) {
@@ -17,7 +16,7 @@
       $query = $database->prepare("DELETE FROM sessione WHERE token = ?");
       $query->bind_param("s", $_COOKIE["token"]);
       if (!$query->execute()) {
-        throw new ApiError("Internal Server Error", 500,                
+        throw new ApiError("Internal Server Error", 500,
           DB_CONNECTION_ERROR, 500);
       }
 
@@ -28,7 +27,6 @@
     }
 
   } catch (ApiError $thrownError) {
-    echo $thrownError;
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
   }

@@ -1,18 +1,17 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/requestcomplianceutils.php'; //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php';            //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/error.php';                  //NOSONAR
-  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utility/dbutils.php";                //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/requestcomplianceutils.php";   //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/jsonutils.php";                //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/userUtils.php";             //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/sessionUtils.php";          //NOSONAR
 
   try {
     assertRequestMatch('POST');
     $usrObj = jsonToLogin(file_get_contents("php://input"));
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
-    $queriedUser = checkUserPresence($usrObj->getUsername(), $database);
+    $queriedUser = getUser($usrObj->getUsername(), $database);
     if ($queriedUser !== false) {
       if (isset($_COOKIE["token"])
-        && checkTokenValidity($_COOKIE["token"], $usrObj->getUsername(), $database)) {
+        && checkTokenValidity($_COOKIE["token"], $database)) {
         exit(generateJSONResponse(200, "Ok"));
       }
       $token = generateUniqueToken($database);
@@ -21,8 +20,8 @@
       $tokenQuery->bind_param("ss", $token, $username);
 
       if (!$tokenQuery->execute()) {
-        throw new ApiError("Internal Server Error", 500,                
-          DB_CONNECTION_ERROR, 500);
+        throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
+          DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
       }
 
       setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");

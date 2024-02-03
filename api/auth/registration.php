@@ -1,18 +1,19 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/error.php';                  //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/dbutils.php';                  //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/requestcomplianceutils.php'; //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/contentcomplianceutils.php'; //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/contentcomplianceutils.php";   //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/requestcomplianceutils.php";   //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/jsonutils.php";                //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/sessionUtils.php";          //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/generalUtils.php";          //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";                   //NOSONAR
 
+  $database = null;
   try {
     assertRequestMatch('POST');
     $usrObj = jsonToRegistration(file_get_contents("php://input"));
     $report = performCredentialReport($usrObj);
-    $database = null;
     if ($report->allTestPassed()) {
-      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
+      mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
       if (isValueInColumn("user", "Username", $usrObj->getUsername(), $database)
         || isValueInColumn("user", "Email", $usrObj->getEmail(), $database)) {
           throw new ApiError("Conflict", 409);
@@ -50,7 +51,7 @@
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
   } finally {
-    if ($database instanceof mysqli) {
+    if ($database !== null) {
       $database->close();
     }
   }

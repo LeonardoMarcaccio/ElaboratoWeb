@@ -1,13 +1,10 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/safetyutils.php'; //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/EssentialUserData.php'; //NOSONAR
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/classes/data/UserData.php'; //NOSONAR
-  require_once 'classes/reports/ComplianceTest.php';                //NOSONAR
-  require_once 'classes/reports/EmailValidityReport.php';           //NOSONAR
-  require_once 'classes/reports/FullComplianceReport.php';          //NOSONAR
-  require_once 'classes/reports/PasswordValidityReport.php';        //NOSONAR
-  require_once 'classes/reports/UsernameValidityReport.php';        //NOSONAR
-  require_once 'classes/reports/NonEssentialValidityReport.php';    //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/ComplianceTest.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/EmailValidityReport.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/FullComplianceReport.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/NonEssentialValidityReport.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/PasswordValidityReport.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/UsernameValidityReport.php';  //NOSONAR
 
   function standardStringValidity($stringToCheck, $maximumLength = null, $mustNotMatchRegex = null) {
     $result = false;

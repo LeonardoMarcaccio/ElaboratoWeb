@@ -1,4 +1,6 @@
 <?php
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
+
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
     if (!isset($_COOKIE["token"])
@@ -15,6 +17,7 @@
        userGetRequest($database, $user);
       break;
     }
+    exit();
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
@@ -25,13 +28,16 @@
       && !isset($_SERVER['target'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
+    $usrObj = jsonToLogin(file_get_contents("php://input"));
     switch($_SERVER['type']) {
       case "friend":
-
+        //addFriend($usrObj->getUsername(), $user, $database);
       break;
       case "unfriend":
-        //post creation function
-        //createCommunityPost($targetCommunity, $requestBody);
+        //removeFriend($usrObj->getUsername(), $user, $database);
+      break;
+      case "edit":
+        //updateUserInfo($tokenUser, $userObject, $database);
       break;
     }
   }
@@ -43,7 +49,26 @@
     }
     switch($_SERVER['type']) {
       case "friendlist":
-        
+        //$friendList = gatherFriendList($user, $database);
+      break;
+      case "userinfo":
+        //$friendList = gatherFriendList($user, $database);
       break;
     }
+  }
+
+  function addFriend($usernameToFriend, $user, $database) {
+
+  }
+
+  function removeFriend($usernameToUnfriend, $user, $database) {
+
+  }
+
+  function gatherFriendList($user, $database) {
+
+  }
+
+  function editUserInfo($tokenUser, $userObject, $database) {
+
   }

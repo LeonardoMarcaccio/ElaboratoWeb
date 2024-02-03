@@ -1,5 +1,7 @@
 <?php
-  class UserData extends EssentialUserData {        //NOSONAR
+  require_once "EssentialUserData.php";                 //NOSONAR
+
+  class UserData extends EssentialUserData {
     private $firstName;           // Non Essential
     private $lastName;            // Non Essential
     private $gender;              // Non Essential
