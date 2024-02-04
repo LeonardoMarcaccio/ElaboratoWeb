@@ -1,5 +1,6 @@
 #navbar-illustration {
-    background-color: aliceblue;
+    background-color: transparent;
     display: flex;
     flex-direction: column;
+    padding: 10px;
 }

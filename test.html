@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+
+    .navbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #333;
+      padding: 10px 0;
+      z-index: 1000;
+    }
+
+    .navbar button {
+      background-color: #555;
+      border: none;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 0;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background-color 0.3s;
+      aspect-ratio: 1; /* Mantieni la forma di cerchio */
+      padding: 15% 0; /* Aggiusta il padding per il testo */
+    }
+
+    .navbar button:hover {
+      background-color: #777;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <button>Button 1</button>
+    <button>Button 2</button>
+    <button>Button 3</button>
+    <button>Button 4</button>
+    <button>Button 5</button>
+  </div>
+
+</body>
+</html>

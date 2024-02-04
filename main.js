@@ -31,7 +31,9 @@ let mainGlobalVariables = {
   page: {
     header: null,
     mainContentPage: null,
+    nav: null,
     footer: null,
+    contentShaper: null,
     currentPageLoc: null
   },
   dynamicElements: {
@@ -43,21 +45,35 @@ let mainGlobalVariables = {
 }
 
 async function mainPageInit() {
-
-  let initialAssetArr = ["header.html","footer.html"];
+  let header = await AssetManager.loadAsset("header.html");
+  DOMUtilities.addChildElementToNode(document.body, header);
+  
+  
+  // Content shaper generation
+  mainGlobalVariables.page.contentShaper = document.createElement("div");
+  mainGlobalVariables.page.contentShaper.id = "content-shaper";
+  document.body.appendChild(mainGlobalVariables.page.contentShaper);
+  
+  let initialAssetArr = ["footer.html", "nav.html"];
   for(let asset in initialAssetArr) {
     let obtainedAsset = await AssetManager.loadAsset(initialAssetArr[asset]);
-    DOMUtilities.addChildElementToNode(document.body, obtainedAsset);
+    DOMUtilities.addChildElementToNode(mainGlobalVariables.page.contentShaper, obtainedAsset);
   }
-
   mainGlobalVariables.page.header = document.getElementsByTagName("header")[0];
   mainGlobalVariables.page.footer = document.getElementsByTagName("footer")[0];
+  mainGlobalVariables.page.nav = document.getElementsByTagName("nav")[0];
+  
+  // Main content page generation
   mainGlobalVariables.page.mainContentPage = document.createElement("div");
   mainGlobalVariables.page.mainContentPage.id = "main-content-page";
-  document.body.insertBefore(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.footer);
-  mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
+  mainGlobalVariables.page.mainContentPage.appendChild(
+    mainGlobalVariables.page.footer);
+  mainGlobalVariables.dynamicElements.loadingBanner =
+    document.getElementById("loading-banner");
   mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
-  documentUtilities.addScriptFile("./components/footer/footer.js");
+  documentUtilities.addScriptFile("./components/nav/nav.js");
+  mainGlobalVariables.page.contentShaper.insertBefore(mainGlobalVariables.page.mainContentPage,
+    mainGlobalVariables.page.nav);
 }
 
 document.body.onload = () => {

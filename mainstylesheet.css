@@ -1,38 +1,63 @@
+@font-face {
+  font-family: "Eurostyle";
+  src: url("/fonts/eurostile.woff");
+}
+
 html, body {
-    margin: 0;
-    height: 100%;
+  margin: 0;
+  height: 100%;
+  color: #EEEEEE;
+  font-family: Eurostyle;
 }
 
 body {
+  background-color: #222831;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-evenly;
+}
+
+#content-shaper {
+  height: 100%;
+  display: flex;
+  flex-flow: row-reverse;
+  justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 700px) {
+  #content-shaper {
+    height: 100%;
     display: flex;
     flex-flow: column;
     justify-content: space-evenly;
+  }
 }
 
 #main-content-page {
-    height: 100%;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    background-color: azure;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  background-color: transparent;
 }
 
 #loading-banner {
-    background-color: white;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  background-color: gray;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #loading-banner-spinner {
-    min-width: 100px;
-    width: 15vw;
-    max-width: 200px;
+  min-width: 100px;
+  width: 15vw;
+  max-width: 200px;
 }
