@@ -21,12 +21,13 @@
         attemptValExtraction($assArray, 'gender'),
         attemptValExtraction($assArray, 'biography'),
         attemptValExtraction($assArray, 'personalwebsite'),
-        attemptValExtraction($assArray, 'pfp'),
+        getImageIfValid(attemptValExtraction($assArray, 'pfp')),
         attemptValExtraction($assArray, 'phonenumbers'));
     } else {
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
+
   function jsonToLogin($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
@@ -57,7 +58,7 @@
       $postTitle = attemptValExtraction($assArray, 'title');
       $postName = attemptValExtraction($assArray, 'name');
       $postUsername = attemptValExtraction($assArray, 'username');
-      $postImageUrl = attemptValExtraction($assArray, 'image');    // TODO: Conversion to image!!!!
+      $postImageUrl = getImageIfValid(attemptValExtraction($assArray, 'image'));    // TODO: Conversion to image!!!!
       $postId = attemptValExtraction($assArray, 'id');
       return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
     } else {
@@ -123,3 +124,15 @@
     file_put_contents($fullFilePath, $decodedImage);
     return $fullFilePath;
   }
+
+  function getImageIfValid($imgJson) {
+    if($imgJson === False) {
+      $image = attemptValExtraction($imgJson, 'image');
+      $extension = attemptValExtraction($imgJson, 'extension');
+      $imgUrl = decodeAndStoreImage(new EncodedImage($image, $extension));
+      if (filter_var($imgUrl, FILTER_VALIDATE_URL)) {
+        return $imgUrl;
+      }
+    }
+    return null;
+}
