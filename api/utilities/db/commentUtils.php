@@ -31,13 +31,13 @@
     }
     
     function modifyComment($requestBody, mysqli $database) {
-        $postBody = jsonToPost($requestBody);
+        $commentBody = jsonToPost($requestBody);
         $statement = $database->prepare("UPDATE post SET Date = NOW(), Content = ?, Image = ? WHERE PostID = ?");
         $statement->bind_param(
             "sss",
-            $postBody->getContent(),
-            $postBody->getImageUrl(),
-            $postBody->getID()
+            $commentBody->getContent(),
+            $commentBody->getImageUrl(),
+            $commentBody->getID()
         );
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                //NOSONAR

@@ -62,3 +62,42 @@
 
         return $posts;
     }
+
+    function updateLikes ($postID, mysqli $database) {
+        $statement = $database->prepare("SELECT COUNT(*) FROM message WHERE PostID=? and Value=1");
+        $statement->bind_param("s", $postID);
+        if (!$statement->execute()) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
+
+        $statement->bind_result($likes);
+        $statement->fetch();
+        if (mysqli_num_rows($likes) == 0) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
+
+        $statement = $database->prepare("SELECT COUNT(*) FROM message WHERE PostID=? and Value=0");
+        $statement->bind_param("s", $postID);
+        if (!$statement->execute()) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
+
+        $statement->bind_result($dislikes);
+        $statement->fetch();
+        if (mysqli_num_rows($dislikes) == 0) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
+
+        $newValue = $likes - $dislikes;
+
+        $statement = $database->prepare("UPDATE post SET Likes=? WHERE PostID=?");
+        $statement->bind_param("is", $newValue, $postID);
+        if (!$statement->execute()) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
+    }
