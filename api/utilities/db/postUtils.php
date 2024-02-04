@@ -1,8 +1,13 @@
 <?php
 
-    function createPost($content, $title, $image, $communityName, $username, mysqli $database) {
+    function createPost($targetCommunity, $requestBody, mysqli $database) {
+        $postObj = jsonToPost($requestBody);
+        $content = $postObj->getContent();
+        $title = $postObj->getTitle();
+        $image = $postObj->getImageUrl();
+        $username = getUsernameByToken($_COOKIE['token'], $database);
         $statement = $database->prepare("INSERT INTO post VALUES(NOW(), ?, ?, ?, ?, ?)");
-        $statement->bind_param("sssss", $content, $title, $image, $communityName, $username);
+        $statement->bind_param("sssss", $content, $title, $image, $targetCommunity, $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);

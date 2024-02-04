@@ -1,31 +1,35 @@
 <?php
 
-    function createComment($postID, $content, $username, mysqli $database) {
+    function createComment($targetPost, $requestBody, mysqli $database) {
+        $commentObj = jsonToComment($requestBody);
+        $content = $commentObj->getContent();
+        $username = getUsernameByToken($_COOKIE['token'], $database);
+        $postID = $targetPost;
         $statement = $database->prepare("INSERT INTO comment VALUES(NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
         
         $statement = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
         
         $statement->bind_result($commentID);
         $statement->fetch();
         if (mysqli_num_rows($commentID) == 0) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
         
         $statement = $database->prepare("INSERT INTO answer VALUES(?, ?)");
         $statement->bind_param("ss", $commentID, $postID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
     }
@@ -49,28 +53,28 @@
         $statement = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
         $statement = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
         $statement->bind_result($commentID);
         $statement->fetch();
         if (mysqli_num_rows($commentID) == 0) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
         $statement = $database->prepare("INSERT INTO subcomment VALUES(?, ?)");
         $statement->bind_param("ss", $commentID, $originID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
     }
@@ -80,14 +84,14 @@
         $statement = $database->prepare("SELECT * FROM answer LIMIT ? WHERE postID=? ORDER BY date DESC");
         $statement->bind_param("is", $n, $targetPostID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
         $statement->bind_result($comments);
         $statement->fetch();
         if (mysqli_num_rows($comments) == 0) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
         return $comments;
