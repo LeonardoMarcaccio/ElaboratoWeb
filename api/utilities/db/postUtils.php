@@ -39,9 +39,19 @@
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
-        $statement->bind_result($recentPost);
-        $statement->fetch();
-        return ($recentPost !== null) ? $recentPost : false;
+
+        $posts = $statement->get_result();
+        if (mysqli_num_rows($posts) == 0) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
+        
+        $result = array();
+        while($tmp = mysqli_fetch_assoc($posts)) {
+            array_push($result, $tmp);
+        }
+
+        return $result;
     }
 
     function getCommunityPost($targetCommunityName, $pages, $maxPerPage, mysqli $database) {
@@ -53,14 +63,18 @@
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement->bind_result($posts);
-        $statement->fetch();
+        $posts = $statement->get_result();
         if (mysqli_num_rows($posts) == 0) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
+        
+        $result = array();
+        while($tmp = mysqli_fetch_assoc($posts)) {
+            array_push($result, $tmp);
+        }
 
-        return $posts;
+        return $result;
     }
 
     function updateLikes ($postID, mysqli $database) {
@@ -110,12 +124,11 @@
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement->bind_result($post);
-        $statement->fetch();
-        if (mysqli_num_rows($post) == 0) {
+        $post = $statement->get_result();
+        if (mysqli_num_rows($post) !== 1) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
 
-        return $post;
+        return mysqli_fetch_assoc($post);
     }
