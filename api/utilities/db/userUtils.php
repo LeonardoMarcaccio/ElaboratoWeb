@@ -33,3 +33,25 @@
       : USER_STRANGER;
     }
   }
+
+  function updateUser($requestBody, mysqli $database) {
+    $userObj = jsonToRegistration($requestBody);
+    $dbNames = ['Email' => $userObj->getEmail(),
+      'Password' => $userObj->getPassword(),
+      'FirstName' => $userObj->getFirstName(),
+      'LastName' => $userObj->getLastName(),
+      'Gender' => $userObj->getGender(),
+      'Biography' => $userObj->getBiography(),
+      'PersonalWebsite' => $userObj->getPersonalWebsite(),
+      'Pfp' => $userObj->getPfp(),
+      'Phonenumbers' => $userObj->getPhoneNumbers()];
+
+    $target = getUsernameByToken($_COOKIE['token'], $database);
+    foreach ($dbNames as $dbEntry => $dbValue) {
+      $preparedQuery = $database->prepare("UPDATE user SET $dbEntry = ? WHERE Username = ?");
+      $preparedQuery->bind_param("ss", $dbEntry, $dbValue, $target);
+      if (!$preparedQuery->execute()) {
+        throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
+      }
+    }
+  }
