@@ -14,13 +14,13 @@
       $username, $email, $password, $firstName,
       $lastName, $gender, $biography, $personalWebsite, $pfp, $phoneNumbers) {
       parent::__construct($username, $email, $password);
-      $this->firstName=$firstName;
-      $this->lastName=$lastName;
-      $this->gender=$gender;
-      $this->biography=$biography;
-      $this->personalWebsite=$personalWebsite;
-      $this->pfp=$pfp;
-      $this->phoneNumbers=$phoneNumbers;
+      $this->firstName = $firstName;
+      $this->lastName = $lastName;
+      $this->gender = $gender;
+      $this->biography = $biography;
+      $this->personalWebsite = $personalWebsite;
+      $this->pfp = $pfp;
+      $this->phoneNumbers = $phoneNumbers;
     }
 
     public function getFirstName() {
