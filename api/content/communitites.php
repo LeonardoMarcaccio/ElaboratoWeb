@@ -1,4 +1,6 @@
 <?php
+  define("DEFAULT_PAGE_SIZE", 5);
+  define("DEFAULT_PAGE_INDEX", 0);
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
@@ -9,7 +11,7 @@
         $result = communityPostRequest($requestBody, $database);
       break;
       case 'GET':
-        $result = communityGetRequest();
+        $result = communityGetRequest($requestBody, $database);
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
@@ -23,21 +25,32 @@
   }
 
   function communityPostRequest($requestBody, $database) {
-    if(!isset($_SERVER['type'])) {
-      throw new ApiError("Bad Request", 400);
+    if(!isset($_GET['type'])) {
+      throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     $result = null;
-    switch($_SERVER['type']) {
+    switch($_GET['type']) {
       case "community":
-        createCommunity($requestBody, $database);
+        //community creation/edit function
+        if (isset($_GET['edit'])) {
+          modifyCommunity($requestBody, $database);
+        } else {
+          createCommunity($requestBody, $database);
+        }
       break;
       case "post":
         //post creation function
         //$result = createCommunityPost($targetCommunity, $requestBody);
+        if (isset($_GET['target'])) {
+          createPost($_GET['target'], $requestBody, $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        }
       break;
       case "comment":
         //comment creation function
         //$result = createCommunityComment($targetCommentId, $requestBody);
+        //createComment($requestBody, $database);
       break;
       case "page":
         //page creation function
@@ -47,35 +60,6 @@
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
     return $result;
-  }
-
-  function createCommunity($requestBody, mysqli $database) {
-    $communityBody = jsonToCommunity($requestBody);
-    $statement = $database->prepare("INSERT INTO community (Name, Image, Description, Username) VALUES (?, ?, ?, ?)");
-    $statement->bind_param("ssss", $communityBody->getCommunityName(),
-      $communityBody->getCommunityImage(),
-      $communityBody->getCommunityDescription(),
-      getNicknameByToken($_COOKIE["token"], $database));
-  }
-
-  function modifyCommunity($requestBody, mysqli $database) {
-    $communityBody = jsonToCommunity($requestBody);
-    $statement = $database->prepare("UPDATE community SET Image = ?, Description = ? WHERE Name = ?");
-    $statement->bind_param(
-      "sss",
-      $communityBody->getCommunityImage(),
-      $communityBody->getCommunityDescription(),
-      $communityBody->getCommunityName()
-    );
-  }
-
-  function createPost($content, $title, $image, $communityName, $username, mysqli $database) {
-    $query = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?, ?, ?, ?)");
-    $query->bind_param("sssss", $content, $title, $image, $communityName, $username);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
   }
 
   function modifyComment($requestBody, mysqli $database) {
@@ -153,41 +137,91 @@
     );
   }
   
-  function communityGetRequest() {
-    if(!isset($_SERVER['type'])
-      && !isset($_SERVER['target'])) {            //TODO: parametri per pages e maxperpage
-      throw new ApiError("Bad Request", 400);
+  /*Cognitive complexity of this function is higher than 15, however
+    refractoring it will require a major rework of this module.
+    I tried to define better some values to make the code more readable.
+  */
+  function communityGetRequest($requestBody, $database) {             //NOSONAR
+    if(!isset($_GET['type'])) {
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
+    $targetSelected = !isset($_GET['selection']);
+    $dividerProvided = !isset($_GET['pageIndex']) && !isset($_GET['pageSize']);
     $result = null;
+    $pageSize = DEFAULT_PAGE_SIZE;
+    $pageIndex = DEFAULT_PAGE_INDEX;
+    $type = $_GET['type'];
+    $target = $targetSelected
+      ? $_GET['selection']
+      : null;
+    if ($dividerProvided) {
+      $pageSize = $_GET['pageSize'];
+      $pageIndex = $_GET['pageIndex'];
+    }
+
+    if (isset($_GET['contentId'])) {
+      $pageIndex = $_GET['contentId'];
+      $pageSize = 1;
+    }
+
     switch($_SERVER['type']) {
       case "community":
-        //community creation function
-        //result = getCommunities($targetCommunityName, $requestBody, $pages, $maxPerPage);
+        //community getting function
+        $result = getCommunities(getUsernameByToken($_COOKIE['token'], $database), $type, $pageIndex, $pageSize, $database);
       break;
       case "post":
-        //post creation function
-        //result = createCommunityPost($targetCommunity, $requestBody, $pages, $maxPerPage);
+        $postList = null;
+        //post getting function
+        if (!$targetSelected) {
+          $postList = getCommunityPost($target, $requestBody, $pageIndex, $pageSize, $database);
+        } else {
+          //$postList = array(get single post );
+        }
+        $result = array();
+        foreach ($postList as $singlePost) {
+          array_push($singlePost, new Post($singlePost['Date'],
+            $singlePost['Content'], $singlePost['Title'],
+            $singlePost['Name'], $singlePost['Username'],
+            $singlePost['Image'], $singlePost['PostID']));
+        }
       break;
       case "comment":
-        //comment creation function
-        //result = createCommunityComment($targetCommentId, $requestBody, $pages, $maxPerPage);
+        //comment getting function
+        if ($targetSelected) {
+          $commentList = getPostComment($target, $requestBody, $pageIndex, $pageSize, $database);
+        } else {
+          //$commentList = array(get single comment );
+        }
+        $result = array();
+        foreach ($commentList as $singleComment) {
+          array_push($singlePost, new Comment($singleComment['Date'],
+            $singleComment['Content'], $singleComment['Username'],
+            $singleComment['CommentID']));
+        }
+      break;
+      case "subcomment":
+        //comment getting function
+        /*if ($targetSelected) {
+          $commentList = ($target, $requestBody, $pageIndex, $pageSize, $database);
+        } else {
+          //$commentList = array(get single comment );
+        }
+        $result = array();
+        foreach ($commentList as $singleComment) {
+          array_push($singlePost, new Comment($singleComment['Date'],
+            $singleComment['Content'], $singleComment['Username'],
+            $singleComment['CommentID']));
+        }*/
       break;
       case "page":
-        //page creation function
-        //result = createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
+        // TODO: Page functionality
+        //page getting function
+        //$result = createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
       break;
+      default:
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     return $result;
-  }
-
-  function getCommunities($targetCommunityName, $requestBody, $pages, $maxPerPage, mysqli $database) {
-    $query = $database->prepare("SELECT * FROM community WHERE name=?");
-    $query->bind_param("s", $targetCommunityName);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-    return $query->get_result();
   }
 
   function getCommunityPost($targetCommunityName, $requestBody, $pages, $maxPerPage, mysqli $database) {
