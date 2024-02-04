@@ -43,8 +43,9 @@
       throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
         DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
     }
-    $statement->bind_result($username);
-    $statement->fetch();
+
+    $username = $statement->get_result();
+
     return ($username !== null) ? $username : false;
   }
 
@@ -67,9 +68,12 @@
         DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
     }
     
-    $statement->bind_result($timestamp);
-    $statement->fetch();
-    
+    $timestamp = $statement->get_result();
+    if (mysqli_num_rows($timestamp) !== 1) {
+        throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
+
     if ($timestamp !== null) {
       $passedTime = time() - strtotime($timestamp);
       return $passedTime <= DEFAULT_TOKEN_TTL;

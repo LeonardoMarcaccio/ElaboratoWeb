@@ -8,7 +8,7 @@
       throw new ApiError("Internal Server Error", 500,                //NOSONAR
         DB_CONNECTION_ERROR, 500);
     }
-    $statement->bind_result($count);
-    $statement->fetch();
-    return $count > 0;
+  
+    $value = $statement->get_result();
+    return mysqli_fetch_assoc($value) > 0;
   }

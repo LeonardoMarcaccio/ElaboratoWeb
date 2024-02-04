@@ -6,6 +6,7 @@
         $title = $postObj->getTitle();
         $image = $postObj->getImageUrl();
         $username = getUsernameByToken($_COOKIE['token'], $database);
+
         $statement = $database->prepare("INSERT INTO post VALUES(NOW(), ?, ?, ?, ?, ?)");
         $statement->bind_param("sssss", $content, $title, $image, $targetCommunity, $username);
         if (!$statement->execute()) {
@@ -15,13 +16,14 @@
     }
 
     function modifyPost($requestBody, mysqli $database) {
-        $commentBody = jsonToComment($requestBody);
-        $statement = $database->prepare("UPDATE post SET Date = NOW(), Content = ? WHERE CommentID = ?");
+        $postBody = jsonToPost($requestBody);
+        $statement = $database->prepare("UPDATE post SET Date = NOW(), Content = ? WHERE PostID = ?");
         $statement->bind_param(
-            "ss",
-            $commentBody->getContent(),
-            $commentBody->getID()
+            "si",
+            $postBody->getContent(),
+            $postBody->getID()
         );
+
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
@@ -37,6 +39,10 @@
         }
 
         $communities = $statement->get_result();
+        if (mysqli_num_rows($communities) === 0) {
+            throw new ApiError("Internal Server Error", 500,                
+            DB_CONNECTION_ERROR, 500);
+        }
 
         $statement = $database->prepare("SELECT * FROM post LIMIT ? WHERE Name IN ? ORDER BY date DESC");
         $statement->bind_param("is", $n_post, $communities);
@@ -46,7 +52,7 @@
         }
 
         $posts = $statement->get_result();
-        if (mysqli_num_rows($posts) == 0) {
+        if (mysqli_num_rows($posts) === 0) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
@@ -92,7 +98,7 @@
 
         $statement->bind_result($likes);
         $statement->fetch();
-        if (mysqli_num_rows($likes) == 0) {
+        if (mysqli_num_rows($likes) === 0) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
@@ -106,7 +112,7 @@
 
         $statement->bind_result($dislikes);
         $statement->fetch();
-        if (mysqli_num_rows($dislikes) == 0) {
+        if (mysqli_num_rows($dislikes) === 0) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }

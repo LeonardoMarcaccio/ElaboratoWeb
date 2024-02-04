@@ -25,6 +25,7 @@
             $communityBody->getCommunityDescription(),
             $communityBody->getCommunityName()
         );
+
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
@@ -40,12 +41,16 @@
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement->bind_result($communities);
-        $statement->fetch();
-        if (mysqli_num_rows($communities) == 0) {
-            throw new ApiError("Internal Server Error", 500,                
+        $communities = $statement->get_result();
+        if (mysqli_num_rows($communities) === 0) {
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
-        return $communities;
+        $result = array();
+        while($tmp = mysqli_fetch_assoc($communities)) {
+            array_push($result, $tmp);
+        }
+
+        return $result;
     }
