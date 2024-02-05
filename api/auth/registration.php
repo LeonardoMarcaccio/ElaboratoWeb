@@ -42,7 +42,7 @@
         }
         $token = generateUniqueToken($database);
         $username = $usrObj->getUsername();
-        setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
+        setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");
         createSession($token, $username, $database);
         exit(generateJSONResponse(200, "Ok"));
       }

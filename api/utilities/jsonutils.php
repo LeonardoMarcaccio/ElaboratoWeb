@@ -6,6 +6,7 @@ use function PHPSTORM_META\type;
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Post.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EssentialUserData.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/UserData.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Community.php';  //NOSONAR
 
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);
@@ -54,10 +55,12 @@ use function PHPSTORM_META\type;
   }
 
   function jsonToCommunity($jsonString) {
+    //$community = New Community(null, null, null);
+    print_r($jsonString);
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
       $communityName = attemptValExtraction($assArray, 'name');
-      $communityImage = decodeAndStoreImage(attemptValExtraction($assArray, 'image'));
+      $communityImage = decodeAndStoreImage(jsonToImage(attemptValExtraction($assArray, 'communityImage')));
       $communityDescription = attemptValExtraction($assArray, 'description');
       return new Community($communityName, $communityDescription, $communityImage);
     } else {

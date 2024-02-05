@@ -19,7 +19,7 @@
       $username = $usrObj->getUsername();
       createSession($token, $username, $database);
 
-      setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
+      setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");
       exit(generateJSONResponse(200, "Ok"));
     }
   } catch (ApiError $thrownError) {

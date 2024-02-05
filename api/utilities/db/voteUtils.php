@@ -1,5 +1,4 @@
 <?php
-
     function addVote($username, $postID, $value, mysqli $database) {
         $statement = $database->prepare("SELECT Value FROM vote WHERE PostID=? and Username=1");
         $statement->bind_param("ss", $postID, $username);
