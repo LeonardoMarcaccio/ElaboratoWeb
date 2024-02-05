@@ -87,13 +87,20 @@ async function mainPageInit() {
   mainGlobalVariables.page.contentHolder.appendChild(
     mainGlobalVariables.page.mainContentFooting);
   
-  documentUtilities.addScriptFile("./components/nav/nav.js");
   mainGlobalVariables.page.contentShaper.insertBefore(mainGlobalVariables.page.contentHolder,
     mainGlobalVariables.page.nav);
 
   mainGlobalVariables.dynamicElements.loadingBanner =
     document.getElementById("loading-banner");
   mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
+  
+  let loader = new PageLoader(mainGlobalVariables.page.mainContentPage);
+  loader.loadPage("login");
+  cookieUtilities.readCookie("token");
+
+  documentUtilities.addScriptFile("./components/nav/nav.js");
+  documentUtilities.addScriptFile("./components/registration/registration.js");
+  
 }
 
 document.body.onload = () => {
