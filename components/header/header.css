@@ -1,6 +1,20 @@
-#navbar-illustration {
+#header-illustration {
     background-color: transparent;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(2px);
     padding: 10px;
+}
+
+#header-illustration > h1,p {
+    text-align: center;
+    margin: 5px;
+}
+
+#header-bg {
+    background-image: url("/media/images/playpal-onlymage_WO.webp");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-y: center;
+    background-position-x: center;
 }
