@@ -1,3 +1,20 @@
 .formpane {
-    background-color: blue;
+  justify-content: space-evenly;
+  width: 100%;
+  display: flex;
+  height: 85%;
+}
+
+.formpane > form {
+  background-color: #E0DFD5;
+  flex-grow: 1;
+  max-width: 350px;
+  text-align: center;
+  margin-top: 6vh;
+  -webkit-box-shadow: 0px 0px 14px 30px #E0DFD5; 
+  box-shadow: 0px 0px 14px 30px #E0DFD5;
+}
+
+.formpane > form > * {
+  margin: 3px 0px;
 }

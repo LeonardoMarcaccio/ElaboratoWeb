@@ -1,16 +1,14 @@
+<link rel='stylesheet' type='text/css' media='screen' href='components/login/login.css'>
 <div class="formpane">
     <form name="signInForm" action="" method="post">
         <h1>PlayPal</h1>
         
         <label for="emailSingIn">Email:</label><br>
-        <input type="text" id="emailSingIn" name="emailSingIn" value=""><br>
-        <input type="checkbox" id="remember" name="remember" value="">
-        <label for="remember">Remember my Email</label><br>
+        <input id="login-email" type="text" id="emailSingIn" name="emailSingIn" value=""><br>
         <label for="passwordSingIn">Password:</label><br>
-        <input type="text" id="passwordSingIn" name="passwordSingIn" value=""><br>
-        
-        <button class="singIn">Sing in</button><br>
-        <button class="createAccount">Create an Account</button>
+        <input id="login-password" type="text" id="passwordSingIn" name="passwordSingIn" value=""><br>
+
+        <button id="login-login" class="singIn" type="button">Sign in</button><br>
+        <button id="login-goto-register" class="createAccount" type="button">Create an Account</button>
     </form>
 </div>
-<script src="/components/login/login.js"></script>

@@ -50,11 +50,11 @@ body {
 }
 
 #main-content-heading {
-  flex-grow: 1;
+  flex-grow: 0;
   max-height: 75px;
 }
 #main-content-page {
-  flex-grow: 2;
+  flex-grow: 1;
   overflow-y: auto;
 }
 #main-content-footing {
