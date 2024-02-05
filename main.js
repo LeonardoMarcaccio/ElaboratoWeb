@@ -31,9 +31,12 @@ let mainGlobalVariables = {
   page: {
     header: null,
     mainContentPage: null,
+    mainContentHeading: null,
+    mainContentFooting: null,
     nav: null,
     footer: null,
     contentShaper: null,
+    contentHolder: null,
     currentPageLoc: null
   },
   dynamicElements: {
@@ -54,26 +57,43 @@ async function mainPageInit() {
   mainGlobalVariables.page.contentShaper.id = "content-shaper";
   document.body.appendChild(mainGlobalVariables.page.contentShaper);
   
-  let initialAssetArr = ["footer.html", "nav.html"];
+  let initialAssetArr = ["nav.html"];
   for(let asset in initialAssetArr) {
     let obtainedAsset = await AssetManager.loadAsset(initialAssetArr[asset]);
     DOMUtilities.addChildElementToNode(mainGlobalVariables.page.contentShaper, obtainedAsset);
   }
   mainGlobalVariables.page.header = document.getElementsByTagName("header")[0];
-  mainGlobalVariables.page.footer = document.getElementsByTagName("footer")[0];
+  //mainGlobalVariables.page.footer = document.getElementsByTagName("footer")[0];
   mainGlobalVariables.page.nav = document.getElementsByTagName("nav")[0];
   
   // Main content page generation
   mainGlobalVariables.page.mainContentPage = document.createElement("div");
   mainGlobalVariables.page.mainContentPage.id = "main-content-page";
-  mainGlobalVariables.page.mainContentPage.appendChild(
-    mainGlobalVariables.page.footer);
+  // Main content heading generation
+  mainGlobalVariables.page.mainContentHeading = document.createElement("div");
+  mainGlobalVariables.page.mainContentHeading.id = "main-content-heading";
+  // Main content footing generation
+  mainGlobalVariables.page.mainContentFooting = document.createElement("div");
+  mainGlobalVariables.page.mainContentFooting.id = "main-content-footing";
+
+  
+  // Content holder page generation
+  mainGlobalVariables.page.contentHolder = document.createElement("div");
+  mainGlobalVariables.page.contentHolder.id = "content-holder";
+  mainGlobalVariables.page.contentHolder.appendChild(
+    mainGlobalVariables.page.mainContentHeading);
+  mainGlobalVariables.page.contentHolder.appendChild(
+    mainGlobalVariables.page.mainContentPage);
+  mainGlobalVariables.page.contentHolder.appendChild(
+    mainGlobalVariables.page.mainContentFooting);
+  
+  documentUtilities.addScriptFile("./components/nav/nav.js");
+  mainGlobalVariables.page.contentShaper.insertBefore(mainGlobalVariables.page.contentHolder,
+    mainGlobalVariables.page.nav);
+
   mainGlobalVariables.dynamicElements.loadingBanner =
     document.getElementById("loading-banner");
   mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
-  documentUtilities.addScriptFile("./components/nav/nav.js");
-  mainGlobalVariables.page.contentShaper.insertBefore(mainGlobalVariables.page.mainContentPage,
-    mainGlobalVariables.page.nav);
 }
 
 document.body.onload = () => {

@@ -2,7 +2,6 @@
     background-color: transparent;
     display: flex;
     flex-direction: column;
-    backdrop-filter: blur(2px);
     padding: 10px;
 }
 

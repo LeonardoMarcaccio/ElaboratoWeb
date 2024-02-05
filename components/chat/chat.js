@@ -42,6 +42,7 @@ for (let i=0; i<friendCount; i++) {
                 DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, messagePage);
               }
         }
+        DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentHeading, 0);
         DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.mainContentPage.childElementCount);
         await lambdaOperation();
         chatLoader.loadChat();
