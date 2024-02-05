@@ -169,8 +169,10 @@ const JSONUtils = {
   }
 }
 
+let sharedCache = new Map();
+
 class PageLoader {
-  pageCache = new Map();
+  pageCache = sharedCache;
   prevPage = null;
   base;
   remainingAmount;
@@ -202,11 +204,6 @@ class PageLoader {
   }
 
   flushPage () {
-    let bar = document.getElementById("user-dm");
-    if (bar != null) {
-      bar.parentNode.removeChild(bar);
-    }
-
     let tmp = DOMUtilities.removeChildElementsToNode(this.base, this.remainingAmount);
     if (this.prevPage != null) {
       this.pageCache.set(this.prevPage, tmp);
@@ -223,13 +220,15 @@ class ButtonHandler {
   generalChange = null;
   length = 0;
   lastActiveBtn = null;
+  extraFlushes = null;
 
-  constructor (loader, eventList, prefix, generalChange) {
+  constructor (loader, eventList, prefix, generalChange, extraFlushes) {
     this.loader = loader;
     this.eventList = eventList;
     this.prefix = prefix;
     this.generalChange = generalChange;
     this.length = this.eventList.length;
+    this.extraFlushes = extraFlushes;
 
     for (let i=0; i<this.length; i++) {
       this.buttonList[i] = document.getElementById(this.prefix + this.eventList[i]);
@@ -247,29 +246,36 @@ class ButtonHandler {
 
     for(let i=0; i<this.length; i++) {
       let eventValue = this.eventList[i];
-      document.addEventListener((this.prefix + eventValue), async (evt) => {
-          this.loader.loadPage(eventValue);
-          let pageChangeEvt = new CustomEvent(this.generalChange, {detail: (this.prefix + eventValue)});
-          document.dispatchEvent(pageChangeEvt);
-      });
+      if (this.loader != null) {
+        document.addEventListener((this.prefix + eventValue), async (evt) => {
+            for (let flush in this.extraFlushes) {
+              this.extraFlushes[flush].flushPage();
+            }
+            this.loader.loadPage(eventValue);
+            let pageChangeEvt = new CustomEvent(this.generalChange, {detail: (this.prefix + eventValue)});
+            document.dispatchEvent(pageChangeEvt);
+        });
+      }
     }
 
-    document.addEventListener(this.generalChange, (evt) => {
-      let supportedEvents = [];
-      for(let i=0; i<this.length; i++) {
+    if (this.generalChange != null) {
+      document.addEventListener(this.generalChange, (evt) => {
+        let supportedEvents = [];
+        for(let i=0; i<this.length; i++) {
           supportedEvents.push(this.prefix + this.eventList[i]);
-      }
-      if (supportedEvents.includes(evt.detail)) {
-        this.buttonList.forEach((namespaceKey) =>{
-          if (namespaceKey.id == evt.detail) {
+        }
+        if (supportedEvents.includes(evt.detail)) {
+          this.buttonList.forEach((namespaceKey) => {
+            if (namespaceKey.id == evt.detail) {
               if (this.lastActiveBtn != null) {
-                  this.lastActiveBtn.disabled = false;
+                this.lastActiveBtn.disabled = false;
               }
               namespaceKey.disabled = true;
               this.lastActiveBtn = namespaceKey;
-          }
-        });
-      }
-    })
+            }
+          });
+        }
+      })
+    }
   }
 }
