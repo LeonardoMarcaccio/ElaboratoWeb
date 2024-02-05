@@ -202,14 +202,13 @@ class PageLoader {
   }
 
   flushPage () {
-    let bar = document.getElementById("page-dm-lower");
+    let bar = document.getElementById("user-dm");
     if (bar != null) {
-      document.body.removeChild(bar);
-      document.getElementById("navbar-illustration").removeChild(document.getElementById("user-dm"));
+      bar.parentNode.removeChild(bar);
     }
+
     let tmp = DOMUtilities.removeChildElementsToNode(this.base, this.remainingAmount);
-    //  The change occured
-    if (this.prevPage != null /*&& !this.pageCache.has(this.prevPage)*/) {
+    if (this.prevPage != null) {
       this.pageCache.set(this.prevPage, tmp);
     }
     this.prevPage = null;
