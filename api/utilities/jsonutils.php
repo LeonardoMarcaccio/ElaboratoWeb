@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EncodedImage.php';    //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Post.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EssentialUserData.php';  //NOSONAR
@@ -11,12 +14,11 @@
   define("USER_CONTENT_FOLDER", 0);
   define("SUPPORTED_IMAGE_FORMATS", ["jpg", "png", "gif", "webp"]);
 
-  function jsonToImage($jsonString) {
-    $assArray = json_decode($jsonString, true);
-    if ($assArray !== null) {
+  function jsonToImage($jsonObject) {
+    if ($jsonObject !== null) {
       return new EncodedImage(
-        attemptValExtraction($assArray, 'image'),
-        attemptValExtraction($assArray, 'format')
+        attemptValExtraction($jsonObject, 'image'),
+        attemptValExtraction($jsonObject, 'format')
       );
     } else {
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
@@ -35,7 +37,7 @@
         attemptValExtraction($assArray, 'gender'),
         attemptValExtraction($assArray, 'biography'),
         attemptValExtraction($assArray, 'personalwebsite'),
-        decodeAndStoreImage(attemptValExtraction($assArray, 'pfp')),
+        decodeAndStoreImage(jsonToImage(attemptValExtraction($assArray, 'pfp'))),
         attemptValExtraction($assArray, 'phonenumbers'));
     } else {
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
@@ -45,8 +47,7 @@
   function jsonToLogin($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
-      return new EssentialUserData($assArray['username'], $assArray['email'],
-      $assArray['password']);
+      return new EssentialUserData($assArray['username'], $assArray['email'], $assArray['password']);
     } else {
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
@@ -136,22 +137,26 @@
       : $nonPresentReturn;
   }
 
-  function decodeAndStoreImage(EncodedImage $image, $prefix = "img-") {
-    if ($image === null || !in_array(SUPPORTED_IMAGE_FORMATS, $image->getExtension())) {
-      return null;
+  function decodeAndStoreImage($image, $prefix = "img-") {
+    if (gettype($image) === "EncodedImage") {
+      if (!in_array(SUPPORTED_IMAGE_FORMATS, $image->getExtension())) {
+        return null;
+      }
+      $decodedImage = base64_decode($image->getEncodedImageString());
+      if ($decodedImage === null) {
+        return $decodedImage;
+      }
+      $fileId = null;
+      $fullFilePath = null;
+      do {
+        $fileId = uniqid($prefix);
+        $fullFilePath = USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension();
+      } while (file_exists($fullFilePath));
+      file_put_contents($fullFilePath, $decodedImage);
+      return $fullFilePath;
     }
-    $decodedImage = base64_decode($image->getEncodedImageString());
-    if ($decodedImage === null) {
-      return $decodedImage;
-    }
-    $fileId = null;
-    $fullFilePath = null;
-    do {
-      $fileId = uniqid($prefix);
-      $fullFilePath = USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension();
-    } while (file_exists($fullFilePath));
-    file_put_contents($fullFilePath, $decodedImage);
-    return $fullFilePath;
+
+    return null;
   }
 
   function getImageIfValid($imgJson) {

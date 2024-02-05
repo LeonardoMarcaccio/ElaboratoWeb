@@ -51,7 +51,8 @@
 
   function deleteOldTokens(mysqli $database, $ttlHours) {
     $timestampLimit = time() - ($ttlHours * 3600);
-    $statement = $database->prepare("DELETE FROM sessione WHERE TIMESTAMPDIFF(SECOND, Date, NOW()) > ?");
+    echo $timestampLimit;
+    $statement = $database->prepare("DELETE FROM sessione WHERE TIMESTAMPDIFF(SECOND, NOW(), Date) > ?");
     $statement->bind_param("i", $timestampLimit);
     if (!$statement->execute()) {
       throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
@@ -61,15 +62,16 @@
 
   function checkTokenValidity($token, mysqli $database) {
     deleteOldTokens($database, DEFAULT_TOKEN_TTL);
-    $statement = $database->prepare("SELECT Date FROM sessione WHERE Token = ?");
+    $statement = $database->prepare("SELECT `Date` FROM sessione WHERE Token = ?");
     $statement->bind_param("s", $token);
     if (!$statement->execute()) {
       throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
         DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
     }
     
-    $timestamp = $statement->get_result();
-    if (mysqli_num_rows($timestamp) !== 1) {
+    $timestamp = mysqli_fetch_assoc($statement->get_result());
+    echo $timestamp;
+    if ($timestamp === null) {
         throw new ApiError("Internal Server Error", 500,                
         DB_CONNECTION_ERROR, 500);
     }

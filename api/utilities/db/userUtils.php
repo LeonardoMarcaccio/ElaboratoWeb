@@ -8,12 +8,13 @@
       throw new ApiError("Internal Server Error", 500,                  //NOSONAR
       DB_CONNECTION_ERROR, 500);
     }
+    
     $resultingUser = mysqli_fetch_assoc($query->get_result());
     if ($resultingUser === null) {
       return $resultingUser;
     } else {
       return new UserData(
-        $resultingUser['UserName'],
+        $resultingUser['Username'],
         $resultingUser['Email'],
         $resultingUser['Password'],
         $resultingUser['FirstName'],
@@ -63,8 +64,13 @@
       throw new ApiError("Internal Server Error", 500,                //NOSONAR
       DB_CONNECTION_ERROR, 500);
     }
-    $statement->bind_result($count);
-    $statement->fetch();
+    
+    $count = $statement->get_result();
+    echo $count;
+    if (mysqli_num_rows($count) === 0) {
+        throw new ApiError("Internal Server Error", 500,                
+        DB_CONNECTION_ERROR, 500);
+    }
     return $count > 0;
   }
 

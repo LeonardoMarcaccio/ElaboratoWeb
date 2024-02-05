@@ -16,13 +16,7 @@
       }
       $token = generateUniqueToken($database);
       $username = $usrObj->getUsername();
-      $tokenQuery = $database->prepare("INSERT INTO sessione (Token, Date, Username) VALUES (?, NOW(), ?)");
-      $tokenQuery->bind_param("ss", $token, $username);
-
-      if (!$tokenQuery->execute()) {
-        throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-          DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-      }
+      createSession($token, $username, $database);
 
       setcookie("token", $token, DEFAULT_TOKEN_TTL, "/");
       exit(generateJSONResponse(200, "Ok"));
