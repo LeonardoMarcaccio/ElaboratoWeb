@@ -7,6 +7,7 @@
 
 #header-illustration > h1,p {
     text-align: center;
+    user-select: none;
     margin: 5px;
 }
 
