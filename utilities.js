@@ -150,13 +150,171 @@ const DOMUtilities = {
   }
 }
 
+//  PlayPal specific from here on out
+const APIEvents = {
+  unauthorizedEvent: "api-unauthorized",
+  conflictEvent: "api-conflict"
+}
+const APIConstants = {
+  apiPages: {
+    login: "api/auth/login.php",
+    registration: "api/auth/register.php",
+    communities: "api/content/communities.php",
+    users: "api/content/users.php",
+  },
+  communityActions: {
+    types: {
+      community: "community",
+      post: "post",
+      comment: "comment",
+      subcomment: "subcomment",
+      page: "page"
+    },
+    staticTargets: {
+      edit: "edit"
+    }
+  }
+
+}
+const APICalls = {
+  createApiUrl: (path) => {
+    return new Url(path, window.location.href);
+  },
+  addUrlPageSelection: (url, page, maxPerPage) => {
+    if (page != null && maxPerPage != null) {
+      url.searchParams.append("page", page);
+      url.searchParams.append("maxPerPage", maxPerPage);
+    }
+  },
+  evaluateResponseCodeAction: (jsonModule) => {
+    switch (jsonModule.code) {
+      case "401":
+        document.dispatchEvent(new CustomEvent(APIEvents.unauthorizedEvent));
+      break;
+      case "409":
+        document.dispatchEvent(new CustomEvent(APIEvents.conflictEvent));
+      break;
+      default:
+        return;
+    }
+  },
+  postRequests: {
+    postDataToApi: async (postData, URI) => {
+      let postMsg = await fetch(window.location.href+URI, {
+        method: AJAXUtilities.HTTPMethods.POST,
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(postData)
+      });
+      let jsonContent = postMsg.json();
+      APICalls.evaluateResponseCodeAction(jsonContent.code);
+      return jsonContent;
+    },
+    sendAuthentication: async (registrationData, isLogin = false) => {
+      let authRequest = await APICalls.postDataToApi(registrationData, 
+        isLogin
+        ? "api/auth/login.php"
+        : "api/auth/registration.php");
+      return authRequest;
+    },
+    sendCommunityRequest: async (communityData, target = null) => {
+      let communityUrl = createApiUrl(APIConstants.apiPages.communities);
+      communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
+      if (target != null) {
+        communityUrl.searchParams.append("target", target);
+      }
+      let commentRequest = await APICalls.postDataToApi(postData, communityUrl);
+      return commentRequest;
+    },
+    sendPostRequest: async (postData, target = null) => {
+      let postUrl = createApiUrl(APIConstants.apiPages.communities);
+      postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
+      if (target != null) {
+        postUrl.searchParams.append("target", target);
+      }
+      let commentRequest = await APICalls.postDataToApi(postData, postUrl);
+      return commentRequest;
+    },
+    sendCommentRequest: async (commentData, target = null) => {
+      let commentUrl = createApiUrl(APIConstants.apiPages.communities);
+      commentUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
+      if (target != null) {
+        commentUrl.searchParams.append("target", target);
+      }
+      let commentRequest = await APICalls.postDataToApi(postData, commentUrl);
+      return commentRequest;
+    },
+    sendSubcommentRequest: async (subcommentData, target = null) => {
+      let subCommentUrl = createApiUrl(APIConstants.apiPages.communities);
+      subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
+      if (target != null) {
+        subCommentUrl.searchParams.append("target", target);
+      }
+      let commentRequest = await APICalls.postDataToApi(postData, subCommentUrl);
+      return commentRequest;
+    },
+    editCommunityRequest: async (communityData, target = null) => {
+
+    }
+  },
+  getRequests: {
+    getDataToApi: async (URI, getData = null) => {
+      let postMsg = await fetch(window.location.href+URI, {
+        method: AJAXUtilities.HTTPMethods.GET,
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: getData != null ? JSON.stringify(getData) : getData
+      });
+      let jsonContent = postMsg.json();
+      APICalls.evaluateResponseCodeAction(jsonContent.code);
+      return jsonContent;
+    },
+    getCommunitiesRequest: async (page = null, maxPerPage = null) => {
+      let communityUrl = createApiUrl(APIConstants.apiPages.communities);
+      communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
+      APICalls.addUrlPageSelection(page, maxPerPage);
+      let commentRequest = await APICalls.postDataToApi(postData, communityUrl);
+      return commentRequest;
+    },
+    getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
+      let postUrl = createApiUrl(APIConstants.apiPages.communities);
+      communityUrl.searchParams.append("type", APIConstants.communityActions.types.post);
+      APICalls.addUrlPageSelection(page, maxPerPage);
+      let commentRequest = await APICalls.postDataToApi(postData, postUrl);
+      return commentRequest;
+    },
+    getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
+      let commentUrl = createApiUrl(APIConstants.apiPages.communities);
+      communityUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
+      commentUrl.searchParams.append("target", targetPostId);
+      APICalls.addUrlPageSelection(page, maxPerPage);
+      let commentRequest = await APICalls.postDataToApi(postData, commentUrl);
+      return commentRequest;
+    },
+    getSubcommentsRequest: async (targetCommentId, page = null, maxPerPage = null) => {
+      let subCommentUrl = createApiUrl(APIConstants.apiPages.communities);
+      subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
+      subCommentUrl.searchParams.append("target", targetCommentId);
+      APICalls.addUrlPageSelection(page, maxPerPage);
+      let commentRequest = await APICalls.postDataToApi(postData, subCommentUrl);
+      return commentRequest;
+    }
+  }
+}
+
 const JSONUtils = {
   registration: {
     buildRegistration: (username, email, password, firstname = null, lastname = null,   //NOSONAR
-      gender = null, biography = null, personalwebsite = null, pfp = null, phonenumbers = []) => {
-      return {"username":username, "email":email, "password":password, "firstname":firstname,
-        "lastname":lastname, "gender":gender, "biography":biography,
-        "personalwebsite":personalwebsite, "pfp":pfp, "phonenumbers":phonenumbers};
+      gender = null, biography = null, personalwebsite = null, pfp = null, phonenumbers = null) => {
+      return {"username":username, "email":email, "password":password,
+        "firstname":firstname, "lastname":lastname, "gender":gender,
+        "biography":biography, "personalwebsite":personalwebsite,
+        "pfp":pfp,
+        "phonenumbers":phonenumbers};
     }
   },
   login: {
@@ -166,7 +324,27 @@ const JSONUtils = {
   },
   post: {
     buildPost: () => {}
-  }
+  },
+  pfp: {
+    encodePfp: file => {
+      return new Promise((completed, rejected) => {
+        let pfpReader = new FileReader(file);
+        pfpReader.readAsDataURL(file);
+        pfpReader.onload = () => {
+          completed(JSONUtils.pfp.buildPfp(btoa(pfpReader.result),
+            file.substring(file.lastIndexOf('.')+1, file.length) || file));
+        };
+        prpReader.onerror = () => {
+          rejected(new Error("Selected file is not convertible!"));
+        }
+      });
+    },
+    buildPfp: (image = null, format = null) => {
+      return image == null || format == null
+        ? null
+        : {"image":image, "format":format};
+    }
+  },
 }
 
 let sharedCache = new Map();
@@ -177,7 +355,7 @@ class PageLoader {
   base;
   remainingAmount;
 
-  constructor (base, remainingAmount) {
+  constructor (base, remainingAmount = 0) {
     this.base = base;
     this.remainingAmount = remainingAmount;
   }
