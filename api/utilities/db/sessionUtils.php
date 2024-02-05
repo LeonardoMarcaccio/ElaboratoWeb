@@ -44,9 +44,9 @@
         DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
     }
 
-    $username = $statement->get_result();
+    $username = mysqli_fetch_assoc($statement->get_result());
 
-    return ($username !== null) ? $username : false;
+    return ($username !== null) ? $username["Username"] : false;
   }
 
   function deleteOldTokens(mysqli $database, $ttlToken) {

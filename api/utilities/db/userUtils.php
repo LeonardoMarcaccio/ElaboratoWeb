@@ -36,6 +36,7 @@
     }
     return $completeFriendList;
   }
+
   function getFriendNames($username, mysqli $database) {
     $query = $database->prepare("SELECT Fri_Username FROM friendship WHERE Username=? LIMIT 1");
     $query->bind_param("s", $username);
@@ -58,7 +59,7 @@
   }
 
   function monodirectionalFriendshipCheck($queryingUser, $queriedUser, mysqli $database) {
-    $statement = $database->prepare("SELECT COUNT(*) FROM friendship WHERE Fri_Username = ? AND Username = ?");
+    $statement = $database->prepare("SELECT COUNT(*) AS val FROM friendship WHERE Fri_Username = ? AND Username = ?");
     $statement->bind_param("ss", $queriedUser, $queryingUser);
     if (!$statement->execute()) {
       throw new ApiError("Internal Server Error", 500,                //NOSONAR
@@ -70,7 +71,9 @@
         throw new ApiError("Internal Server Error", 500,                
         DB_CONNECTION_ERROR, 500);
     }
-    return $count > 0;
+
+    $sol = mysqli_fetch_assoc($count);
+    return $sol["val"] > 0;
   }
 
   function checkInfoLevel($queryingUser, $username, mysqli $database) {
@@ -85,7 +88,7 @@
 
   function addFriend($friendingUser, $friendedUser, mysqli $database) {
     $query = $database->prepare("INSERT INTO friendship (Fri_Username, Username) VALUES (?, ?)");
-    $query->bind_param($friendedUser, $friendingUser);
+    $query->bind_param("ss", $friendedUser, $friendingUser);
     if (!$query->execute()) {
       throw new ApiError("Internal Server Error", 500,                //NOSONAR
       DB_CONNECTION_ERROR, 500);
@@ -94,7 +97,7 @@
 
   function removeFriend($friendingUser, $friendedUser, mysqli $database) {
     $query = $database->prepare("DELETE FROM friendship WHERE Fri_Username = ? AND Username = ?");
-    $query->bind_param($friendedUser, $friendingUser);
+    $query->bind_param("ss", $friendedUser, $friendingUser);
     if (!$query->execute()) {
       throw new ApiError("Internal Server Error", 500,                //NOSONAR
       DB_CONNECTION_ERROR, 500);
@@ -116,7 +119,7 @@
     $target = getUsernameByToken($_COOKIE['token'], $database);
     foreach ($dbNames as $dbEntry => $dbValue) {
       $preparedQuery = $database->prepare("UPDATE user SET $dbEntry = ? WHERE Username = ?");
-      $preparedQuery->bind_param("ss", $dbEntry, $dbValue, $target);
+      $preparedQuery->bind_param("ss", $dbValue, $target);
       if (!$preparedQuery->execute()) {
         throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
       }

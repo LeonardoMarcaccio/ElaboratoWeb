@@ -2,13 +2,20 @@
 
     function createCommunity($requestBody, mysqli $database) {
         $communityBody = jsonToCommunity($requestBody);
+        $name = $communityBody->getCommunityName();
+        //print_r($name);
+        $image = $communityBody->getCommunityImage();
+        //print_r($image);
+        $description = $communityBody->getCommunityDescription();
+        print_r($description);
+        $username = getUsernameByToken($_COOKIE["token"],$database);
         $statement = $database->prepare("INSERT INTO community (Name, Image, Description, Username) VALUES (?, ?, ?, ?)");
         $statement->bind_param(
             "ssss",
-            $communityBody->getCommunityName(),
-            $communityBody->getCommunityImage(),
-            $communityBody->getCommunityDescription(),
-            getUsernameByToken($_COOKIE["token"],$database)
+            $name,
+            $image,
+            $description,
+            $username
         );
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
