@@ -11,8 +11,8 @@ use function PHPSTORM_META\type;
   define("USER_FRIEND", 0);
   define("USER_FRIEND_PENDING", 0);
   define("USER_STRANGER", 0);
-  define("USER_CONTENT_FOLDER", 0);
-  define("SUPPORTED_IMAGE_FORMATS", ["jpg", "png", "gif", "webp"]);
+  define("USER_CONTENT_FOLDER", $_SERVER['DOCUMENT_ROOT'] . "/media/users/");
+  define("SUPPORTED_IMAGE_FORMATS", array("jpg", "png", "gif", "webp"));
 
   function jsonToImage($jsonObject) {
     if ($jsonObject !== null) {
@@ -138,8 +138,8 @@ use function PHPSTORM_META\type;
   }
 
   function decodeAndStoreImage($image, $prefix = "img-") {
-    if (gettype($image) === "EncodedImage") {
-      if (!in_array(SUPPORTED_IMAGE_FORMATS, $image->getExtension())) {
+    if (is_a($image, 'EncodedImage')) {
+      if (!in_array($image->getExtension(), SUPPORTED_IMAGE_FORMATS)) {
         return null;
       }
       $decodedImage = base64_decode($image->getEncodedImageString());
@@ -155,7 +155,6 @@ use function PHPSTORM_META\type;
       file_put_contents($fullFilePath, $decodedImage);
       return $fullFilePath;
     }
-
     return null;
   }
 
