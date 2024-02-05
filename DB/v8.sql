@@ -26,7 +26,7 @@ create table Answer (
 
 create table Comment (
      CommentID int not null AUTO_INCREMENT,
-     Date date not null,
+     Date varchar(50) not null,
      Content varchar(500) not null,
      Username varchar(50) not null,
      constraint IDComment_ID primary key (CommentID));
@@ -51,13 +51,13 @@ create table `Join` (
 create table Message (
      Username varchar(50) not null,
      Fri_Username varchar(50) not null,
-     Timestamp date not null,
+     Timestamp varchar(50) not null,
      Text varchar(500) not null,
      constraint IDMessage primary key (Username, Fri_Username, Timestamp));
 
 create table Post (
      PostID int not null AUTO_INCREMENT,
-     Date date not null,
+     Date varchar(50) not null,
      Content varchar(500) not null,
      Likes int default 0 not null,
      Title varchar(50) not null,
@@ -68,7 +68,7 @@ create table Post (
 
 create table Sessione (
      Token varchar(50) not null,
-     Date date not null,
+     Date varchar(50) not null,
      Username varchar(50) not null,
      constraint IDSessione primary key (Token));
 
