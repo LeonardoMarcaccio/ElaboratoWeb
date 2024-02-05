@@ -66,7 +66,6 @@
     }
     
     $count = $statement->get_result();
-    echo $count;
     if (mysqli_num_rows($count) === 0) {
         throw new ApiError("Internal Server Error", 500,                
         DB_CONNECTION_ERROR, 500);
@@ -121,5 +120,31 @@
       if (!$preparedQuery->execute()) {
         throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
       }
+    }
+  }
+
+  function getLoggedUser($username, $password, mysqli $database) {
+    $query = $database->prepare("SELECT * FROM user WHERE Username=? AND Password=? LIMIT 1");
+    $query->bind_param("ss", $username, $password);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                  //NOSONAR
+      DB_CONNECTION_ERROR, 500);
+    }
+    
+    $resultingUser = mysqli_fetch_assoc($query->get_result());
+    if ($resultingUser === null) {
+      return $resultingUser;
+    } else {
+      return new UserData(
+        $resultingUser['Username'],
+        $resultingUser['Email'],
+        $resultingUser['Password'],
+        $resultingUser['FirstName'],
+        $resultingUser['LastName'],
+        $resultingUser['Gender'],
+        $resultingUser['Biography'],
+        $resultingUser['PersonalWebsite'],
+        $resultingUser['Pfp'],
+        $resultingUser['Phonenumbers']);
     }
   }

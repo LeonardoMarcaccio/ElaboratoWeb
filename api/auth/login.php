@@ -8,7 +8,8 @@
     assertRequestMatch('POST');
     $usrObj = jsonToLogin(file_get_contents("php://input"));
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
-    $queriedUser = getUser($usrObj->getUsername(), $database);
+    $password = password_hash($usrObj->getPassword(), PASSWORD_DEFAULT);
+    $queriedUser = getLoggedUser($usrObj->getUsername(), $password, $database);
     if ($queriedUser !== false) {
       if (isset($_COOKIE["token"])
         && checkTokenValidity($_COOKIE["token"], $database)) {

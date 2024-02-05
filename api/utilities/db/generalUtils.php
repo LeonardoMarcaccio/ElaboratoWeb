@@ -1,5 +1,5 @@
 <?php
-  define("DEFAULT_TOKEN_TTL",  time() + 36000);
+  define("DEFAULT_TOKEN_TTL", 36000);
 
   function isValueInColumn($table, $columnName, $value, mysqli $database) {
     $statement = $database->prepare("SELECT COUNT(*) FROM $table WHERE $columnName = ?");
