@@ -34,6 +34,7 @@ let mainGlobalVariables = {
     nav: null,
     footer: null,
     contentShaper: null,
+    contentHolder: null,
     currentPageLoc: null
   },
   dynamicElements: {
@@ -66,14 +67,22 @@ async function mainPageInit() {
   // Main content page generation
   mainGlobalVariables.page.mainContentPage = document.createElement("div");
   mainGlobalVariables.page.mainContentPage.id = "main-content-page";
-  mainGlobalVariables.page.mainContentPage.appendChild(
+  
+  // Content holder page generation
+  mainGlobalVariables.page.contentHolder = document.createElement("div");
+  mainGlobalVariables.page.contentHolder.id = "content-holder";
+  mainGlobalVariables.page.contentHolder.appendChild(
+    mainGlobalVariables.page.mainContentPage);
+  mainGlobalVariables.page.contentHolder.appendChild(
     mainGlobalVariables.page.footer);
+  
+  documentUtilities.addScriptFile("./components/nav/nav.js");
+  mainGlobalVariables.page.contentShaper.insertBefore(mainGlobalVariables.page.contentHolder,
+    mainGlobalVariables.page.nav);
+
   mainGlobalVariables.dynamicElements.loadingBanner =
     document.getElementById("loading-banner");
   mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
-  documentUtilities.addScriptFile("./components/nav/nav.js");
-  mainGlobalVariables.page.contentShaper.insertBefore(mainGlobalVariables.page.mainContentPage,
-    mainGlobalVariables.page.nav);
 }
 
 document.body.onload = () => {
