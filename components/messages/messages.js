@@ -6,7 +6,7 @@ function loadChat() {
     user.disabled = true;
     user.className = "user-title";
     user.id = "user-dm";
-    mainGlobalVariables.page.contentShaper.insertBefore(user, mainGlobalVariables.page.mainContentPage);
+    mainGlobalVariables.page.mainContentPage.parentNode.insertBefore(user, mainGlobalVariables.page.mainContentPage);
     
     for (let i=0; i<messageCount; i++) {
         let tmp = document.createElement("textarea");
