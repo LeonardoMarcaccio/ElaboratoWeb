@@ -12,7 +12,8 @@
       $result = $result || (strlen($stringToCheck) < $maximumLength);
     }
     if ($mustNotMatchRegex !== null) {
-      $result = $result || (preg_match($mustNotMatchRegex, $stringToCheck) !== false);
+      $pregMatchRes = preg_match($mustNotMatchRegex, $stringToCheck);
+      $result = $result || ($pregMatchRes !== 1 && $pregMatchRes !== false);
     }
     return $result;
   }

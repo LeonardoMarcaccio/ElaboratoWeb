@@ -4,17 +4,61 @@
   function getUser($username, mysqli $database) {
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
     $query->bind_param("s", $username);
-    if ($query->execute()) {
-      $resultingUser = mysqli_fetch_assoc($query->get_result());
-      return $resultingUser !== null ? $resultingUser : false;
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                  //NOSONAR
+      DB_CONNECTION_ERROR, 500);
     }
-    throw new ApiError("Internal Server Error", 500,                  //NOSONAR
-    DB_CONNECTION_ERROR, 500);
+    $resultingUser = mysqli_fetch_assoc($query->get_result());
+    if ($resultingUser === null) {
+      return $resultingUser;
+    } else {
+      return new UserData(
+        $resultingUser['UserName'],
+        $resultingUser['Email'],
+        $resultingUser['Password'],
+        $resultingUser['FirstName'],
+        $resultingUser['LastName'],
+        $resultingUser['Gender'],
+        $resultingUser['Biography'],
+        $resultingUser['PersonalWebsite'],
+        $resultingUser['Pfp'],
+        $resultingUser['Phonenumbers']);
+    }
   }
 
-  function areFriends($user1, $user2, mysqli $database) {
-    $statement = $database->prepare("SELECT COUNT(*) FROM friendship WHERE (Fri_Username = ? AND Username = ?) OR (Fri_Username = ? AND Username = ?)");
-    $statement->bind_param("ssss", $user1, $user2, $user2, $user1);
+  function getFriendList($username, mysqli $database) {
+    $friends = getFriendNames($username, $database);
+    $completeFriendList = array();
+    foreach ($friends as $singleFriend) {
+      array_push($completeFriendList,
+        filterInfoLevel(getUser($singleFriend, $database), USER_FRIEND));
+    }
+    return $completeFriendList;
+  }
+  function getFriendNames($username, mysqli $database) {
+    $query = $database->prepare("SELECT Fri_Username FROM friendship WHERE Username=? LIMIT 1");
+    $query->bind_param("s", $username);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                  //NOSONAR
+      DB_CONNECTION_ERROR, 500);
+    }
+    $friendsArray = array();
+    $resultingUser = mysqli_fetch_assoc($query->get_result());
+    while ($resultingUser !== null) {
+      array_push($resultingUser);
+      $resultingUser = mysqli_fetch_assoc($query->get_result());
+    }
+    return $friendsArray;
+  }
+
+  function areFriends($queryingUser, $queriedUser, mysqli $database) {
+    return monodirectionalFriendshipCheck($queryingUser, $queriedUser, $database)
+      && monodirectionalFriendshipCheck($queriedUser, $queryingUser, $database);    //NOSONAR
+  }
+
+  function monodirectionalFriendshipCheck($queryingUser, $queriedUser, mysqli $database) {
+    $statement = $database->prepare("SELECT COUNT(*) FROM friendship WHERE Fri_Username = ? AND Username = ?");
+    $statement->bind_param("ss", $queriedUser, $queryingUser);
     if (!$statement->execute()) {
       throw new ApiError("Internal Server Error", 500,                //NOSONAR
       DB_CONNECTION_ERROR, 500);
@@ -31,6 +75,24 @@
       return areFriends($queryingUser, $username, $database)
       ? USER_FRIEND
       : USER_STRANGER;
+    }
+  }
+
+  function addFriend($friendingUser, $friendedUser, mysqli $database) {
+    $query = $database->prepare("INSERT INTO friendship (Fri_Username, Username) VALUES (?, ?)");
+    $query->bind_param($friendedUser, $friendingUser);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                //NOSONAR
+      DB_CONNECTION_ERROR, 500);
+    }
+  }
+
+  function removeFriend($friendingUser, $friendedUser, mysqli $database) {
+    $query = $database->prepare("DELETE FROM friendship WHERE Fri_Username = ? AND Username = ?");
+    $query->bind_param($friendedUser, $friendingUser);
+    if (!$query->execute()) {
+      throw new ApiError("Internal Server Error", 500,                //NOSONAR
+      DB_CONNECTION_ERROR, 500);
     }
   }
 

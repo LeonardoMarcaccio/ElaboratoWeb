@@ -1,4 +1,8 @@
 <?php
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/postUtils.php";     //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/sessionUtils.php";  //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/jsonutils.php";        //NOSONAR
+
   define("DEFAULT_PAGE_SIZE", 5);
   define("DEFAULT_PAGE_INDEX", 0);
 
@@ -125,16 +129,6 @@
       throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
         DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
     }
-  }
-
-  function modifyPost($requestBody, mysqli $database) {
-    $commentBody = jsonToComment($requestBody);
-    $statement = $database->prepare("UPDATE comment SET Date = NOW(), Content = ? WHERE CommentID = ?");
-    $statement->bind_param(
-      "ss",
-      $commentBody->getContent(),
-      $commentBody->getID()
-    );
   }
   
   /*Cognitive complexity of this function is higher than 15, however

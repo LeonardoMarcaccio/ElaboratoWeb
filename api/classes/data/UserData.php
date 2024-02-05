@@ -9,10 +9,12 @@
     private $personalWebsite;     // Non Essential
     private $pfp;                 // Non Essential
     private $phoneNumbers;        // Non Essential
+    private $id;
 
     public function __construct(  //NOSONAR
-      $username, $email, $password, $firstName,
-      $lastName, $gender, $biography, $personalWebsite, $pfp, $phoneNumbers) {
+      $username = null, $email = null, $password = null, $firstName = null,
+      $lastName = null, $gender = null, $biography = null,$personalWebsite = null,
+      $pfp = null, $phoneNumbers = null, $id = null) {
       parent::__construct($username, $email, $password);
       $this->firstName = $firstName;
       $this->lastName = $lastName;
@@ -21,6 +23,7 @@
       $this->personalWebsite = $personalWebsite;
       $this->pfp = $pfp;
       $this->phoneNumbers = $phoneNumbers;
+      $this->id = $id;
     }
 
     public function getFirstName() {
@@ -64,5 +67,11 @@
     }
     public function setPhoneNumbers($phoneNumbers) {
       $this->phoneNumbers = $phoneNumbers;
+    }
+    public function getId() {
+      return $this->id;
+    }
+    public function setId($id) {
+      $this->id = $id;
     }
   }

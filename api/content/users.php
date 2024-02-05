@@ -1,21 +1,23 @@
 <?php
-  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utility/jsonhelper.php';             //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utilities/jsonutils.php';             //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utilities/db/sessionUtils.php';             //NOSONAR
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
     if (!isset($_COOKIE["token"])
-      || !checkTokenValidity($_COOKIE["token"],
-        getNicknameByToken($_COOKIE["token"], $database), $database)) {
+      || !checkTokenValidity($_COOKIE["token"], $database)) {
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
-    $user = getNicknameByToken($_COOKIE["token"], $database);
+    $user = getUsernameByToken($_COOKIE["token"], $database);
     switch($_SERVER['REQUEST_METHOD']) {
       case 'POST':
         userPostRequest($database, $user);
       break;
       case 'GET':
-       userGetRequest($database, $user);
+        userGetRequest($database, $user);
       break;
+      default:
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
     exit();
   } catch (ApiError $thrownError) {
@@ -31,14 +33,16 @@
     $usrObj = jsonToLogin(file_get_contents("php://input"));
     switch($_SERVER['type']) {
       case "friend":
-        //addFriend($usrObj->getUsername(), $user, $database);
+        addFriend($user, $_GET["target"], $database);
       break;
       case "unfriend":
-        //removeFriend($usrObj->getUsername(), $user, $database);
+        removeFriend($user, $_GET["target"], $database);
       break;
       case "edit":
-        //updateUserInfo($tokenUser, $userObject, $database);
+        updateUser($usrObj, $database);
       break;
+      default:
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
   }
 
@@ -47,28 +51,17 @@
       && !isset($_SERVER['target'])) {
       throw new ApiError("Bad Request", 400);
     }
+    $result = null;
     switch($_SERVER['type']) {
       case "friendlist":
-        //$friendList = gatherFriendList($user, $database);
+        $result = getFriendList($user, $database);
       break;
       case "userinfo":
-        //$friendList = gatherFriendList($user, $database);
+        $result = filterInfoLevel(getUser($user, $database),
+          checkInfoLevel($user, $_GET['target'], $database));
       break;
+      default:
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
-  }
-
-  function addFriend($usernameToFriend, $user, $database) {
-
-  }
-
-  function removeFriend($usernameToUnfriend, $user, $database) {
-
-  }
-
-  function gatherFriendList($user, $database) {
-
-  }
-
-  function editUserInfo($tokenUser, $userObject, $database) {
-
+    return $result;
   }

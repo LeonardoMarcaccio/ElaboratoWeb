@@ -6,8 +6,22 @@
 
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);
+  define("USER_FRIEND_PENDING", 0);
   define("USER_STRANGER", 0);
   define("USER_CONTENT_FOLDER", 0);
+  define("SUPPORTED_IMAGE_FORMATS", ["jpg", "png", "gif", "webp"]);
+
+  function jsonToImage($jsonString) {
+    $assArray = json_decode($jsonString, true);
+    if ($assArray !== null) {
+      return new EncodedImage(
+        attemptValExtraction($assArray, 'image'),
+        attemptValExtraction($assArray, 'format')
+      );
+    } else {
+      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+    }
+  }
 
   function jsonToRegistration($jsonString) {
     $assArray = json_decode($jsonString, true);
@@ -21,7 +35,7 @@
         attemptValExtraction($assArray, 'gender'),
         attemptValExtraction($assArray, 'biography'),
         attemptValExtraction($assArray, 'personalwebsite'),
-        getImageIfValid(attemptValExtraction($assArray, 'pfp')),
+        decodeAndStoreImage(attemptValExtraction($assArray, 'pfp')),
         attemptValExtraction($assArray, 'phonenumbers'));
     } else {
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
@@ -42,7 +56,7 @@
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
       $communityName = attemptValExtraction($assArray, 'name');
-      $communityImage = attemptValExtraction($assArray, 'image');
+      $communityImage = decodeAndStoreImage(attemptValExtraction($assArray, 'image'));
       $communityDescription = attemptValExtraction($assArray, 'description');
       return new Community($communityName, $communityDescription, $communityImage);
     } else {
@@ -58,7 +72,7 @@
       $postTitle = attemptValExtraction($assArray, 'title');
       $postName = attemptValExtraction($assArray, 'name');
       $postUsername = attemptValExtraction($assArray, 'username');
-      $postImageUrl = getImageIfValid(attemptValExtraction($assArray, 'image'));    // TODO: Conversion to image!!!!
+      $postImageUrl = decodeAndStoreImage(attemptValExtraction($assArray, 'image'));
       $postId = attemptValExtraction($assArray, 'id');
       return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
     } else {
@@ -94,15 +108,24 @@
       case USER_SELF:                                                 //NOSONAR
         $userJson->firstname = $userContainer->getFirstName();
         $userJson->lastname = $userContainer->getLastName();
+        $userJson->friendship = "self";
       case USER_FRIEND:                                               //NOSONAR
         $userJson->phonenumbers = $userContainer->getPhoneNumbers();
         $userJson->email = $userContainer->getEmail();
+        $userJson->friendship = "friends";
+      case USER_FRIEND_PENDING:                                       //NOSONAR
+        $userJson->friendship = isset($userJson->friendship)
+          ? $userJson->friendship
+          : "pending";
       case USER_STRANGER:
         $userJson->pfp = $userContainer->getPfp();
         $userJson->gender = $userContainer->getGender();
         $userJson->username = $userContainer->getUsername();
         $userJson->biography = $userContainer->getBiography();
         $userJson->personalwebsite = $userContainer->getPersonalWebsite();
+        $userJson->friendship = isset($userJson->friendship)
+          ? $userJson->friendship
+          : "no";
     }
     return $userJson;
   }
@@ -114,7 +137,13 @@
   }
 
   function decodeAndStoreImage(EncodedImage $image, $prefix = "img-") {
+    if ($image === null || !in_array(SUPPORTED_IMAGE_FORMATS, $image->getExtension())) {
+      return null;
+    }
     $decodedImage = base64_decode($image->getEncodedImageString());
+    if ($decodedImage === null) {
+      return $decodedImage;
+    }
     $fileId = null;
     $fullFilePath = null;
     do {
@@ -126,7 +155,7 @@
   }
 
   function getImageIfValid($imgJson) {
-    if($imgJson === False) {
+    if($imgJson === false) {
       $image = attemptValExtraction($imgJson, 'image');
       $extension = attemptValExtraction($imgJson, 'extension');
       $imgUrl = decodeAndStoreImage(new EncodedImage($image, $extension));
