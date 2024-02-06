@@ -564,30 +564,33 @@ class CommentBuilder {
   count = 0;
   defaultImage = "./media/users/placeholder.webp";
   IDPrefix = "";
-  
+
   constructor (IDPrefix) {
       this.IDPrefix = IDPrefix;
   }
 
-  makeComment(userString, contentString, userPfp) {
+  makeComment(userString, contentString, userPfp, dateString, numSubComments = "", id, isSub = false) {
+    let container = document.createElement("div");
     let comment = document.createElement("article");
     let head = document.createElement("div");
     let user = document.createElement("h1");
+    let date = document.createElement("h2");
     let content = document.createElement("p");
     let pfp = document.createElement("img");
     let buttons = document.createElement("nav");
     let like = document.createElement("button");
     let dislike = document.createElement("button");
-    let reply = document.createElement("button");
-
+    
     comment.id = this.IDPrefix + "-comment-" + this.count++;
-    comment.className = "post";
+    comment.className = "comment";
     comment.style.margin = "10px";
     head.style.display = "flex";
     head.style.gap = "10px";
     user.innerText = userString;
     user.style.marginBlockStart = "0px";
     user.style.marginBlockEnd = "0px";
+    date.innerText = dateString;
+    date.style.fontSize = "80%";
     content.innerText = contentString;
     content.style.textAlign = "left";
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
@@ -595,18 +598,66 @@ class CommentBuilder {
     pfp.style.maxWidth = "2%";
     like.innerText = "Like";
     dislike.innerText = "Dislike";
-    reply.innerText = "Reply";
-
+    
+    
+    container.appendChild(comment);
     comment.appendChild(head);
     head.appendChild(pfp);
     head.appendChild(user);
+    head.appendChild(date);
     comment.appendChild(content);
     comment.appendChild(buttons);
     buttons.appendChild(like);
     buttons.appendChild(dislike);
-    buttons.appendChild(reply);
 
-    return comment;
+    if (!isSub) {
+      let reply = document.createElement("button");
+      reply.innerText = "Reply";
+      const bar = document.createElement("form");
+      let flag = true;
+      reply.onclick = () => {
+        if (reply.innerText == "Reply") {
+          reply.innerText = "Undo";
+          if (flag) {
+            flag = false;
+            let input = document.createElement("textarea");
+            let send = document.createElement("input");
+            
+            bar.style.display = "flex";
+            input.placeholder = "Reply";
+            input.style.resize = "none";
+            input.style.width = "300px";
+            send.type = "button";
+            send.value = "Send";
+            bar.appendChild(input);
+            bar.appendChild(send);
+            send.onclick = () => {
+              APICalls.postRequests.sendSubcommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.innerText, APICalls.getRequests.getUser(), 0]));
+            }
+          }
+          container.appendChild(bar);
+        } else {
+          reply.innerText = "Reply";
+          container.removeChild(bar);
+        }
+      };
+      buttons.appendChild(reply);
+    }
+    if (numSubComments !== 0) {
+      let thread = document.createElement("button");
+      thread.innerText = "See " + numSubComments + " replies";
+      buttons.appendChild(thread);
+      thread.onclick = () => {
+        buttons.removeChild(thread);
+        let replies = APICalls.getRequests.getSubcommentsRequest(id, 0, 100);
+        for (let i in replies) {
+          tmp = replies[i];
+          container.appendChild(this.makeComment(tmp.username, tmp.content, null, tmp.date, 0, tmp.id, true));
+        }
+      };
+    }
+
+    return container;
   }
 }
 
@@ -623,6 +674,6 @@ const JSONBuilder = {
         tmp += ('"' + fieldArray[i] + '" : ' + valueArray[i] + ((i != limit) ? ', ' : '}'));
       }
     }
-    return tmp;
+    return JSON.parse(tmp);
   }
 }
