@@ -26,7 +26,7 @@ create table Answer (
 
 create table Comment (
      CommentID int not null AUTO_INCREMENT,
-     Date varchar(50) not null,
+     Date date not null,
      Content varchar(500) not null,
      Username varchar(50) not null,
      constraint IDComment_ID primary key (CommentID));
@@ -51,13 +51,13 @@ create table `Join` (
 create table Message (
      Username varchar(50) not null,
      Fri_Username varchar(50) not null,
-     Timestamp varchar(50) not null,
+     Timestamp date not null,
      Text varchar(500) not null,
      constraint IDMessage primary key (Username, Fri_Username, Timestamp));
 
 create table Post (
      PostID int not null AUTO_INCREMENT,
-     Date varchar(50) not null,
+     Date date not null,
      Content varchar(500) not null,
      Likes int default 0 not null,
      Title varchar(50) not null,
@@ -72,19 +72,14 @@ create table Sessione (
      Username varchar(50) not null,
      constraint IDSessione primary key (Token));
 
-create table Tags (
-     TagID int not null,
-     Value varchar(15) not null,
-     constraint IDTags primary key (TagID));
-
 create table User (
      Username varchar(50) not null,
      Email varchar(30) not null,
-     Password varchar(30) not null,
+     Password varchar(60) not null,
      FirstName varchar(30),
      LastName varchar(30),
      Gender varchar(20),
-     Biography varchar(20),
+     Biography varchar(500),
      PersonalWebsite varchar(100),
      Pfp varchar(2083),
      Phonenumbers varchar(15),
@@ -95,11 +90,6 @@ create table SubComment (
      Sub_CommentID int not null,
      CommentID int not null,
      constraint FKSub_ID primary key (Sub_CommentID));
-
-create table Tagged (
-     PostID int not null,
-     TagID int not null,
-     constraint FKTag_Pos_ID primary key (PostID));
 
 create table Vote (
      PostID int not null,
@@ -181,14 +171,6 @@ alter table SubComment add constraint FKOrigin
 alter table SubComment add constraint FKSub_FK
      foreign key (Sub_CommentID)
      references Comment (CommentID);
-
-alter table Tagged add constraint FKTag_Pos_FK
-     foreign key (PostID)
-     references Post (PostID);
-
-alter table Tagged add constraint FKTag_Tag
-     foreign key (TagID)
-     references Tags (TagID);
 
 alter table Vote add constraint FKVot_Use
      foreign key (Username)
