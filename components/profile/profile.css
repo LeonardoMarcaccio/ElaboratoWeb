@@ -1,3 +1,10 @@
+.user-profile-image-box {
+    height: 100%;
+}
+.user-profile-image-box > img {
+    height: 100%;
+}
+
 #page-profile {
     display: flex;
     flex-direction: row;

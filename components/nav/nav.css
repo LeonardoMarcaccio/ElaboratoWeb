@@ -65,6 +65,7 @@ nav > div > button:disabled,#nav-post:disabled {
   }
   nav > div > button,#nav-post {
     background: transparent;
+    transition: 500ms;
   }
   nav > div > button:hover,#nav-post:hover {
     border-radius: 10px;
