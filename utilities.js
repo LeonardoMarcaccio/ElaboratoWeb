@@ -178,7 +178,7 @@ const APIConstants = {
 }
 const APICalls = {
   createApiUrl: (path) => {
-    return new Url(path, window.location.href);
+    return new URL(path, window.location.href);
   },
   addUrlPageSelection: (url, page, maxPerPage) => {
     if (page != null && maxPerPage != null) {
@@ -199,7 +199,7 @@ const APICalls = {
     }
   },
   postRequests: {
-    postDataToApi: async (URI, postData = null) => {
+    postDataToApi: async (postData = null, URI) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
@@ -220,39 +220,39 @@ const APICalls = {
       return authRequest;
     },
     sendCommunityRequest: async (communityData, target = null) => {
-      let communityUrl = createApiUrl(APIConstants.apiPages.communities);
+      let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       if (target != null) {
         communityUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postDataToApi(postData, communityUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(communityData, communityUrl);
       return commentRequest;
     },
     sendPostRequest: async (postData, target = null) => {
-      let postUrl = createApiUrl(APIConstants.apiPages.communities);
+      let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
       if (target != null) {
         postUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postDataToApi(postData, postUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(postData, postUrl);
       return commentRequest;
     },
     sendCommentRequest: async (commentData, target = null) => {
-      let commentUrl = createApiUrl(APIConstants.apiPages.communities);
+      let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       commentUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       if (target != null) {
         commentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postDataToApi(postData, commentUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(postData, commentUrl);
       return commentRequest;
     },
     sendSubcommentRequest: async (subcommentData, target = null) => {
-      let subCommentUrl = createApiUrl(APIConstants.apiPages.communities);
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       if (target != null) {
         subCommentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postDataToApi(postData, subCommentUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(postData, subCommentUrl);
       return commentRequest;
     },
     editCommunityRequest: async (communityData, target = null) => {
@@ -260,7 +260,7 @@ const APICalls = {
     }
   },
   getRequests: {
-    getDataToApi: async (URI, getData = null) => {
+    getDataToApi: async (getData = null, URI) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.GET,
         cache: "no-cache",
@@ -274,33 +274,33 @@ const APICalls = {
       return jsonContent;
     },
     getCommunitiesRequest: async (page = null, maxPerPage = null) => {
-      let communityUrl = createApiUrl(APIConstants.apiPages.communities);
+      let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.getDataToApi(postData, communityUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(postData, communityUrl);
       return commentRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
-      let postUrl = createApiUrl(APIConstants.apiPages.communities);
-      communityUrl.searchParams.append("type", APIConstants.communityActions.types.post);
+      let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.getDataToApi(postData, postUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(targetCommunityId, postUrl);
       return commentRequest;
     },
     getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
-      let commentUrl = createApiUrl(APIConstants.apiPages.communities);
+      let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       commentUrl.searchParams.append("target", targetPostId);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.getDataToApi(postData, commentUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(postData, commentUrl);
       return commentRequest;
     },
     getSubcommentsRequest: async (targetCommentId, page = null, maxPerPage = null) => {
-      let subCommentUrl = createApiUrl(APIConstants.apiPages.communities);
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       subCommentUrl.searchParams.append("target", targetCommentId);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.getDataToApi(postData, subCommentUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(postData, subCommentUrl);
       return commentRequest;
     }
   }
@@ -455,5 +455,174 @@ class ButtonHandler {
         }
       })
     }
+  }
+}
+
+class PostBuilder {
+  count = 0;
+  defaultPfp = "./media/users/placeholder.webp";
+  IDPrefix = "";
+
+  constructor (IDPrefix) {
+      this.IDPrefix = IDPrefix;
+  }
+
+  makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg) {
+      let post = document.createElement("article");
+      let head = document.createElement("div");
+      let userImage = document.createElement("img");
+      let title = document.createElement("h1");
+      let srcCommunity = document.createElement("h2");
+      let paragraph = document.createElement("p");
+      let buttons = document.createElement("nav");
+      let like = document.createElement("button");
+      let dislike = document.createElement("button");
+      let comment = document.createElement("button");
+      
+
+      post.id = this.IDPrefix + "-post-" + this.count++;
+      post.className = "post";
+      post.style.margin = "10px";
+      head.style.display = "flex";
+      head.style.gap = "10px";
+      userImage.src = userPfp != null ? userPfp : this.defaultPfp;
+      userImage.style.aspectRatio = "1/1";
+      userImage.style.width = "2%";
+      title.innerText = titleString;
+      title.style.marginBlockStart = "0px";
+      title.style.marginBlockEnd = "0px";
+      srcCommunity.innerText = "by " + userString + ", from " + srcCommunityString;
+      srcCommunity.style.fontSize = "80%";
+      paragraph.innerText = paragraphString;
+      paragraph.style.textAlign = "left";
+      like.innerText = "Like";
+      dislike.innerText = "Dislike";
+      comment.innerText = "Comment";
+
+      post.appendChild(head);
+      head.appendChild(userImage);
+      head.appendChild(title);
+      post.appendChild(srcCommunity);
+      if (postImg != null) {
+          let postImage = document.createElement("img");
+          postImage.src = postImg;
+          post.appendChild(postImage);
+      }
+      post.appendChild(paragraph);
+      post.appendChild(buttons);
+      buttons.appendChild(like);
+      buttons.appendChild(dislike);
+      buttons.appendChild(comment);
+      
+      return post;
+  }
+}
+
+class CommunityBuilder {
+  count = 0;
+  defaultImage = "./media/users/placeholder.webp";
+  IDPrefix = "";
+  
+  constructor (IDPrefix) {
+      this.IDPrefix = IDPrefix;
+  }
+  
+  makeCommunity(titleString, descString, commImg) {
+      let community = document.createElement("article");
+      let head = document.createElement("div");
+      let image = document.createElement("img");
+      let title = document.createElement("h1");
+      let follow = document.createElement("button");
+      let desc = document.createElement("p");
+      
+      community.id = this.IDPrefix + "-community-" + this.count++;
+      community.className = "community";
+      community.style.margin = "10px";
+      head.style.display = "flex";
+      head.style.gap = "10px";
+      image.src = commImg != null ? commImg : this.defaultImage;
+      image.style.aspectRatio = "1/1";
+      image.style.maxWidth = "2%";
+      title.innerText = titleString;
+      title.style.marginBlockStart = "0px";
+      title.style.marginBlockEnd = "0px";
+      follow.innerText = "Follow";
+      desc.innerText = descString;
+      desc.style.textAlign = "left";
+      
+      community.appendChild(head);
+      head.appendChild(image);
+      head.appendChild(title);
+      head.appendChild(follow);
+      community.appendChild(desc);
+      
+      return community;
+  }
+}
+
+class CommentBuilder {
+  count = 0;
+  defaultImage = "./media/users/placeholder.webp";
+  IDPrefix = "";
+  
+  constructor (IDPrefix) {
+      this.IDPrefix = IDPrefix;
+  }
+
+  makeComment(userString, contentString, userPfp) {
+    let comment = document.createElement("article");
+    let head = document.createElement("div");
+    let user = document.createElement("h1");
+    let content = document.createElement("p");
+    let pfp = document.createElement("img");
+    let buttons = document.createElement("nav");
+    let like = document.createElement("button");
+    let dislike = document.createElement("button");
+    let reply = document.createElement("button");
+
+    comment.id = this.IDPrefix + "-comment-" + this.count++;
+    comment.className = "post";
+    comment.style.margin = "10px";
+    head.style.display = "flex";
+    head.style.gap = "10px";
+    user.innerText = userString;
+    user.style.marginBlockStart = "0px";
+    user.style.marginBlockEnd = "0px";
+    content.innerText = contentString;
+    content.style.textAlign = "left";
+    pfp.src = userPfp != null ? userPfp : this.defaultImage;
+    pfp.style.aspectRatio = "1/1";
+    pfp.style.maxWidth = "2%";
+    like.innerText = "Like";
+    dislike.innerText = "Dislike";
+    reply.innerText = "Reply";
+
+    comment.appendChild(head);
+    head.appendChild(pfp);
+    head.appendChild(user);
+    comment.appendChild(content);
+    comment.appendChild(buttons);
+    buttons.appendChild(like);
+    buttons.appendChild(dislike);
+    buttons.appendChild(reply);
+
+    return comment;
+  }
+}
+
+const JSONBuilder = {
+  build(fieldArray, valueArray) {
+    let limit = fieldArray.length - 1;
+    let tmp = "{";
+    for (let i=0; i<limit+1; i++) {
+      if (typeof valueArray[i] == 'string') {
+        tmp += ('"' + fieldArray[i] + '" : "' + valueArray[i] + ((i != limit) ? '", ' : '"}'));
+      } else if (typeof valueArray[i] == 'object') {
+        tmp += ('"' + fieldArray[i] + '" : ' + JSON.stringify(valueArray[i]) + ((i != limit) ? ', ' : '}'));
+      } else {
+        tmp += ('"' + fieldArray[i] + '" : ' + valueArray[i] + ((i != limit) ? ', ' : '}'));
+      }
+    }
+    return tmp;
   }
 }
