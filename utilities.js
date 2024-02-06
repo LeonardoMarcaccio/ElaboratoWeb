@@ -27,22 +27,17 @@ const genericUtilities = {
 
 const cookieUtilities = {
   addCookie: (name, value, expiration, path) => {
-    if (name instanceof String
-      && value instanceof String
-      && expiration instanceof Date
-      && path instanceof String) {
-      document.cookie = name+"="+value+"; "+"expires="+expiration+"; "+path;
-    }
+    document.cookie = name+"="+value+"; "+"expires="+expiration+"; "+path;
   },
   readCookie: (name) => {
-    if (name instanceof String) {
-      decodeURIComponent(document.cookie).split(";").forEach((value) => {
-        let cookieEntry = value.trim();
-        if (cookieEntry.startsWith(name)) {
-          return cookieEntry.substring(name.length, cookieEntry.length);
-        }
-      });
-    }
+    let entry = "";
+    decodeURIComponent(document.cookie).split(";").forEach((value) => {
+      let cookieEntry = value.trim();
+      if (cookieEntry.startsWith(name)) {
+        entry = cookieEntry.substring(name.length, cookieEntry.length);
+      }
+    });
+    return entry;
   }
 }
 
@@ -189,7 +184,7 @@ const APICalls = {
   evaluateResponseCodeAction: (jsonModule) => {
     switch (jsonModule.code) {
       case "401":
-        document.dispatchEvent(new CustomEvent(APIEvents.unauthorizedEvent));
+        document.dispatchEvent(new CustomEvent(events.apiActions.authFailure));
       break;
       case "409":
         document.dispatchEvent(new CustomEvent(APIEvents.conflictEvent));
@@ -199,7 +194,7 @@ const APICalls = {
     }
   },
   postRequests: {
-    postDataToApi: async (postData = null, URI) => {
+    postDataToApi: async (URI, postData = null) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
@@ -208,15 +203,19 @@ const APICalls = {
         },
         body: JSON.stringify(postData)
       });
-      let jsonContent = postMsg.json();
+      let jsonContent = await postMsg.json();
       APICalls.evaluateResponseCodeAction(jsonContent.code);
       return jsonContent;
     },
     sendAuthentication: async (registrationData, isLogin = false) => {
-      let authRequest = await APICalls.postDataToApi(registrationData, 
-        isLogin
-        ? "api/auth/login.php"
-        : "api/auth/registration.php");
+      let authRequest = await APICalls.postRequests.postDataToApi(isLogin
+        ? APICalls.createApiUrl(APIConstants.apiPages.login)
+        : APICalls.createApiUrl(APIConstants.apiPages.registration),
+        registrationData);
+      if (authRequest.code == "200") {
+        let customEvt = new CustomEvent(events.apiActions.authSuccess);
+        document.dispatchEvent(customEvt);
+      }
       return authRequest;
     },
     sendCommunityRequest: async (communityData, target = null) => {
@@ -225,7 +224,7 @@ const APICalls = {
       if (target != null) {
         communityUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(communityData, communityUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(communityUrl,communityData);
       return commentRequest;
     },
     sendPostRequest: async (postData, target = null) => {
@@ -234,7 +233,7 @@ const APICalls = {
       if (target != null) {
         postUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postData, postUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(postUrl, postData);
       return commentRequest;
     },
     sendCommentRequest: async (commentData, target = null) => {
@@ -243,7 +242,7 @@ const APICalls = {
       if (target != null) {
         commentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postData, commentUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(commentUrl, postData);
       return commentRequest;
     },
     sendSubcommentRequest: async (subcommentData, target = null) => {
@@ -252,7 +251,7 @@ const APICalls = {
       if (target != null) {
         subCommentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postData, subCommentUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl, postData);
       return commentRequest;
     },
     editCommunityRequest: async (communityData, target = null) => {
@@ -289,7 +288,7 @@ const APICalls = {
     },
     getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
       let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
-      communityUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
+      commentUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       commentUrl.searchParams.append("target", targetPostId);
       APICalls.addUrlPageSelection(page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, commentUrl);
@@ -318,8 +317,8 @@ const JSONUtils = {
     }
   },
   login: {
-    buildLogin: (email, password) => {
-      return {"email":email, "password":password};
+    buildLogin: (username, password) => {
+      return {"username":username, "password":password};
     }
   },
   post: {
