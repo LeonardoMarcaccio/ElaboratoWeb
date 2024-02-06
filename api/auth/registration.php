@@ -40,6 +40,7 @@
           throw new ApiError("Internal Server Error", 500,
           "Error while contacting database", 500);
         }
+        echo $password = password_hash($password, PASSWORD_DEFAULT);
         $token = generateUniqueToken($database);
         $username = $usrObj->getUsername();
         setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");
