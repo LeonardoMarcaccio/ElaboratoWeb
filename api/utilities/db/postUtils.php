@@ -7,7 +7,7 @@
         $image = $postObj->getImageUrl();
         $username = getUsernameByToken($_COOKIE['token'], $database);
 
-        $statement = $database->prepare("INSERT INTO post VALUES(NOW(), ?, ?, ?, ?, ?)");
+        $statement = $database->prepare("INSERT INTO post VALUES(0, NOW(), ?, 0, ?, ?, ?, ?)");
         $statement->bind_param("sssss", $content, $title, $image, $targetCommunity, $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
@@ -31,21 +31,8 @@
     }
 
     function getRecentPost($n_post, $username, mysqli $database) {
-        $statement = $database->prepare("SELECT name FROM `Join` WHERE Username=?");
-        $statement->bind_param("s", $username);
-        if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
-        }
-
-        $communities = $statement->get_result();
-        if (mysqli_num_rows($communities) === 0) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
-        }
-
-        $statement = $database->prepare("SELECT * FROM post LIMIT ? WHERE Name IN ? ORDER BY date DESC");
-        $statement->bind_param("is", $n_post, $communities);
+        $statement = $database->prepare("SELECT * FROM post WHERE Name IN (SELECT name FROM `Join` WHERE Username=?) ORDER BY date DESC LIMIT ?");
+        $statement->bind_param("si",$username, $n_post);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
@@ -89,35 +76,33 @@
     }
 
     function updateLikes ($postID, mysqli $database) {
-        $statement = $database->prepare("SELECT COUNT(*) FROM vote WHERE PostID=? and Value=1");
+        $statement = $database->prepare("SELECT COUNT(*) AS value FROM vote WHERE PostID=? and Value=1");
         $statement->bind_param("s", $postID);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement->bind_result($likes);
-        $statement->fetch();
+        $likes = $statement->get_result();
         if (mysqli_num_rows($likes) === 0) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement = $database->prepare("SELECT COUNT(*) FROM vote WHERE PostID=? and Value=0");
+        $statement = $database->prepare("SELECT COUNT(*) AS value FROM vote WHERE PostID=? and Value=0");
         $statement->bind_param("s", $postID);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement->bind_result($dislikes);
-        $statement->fetch();
+        $dislikes = $statement->get_result();
         if (mysqli_num_rows($dislikes) === 0) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
         }
 
-        $newValue = $likes - $dislikes;
+        $newValue = mysqli_fetch_assoc($likes)["value"] - mysqli_fetch_assoc($dislikes)["value"];
 
         $statement = $database->prepare("UPDATE post SET Likes=? WHERE PostID=?");
         $statement->bind_param("is", $newValue, $postID);

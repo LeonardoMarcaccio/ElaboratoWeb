@@ -3,11 +3,8 @@
     function createCommunity($requestBody, mysqli $database) {
         $communityBody = jsonToCommunity($requestBody);
         $name = $communityBody->getCommunityName();
-        //print_r($name);
         $image = $communityBody->getCommunityImage();
-        //print_r($image);
         $description = $communityBody->getCommunityDescription();
-        print_r($description);
         $username = getUsernameByToken($_COOKIE["token"],$database);
         $statement = $database->prepare("INSERT INTO community (Name, Image, Description, Username) VALUES (?, ?, ?, ?)");
         $statement->bind_param(
@@ -39,10 +36,10 @@
         }
     }
 
-    function getCommunities($username, $pages, $maxPerPage, mysqli $database) {
+    function getCommunities($communityName, $pages, $maxPerPage, mysqli $database) {
         $n = $pages * $maxPerPage;
-        $statement = $database->prepare("SELECT * FROM community LIMIT ? WHERE name=?");
-        $statement->bind_param("is", $n, $username);
+        $statement = $database->prepare("SELECT * FROM community WHERE name LIKE '%{$communityName}%' LIMIT ?");
+        $statement->bind_param("i", $n);
         if (!$statement->execute()) {
           throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);

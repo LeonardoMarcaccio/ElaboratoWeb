@@ -55,8 +55,6 @@ use function PHPSTORM_META\type;
   }
 
   function jsonToCommunity($jsonString) {
-    //$community = New Community(null, null, null);
-    print_r($jsonString);
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
       $communityName = attemptValExtraction($assArray, 'name');
@@ -76,7 +74,7 @@ use function PHPSTORM_META\type;
       $postTitle = attemptValExtraction($assArray, 'title');
       $postName = attemptValExtraction($assArray, 'name');
       $postUsername = attemptValExtraction($assArray, 'username');
-      $postImageUrl = decodeAndStoreImage(attemptValExtraction($assArray, 'image'));
+      $postImageUrl = decodeAndStoreImage(jsonToImage(attemptValExtraction($assArray, 'postImage')));
       $postId = attemptValExtraction($assArray, 'id');
       return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
     } else {
