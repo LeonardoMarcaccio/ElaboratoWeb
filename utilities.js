@@ -199,8 +199,8 @@ const APICalls = {
     }
   },
   postRequests: {
-    postDataToApi: async (postData, URI) => {
-      let postMsg = await fetch(window.location.href+URI, {
+    postDataToApi: async (URI, postData = null) => {
+      let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
         headers: {
@@ -261,7 +261,7 @@ const APICalls = {
   },
   getRequests: {
     getDataToApi: async (URI, getData = null) => {
-      let postMsg = await fetch(window.location.href+URI, {
+      let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.GET,
         cache: "no-cache",
         headers: {
@@ -277,14 +277,14 @@ const APICalls = {
       let communityUrl = createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.postDataToApi(postData, communityUrl);
+      let commentRequest = await APICalls.getDataToApi(postData, communityUrl);
       return commentRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
       let postUrl = createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.post);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.postDataToApi(postData, postUrl);
+      let commentRequest = await APICalls.getDataToApi(postData, postUrl);
       return commentRequest;
     },
     getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
@@ -292,7 +292,7 @@ const APICalls = {
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       commentUrl.searchParams.append("target", targetPostId);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.postDataToApi(postData, commentUrl);
+      let commentRequest = await APICalls.getDataToApi(postData, commentUrl);
       return commentRequest;
     },
     getSubcommentsRequest: async (targetCommentId, page = null, maxPerPage = null) => {
@@ -300,7 +300,7 @@ const APICalls = {
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       subCommentUrl.searchParams.append("target", targetCommentId);
       APICalls.addUrlPageSelection(page, maxPerPage);
-      let commentRequest = await APICalls.postDataToApi(postData, subCommentUrl);
+      let commentRequest = await APICalls.getDataToApi(postData, subCommentUrl);
       return commentRequest;
     }
   }
