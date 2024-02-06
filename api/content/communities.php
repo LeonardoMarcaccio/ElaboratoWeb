@@ -52,83 +52,23 @@
         }
       break;
       case "comment":
-        //comment creation function
-        //$result = createCommunityComment($targetCommentId, $requestBody);
-        //createComment($requestBody, $database);
+        if (isset($_GET['target'])) {
+          createComment($_GET['target'], $requestBody, $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        }
       break;
-      case "page":
-        //page creation function
-        //$result = createCommunityPage($targetCommunityName, $requestBody);
+      case "subcomment":
+        if (isset($_GET['target'])) {
+          //createSubcomment($_GET['target'], $requestBody, $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        }
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
     return $result;
-  }
-
-  function modifyComment($requestBody, mysqli $database) {
-    $postBody = jsonToPost($requestBody);
-
-
-
-    $statement = $database->prepare("UPDATE post SET Date = NOW(), Content = ?, Image = ? WHERE PostID = ?");
-    $statement->bind_param(
-      "sss",
-      $postBody->getContent(),
-      $postBody->getImageUrl(),
-      $postBody->getId()
-    );
-  }
-
-  function createComment($postID, $content, $username, mysqli $database) {
-    $query = $database->prepare("INSERT INTO comment VALUES(NOW(), ?, ?)");
-    $query->bind_param("ss", $content, $username);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-
-    $query = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
-    $query->bind_param("s", $username);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-    
-    $commentID = $query->get_result();
-    
-    $query = $database->prepare("INSERT INTO answer VALUES(?, ?)");
-    $query->bind_param("ss", $commentID, $postID);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-  }
-
-  
-  function createSubcomment($originID, $content, $username, mysqli $database) {
-    $query = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?)");
-    $query->bind_param("ss", $content, $username);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-    
-    $query = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
-    $query->bind_param("s", $username);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-    
-    $commentID = $query->get_result();
-    
-    $query = $database->prepare("INSERT INTO subcomment VALUES(?, ?)");
-    $query->bind_param("ss", $commentID, $originID);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
   }
   
   /*Cognitive complexity of this function is higher than 15, however
@@ -167,9 +107,11 @@
         $postList = null;
         //post getting function
         if (!$targetSelected) {
+          //post from community
           $postList = getCommunityPost($target, $requestBody, $pageIndex, $pageSize, $database);
         } else {
-          //$postList = array(get single post );
+          //post from id
+          $postList = array(getPost($target, $database));
         }
         $result = array();
         foreach ($postList as $singlePost) {
@@ -182,9 +124,10 @@
       case "comment":
         //comment getting function
         if ($targetSelected) {
+          //comment from post
           $commentList = getPostComment($target, $requestBody, $pageIndex, $pageSize, $database);
         } else {
-          //$commentList = array(get single comment );
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
         $result = array();
         foreach ($commentList as $singleComment) {
@@ -195,37 +138,21 @@
       break;
       case "subcomment":
         //comment getting function
-        /*if ($targetSelected) {
-          $commentList = ($target, $requestBody, $pageIndex, $pageSize, $database);
+        if ($targetSelected) {
+          //subcomment from comment
+          $commentList = getSubComment($target, $pageIndex, $pageSize, $database);
         } else {
-          //$commentList = array(get single comment );
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
         $result = array();
         foreach ($commentList as $singleComment) {
           array_push($singlePost, new Comment($singleComment['Date'],
             $singleComment['Content'], $singleComment['Username'],
             $singleComment['CommentID']));
-        }*/
-      break;
-      case "page":
-        // TODO: Page functionality
-        //page getting function
-        //$result = createCommunityPage($targetCommunityName, $requestBody, $pages, $maxPerPage);
+        }
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     return $result;
-  }
-
-  function getCommunityPost($targetCommunityName, $requestBody, $pages, $maxPerPage, mysqli $database) {
-    $n = $pages*$maxPerPage;
-    $query = $database->prepare("SELECT * FROM post LIMIT ? WHERE name=? ORDER BY date DESC");
-    $query->bind_param("is", $n, $targetCommunityName);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-
-    return $query->get_result();
   }
