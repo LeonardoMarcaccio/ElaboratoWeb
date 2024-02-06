@@ -1,24 +1,46 @@
-let optinalForm = document.getElementById("optionalForm");
-let registrationForm = document.getElementById("registrationForm")
-let addExtra = document.getElementById("optional");
-let back = document.getElementById("back");
+const registrationElements = {
+  essentialDataField: {
+    form: document.getElementById("registration-essential"),
+    elements: {
+      username: document.getElementById("registration-username"),
+      email: document.getElementById("registration-email"),
+      password: document.getElementById("registration-password"),
+    }
+  },
+  nonEssentialDataField: {
+    form: document.getElementById("registration-non-essential"),
+    elements: {
+      firstname: document.getElementById("registration-firstname"),
+      lastname: document.getElementById("registration-lastname"),
+      gender: document.getElementById("registration-gender"),
+      biography: document.getElementById("registration-biography"),
+      personalwebsite: document.getElementById("registration-personalwebsite"),
+      profilepicture: document.getElementById("registration-profilepicture"),
+      phonenumber: document.getElementById("registration-phonenumber"),
+    }
+  },
+  submitButton: document.getElementById("registration-send-data"),
+  addInfoButton: document.getElementById("registration-show-non-essential")
+}
 
-optinalForm.style.visibility = 'hidden';
+// Add more info button action
+registrationElements.addInfoButton.onclick = () => {
+  registrationElements.nonEssentialDataField.form.style.display = 'flex';
+  registrationElements.addInfoButton.style.display = 'none';
+  registrationElements.submitButton.innerHTML = "Complete Registration"
+}
 
-addExtra.addEventListener("click", () => {
-  registrationForm.style.visibility = 'hidden';
-  optinalForm.style.visibility = 'visible';
-  optinalForm.parentNode.insertBefore(optinalForm, optionalForm.parentNode.firstChild);
-});
+// Resets data inside the page
+function resetRegistrationPage() {
+  registrationElements.essentialDataField.form.reset();
+  registrationElements.nonEssentialDataField.form.reset();
+}
 
-back.addEventListener("click", () => {
-  registrationForm.style.visibility = 'visible';
-  optinalForm.style.visibility = 'hidden';
-  registrationForm.parentNode.insertBefore(registrationForm, registrationForm.parentNode.firstChild);
-});
+// Checks for page ghange to clear sent/unused data
+document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE,
+  () => resetRegistrationPage());
 
-addExtra.addEventListener("click", () => {
-  registrationForm.style.visibility = 'hidden';
-  optinalForm.style.visibility = 'visible';
-  optinalForm.parentNode.insertBefore(optinalForm, optionalForm.parentNode.firstChild);
-});
+// Submits data
+registrationElements.submitButton.onclick = () => {
+  
+}
