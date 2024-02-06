@@ -467,7 +467,8 @@ class PostBuilder {
       this.IDPrefix = IDPrefix;
   }
 
-  makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg) {
+  makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
+      let container = document.createElement("div");
       let post = document.createElement("article");
       let head = document.createElement("div");
       let userImage = document.createElement("img");
@@ -478,7 +479,6 @@ class PostBuilder {
       let like = document.createElement("button");
       let dislike = document.createElement("button");
       let comment = document.createElement("button");
-      
 
       post.id = this.IDPrefix + "-post-" + this.count++;
       post.className = "post";
@@ -499,6 +499,15 @@ class PostBuilder {
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
 
+      post.onclick = () => {
+        let comments = APICalls.getRequests.getCommentsRequest(postId, 0, 10);
+        let builder = new CommentBuilder(titleString);
+        for (let i in comments) {
+          container.appendChild(builder.makeComment(comments[i].name, comments[i].content, null, comments[i].date, comments[i].id));
+        }
+      }
+
+      container.appendChild(post);
       post.appendChild(head);
       head.appendChild(userImage);
       head.appendChild(title);
@@ -514,7 +523,7 @@ class PostBuilder {
       buttons.appendChild(dislike);
       buttons.appendChild(comment);
       
-      return post;
+      return container;
   }
 }
 
@@ -535,6 +544,15 @@ class CommunityBuilder {
       let follow = document.createElement("button");
       let desc = document.createElement("p");
       
+      community.onclick = () => {
+        let posts = APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+        let builder = new PostBuilder("search");
+        mainPageLoader.flushPage();
+        for (let i in posts) {
+          posts[i];
+          mainGlobalVariables.page.mainContentPage.appendChild(builder.makePost());
+        }
+      }
       community.id = this.IDPrefix + "-community-" + this.count++;
       community.className = "community";
       community.style.margin = "10px";
@@ -569,7 +587,7 @@ class CommentBuilder {
       this.IDPrefix = IDPrefix;
   }
 
-  makeComment(userString, contentString, userPfp, dateString, numSubComments = "", id, isSub = false) {
+  makeComment(userString, contentString, userPfp, dateString, id, numSubComments = "", isSub = false) {
     let container = document.createElement("div");
     let comment = document.createElement("article");
     let head = document.createElement("div");
@@ -649,7 +667,7 @@ class CommentBuilder {
       buttons.appendChild(thread);
       thread.onclick = () => {
         buttons.removeChild(thread);
-        let replies = APICalls.getRequests.getSubcommentsRequest(id, 0, 100);
+        let replies = APICalls.getRequests.getSubcommentsRequest(id, 0, numSubComments);
         for (let i in replies) {
           tmp = replies[i];
           container.appendChild(this.makeComment(tmp.username, tmp.content, null, tmp.date, 0, tmp.id, true));
