@@ -127,8 +127,8 @@
   }
 
   function getLoggedUser($username, $password, mysqli $database) {
-    $query = $database->prepare("SELECT * FROM user WHERE Username=? AND Password=? LIMIT 1");
-    $query->bind_param("ss", $username, $password);
+    $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
+    $query->bind_param("s", $username);
     if (!$query->execute()) {
       throw new ApiError("Internal Server Error", 500,                  //NOSONAR
       DB_CONNECTION_ERROR, 500);
@@ -137,7 +137,7 @@
     $resultingUser = mysqli_fetch_assoc($query->get_result());
     if ($resultingUser === null) {
       return $resultingUser;
-    } else {
+    } elseif (password_verify($password, attemptValExtraction($resultingUser, 'Password'))) {
       return new UserData(
         $resultingUser['Username'],
         $resultingUser['Email'],
@@ -149,5 +149,7 @@
         $resultingUser['PersonalWebsite'],
         $resultingUser['Pfp'],
         $resultingUser['Phonenumbers']);
+    } else {
+      throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
   }

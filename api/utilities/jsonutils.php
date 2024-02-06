@@ -49,7 +49,7 @@ use function PHPSTORM_META\type;
   function jsonToLogin($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
-      return new EssentialUserData($assArray['username'], $assArray['email'], $assArray['password']);
+      return new EssentialUserData($assArray['username'], null, $assArray['password']);
     } else {
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
