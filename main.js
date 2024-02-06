@@ -11,6 +11,10 @@ const events = {
   genericActions: {
     MAINCONTENTPAGECHANGE: "mainContentPageChange",
   },
+  apiActions: {
+    authSuccess: "api-authentication-success",
+    authFailure: "api-authentication-failure",
+  }
 }
 
 const mainPageLocChanges= {
@@ -47,7 +51,18 @@ let mainGlobalVariables = {
   }
 }
 
+function registerMainEvents() {
+  document.addEventListener(events.apiActions.authSuccess, () => {
+    let evtPageLoadB = new PageLoader(mainGlobalVariables.page.mainContentPage);
+    new PageLoader(mainGlobalVariables.page.mainContentFooting); //NOSONAR
+    new PageLoader(mainGlobalVariables.page.mainContentHeading); //NOSONAR
+    evtPageLoadB.loadPage("feed");
+  })
+}
+
 async function mainPageInit() {
+  registerMainEvents();
+
   let header = await AssetManager.loadAsset("header.html");
   DOMUtilities.addChildElementToNode(document.body, header);
   
@@ -93,9 +108,13 @@ async function mainPageInit() {
   mainGlobalVariables.dynamicElements.loadingBanner =
     document.getElementById("loading-banner");
   mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
-  
+
   let loader = new PageLoader(mainGlobalVariables.page.mainContentPage);
-  loader.loadPage("login");
+  if (cookieUtilities.readCookie('token') == '') {
+    loader.loadPage("login");
+  } else {
+    loader.loadPage("feed");
+  }
   //loader.loadPage("registration");
   cookieUtilities.readCookie("token");
 
