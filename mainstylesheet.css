@@ -22,6 +22,8 @@ body {
   flex-flow: row-reverse;
   justify-content: space-evenly;
   gap: 5px;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 ::selection {

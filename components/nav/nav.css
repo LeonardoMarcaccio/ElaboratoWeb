@@ -12,10 +12,12 @@ nav > div {
   flex-direction: column;
   justify-content: space-evenly;
   margin-top: 1vh;
-  background-color: transparent;
+  /*background-color: #F09D51;*/
 }
 
 nav > div > button,#nav-post {
+  transition: 500ms;
+  border-radius: 10px;
   min-height: 30px;
   min-width: 55px;
   font-size: 1rem;
@@ -23,10 +25,15 @@ nav > div > button,#nav-post {
   height: 5vh;
   background-color: transparent;
   border: none;
+  background: rgb(240,157,81);
+  background: radial-gradient(circle, rgba(240,157,81,1) 50%, rgba(255,255,255,0) 100%); 
 }
 nav > div > button:hover,#nav-post:hover {
-  background-color: #F09D51;
   border-radius: 10px;
+  background-color: #EEC8A6;
+}
+nav > div > button:disabled,#nav-post:disabled {
+  background-color: #F09D51;
 }
 
 #nav-post {
@@ -55,6 +62,19 @@ nav > div > button:hover,#nav-post:hover {
   nav > div > button {
     border: none;
     flex-grow: 2;
+  }
+  nav > div > button,#nav-post {
+    background: transparent;
+  }
+  nav > div > button:hover,#nav-post:hover {
+    border-radius: 10px;
+    background: rgb(238,200,166);
+    background: radial-gradient(circle, rgba(238,200,166,1) 50%, rgba(255,255,255,0) 100%); 
+  }
+  nav > div > button:disabled,#nav-post:disabled {
+    border-radius: 10px;
+    background: rgb(240,157,81);
+    background: radial-gradient(circle, rgba(240,157,81,1) 50%, rgba(255,255,255,0) 100%); 
   }
   #nav-spacer {
     min-width: 10vw;
