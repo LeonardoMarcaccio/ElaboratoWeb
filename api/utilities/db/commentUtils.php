@@ -3,16 +3,16 @@
     function createComment($targetPostID, $requestBody, mysqli $database) {
         $commentObj = jsonToComment($requestBody);
         $content = $commentObj->getContent();
-        $username = getUsernameByToken($_COOKIE['token'], $database);
+        $username = "cantepente1";//getUsernameByToken($_COOKIE['token'], $database);
 
-        $statement = $database->prepare("INSERT INTO comment VALUES(NOW(), ?, ?)");
+        $statement = $database->prepare("INSERT INTO comment VALUES(0, NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
         
-        $statement = $database->prepare("SELECT CommentID FROM comment LIMIT 1 WHERE Username=? ORDER BY date DESC");
+        $statement = $database->prepare("SELECT CommentID FROM comment WHERE Username=? ORDER BY CommentID DESC LIMIT 1");
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
@@ -27,7 +27,7 @@
         }
         
         $statement = $database->prepare("INSERT INTO answer VALUES(?, ?)");
-        $statement->bind_param("ii", $commentID, $targetPostID);
+        $statement->bind_param("ii", mysqli_fetch_assoc($commentID)["CommentID"], $targetPostID);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
@@ -35,12 +35,11 @@
     }
     
     function modifyComment($requestBody, mysqli $database) {
-        $commentBody = jsonToPost($requestBody);
-        $statement = $database->prepare("UPDATE post SET Date = NOW(), Content = ?, Image = ? WHERE PostID = ?");
+        $commentBody = jsonToComment($requestBody);
+        $statement = $database->prepare("UPDATE commenta SET Date = NOW(), Content = ? WHERE CommentID = ?");
         $statement->bind_param(
-            "ssi",
+            "si",
             $commentBody->getContent(),
-            $commentBody->getImageUrl(),
             $commentBody->getID()
         );
         if (!$statement->execute()) {
@@ -50,14 +49,14 @@
     }
     
     function createSubcomment($originID, $content, $username, mysqli $database) {
-        $statement = $database->prepare("INSERT INTO community VALUES(NOW(), ?, ?)");
+        $statement = $database->prepare("INSERT INTO comment VALUES(0, NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement = $database->prepare("SELECT commentID FROM comment LIMIT 1 WHERE username=? ORDER BY date DESC");
+        $statement = $database->prepare("SELECT CommentID FROM comment WHERE Username=? ORDER BY CommentID DESC LIMIT 1");
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
@@ -72,7 +71,7 @@
         }
 
         $statement = $database->prepare("INSERT INTO subcomment VALUES(?, ?)");
-        $statement->bind_param("ii", $commentID, $originID);
+        $statement->bind_param("ii", mysqli_fetch_assoc($commentID)["CommentID"], $originID);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
@@ -81,21 +80,8 @@
 
     function getPostComment($targetPostID, $pages, $maxPerPage, mysqli $database) {
         $n = $pages*$maxPerPage;
-        $statement = $database->prepare("SELECT * FROM answer WHERE postID=?");
-        $statement->bind_param("i", $targetPostID);
-        if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
-        }
-
-        $comments = $statement->get_result();
-        if (mysqli_num_rows($comments) === 0) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
-        }
-
-        $statement = $database->prepare("SELECT * FROM comment LIMIT ? WHERE CommentID IN ? ORDER BY date DESC");
-        $statement->bind_param("is", $n, $comments);
+        $statement = $database->prepare("SELECT * FROM comment WHERE CommentID IN (SELECT CommentID FROM answer WHERE postID=?) ORDER BY date DESC LIMIT ?");
+        $statement->bind_param("ii", $targetPostID, $n);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
@@ -117,21 +103,8 @@
 
     function getSubComment($targetCommentID, $pages, $maxPerPage, mysqli $database) {
         $n = $pages*$maxPerPage;
-        $statement = $database->prepare("SELECT * FROM subcomment WHERE CommentID=?");
-        $statement->bind_param("i", $targetCommentID);
-        if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
-        }
-
-        $comments = $statement->get_result();
-        if (mysqli_num_rows($comments) === 0) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
-        }
-
-        $statement = $database->prepare("SELECT * FROM comment LIMIT ? WHERE CommentID IN ? ORDER BY date DESC");
-        $statement->bind_param("is", $n, $comments);
+        $statement = $database->prepare("SELECT * FROM comment WHERE CommentID IN (SELECT CommentID FROM subcomment WHERE CommentID=?) ORDER BY date DESC LIMIT ?");
+        $statement->bind_param("ii", $targetCommentID, $n);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);

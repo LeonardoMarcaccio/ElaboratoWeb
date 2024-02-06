@@ -7,6 +7,7 @@ use function PHPSTORM_META\type;
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EssentialUserData.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/UserData.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Community.php';  //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Comment.php';  //NOSONAR
 
   define("USER_SELF", 0);
   define("USER_FRIEND", 0);
@@ -81,6 +82,7 @@ use function PHPSTORM_META\type;
       throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
     }
   }
+
   function jsonToComment($jsonString) {
     $assArray = json_decode($jsonString, true);
     if ($assArray !== null) {
