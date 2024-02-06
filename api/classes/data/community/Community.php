@@ -21,7 +21,7 @@
     }
 
     public function jsonSerialize() {
-      return ['communityName' => $this->name,
+      return ['name' => $this->name,
         'description' => $this->description,
         'image' => $this->image];
     }
