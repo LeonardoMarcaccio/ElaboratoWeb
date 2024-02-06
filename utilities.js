@@ -27,22 +27,17 @@ const genericUtilities = {
 
 const cookieUtilities = {
   addCookie: (name, value, expiration, path) => {
-    if (name instanceof String
-      && value instanceof String
-      && expiration instanceof Date
-      && path instanceof String) {
-      document.cookie = name+"="+value+"; "+"expires="+expiration+"; "+path;
-    }
+    document.cookie = name+"="+value+"; "+"expires="+expiration+"; "+path;
   },
   readCookie: (name) => {
-    if (name instanceof String) {
-      decodeURIComponent(document.cookie).split(";").forEach((value) => {
-        let cookieEntry = value.trim();
-        if (cookieEntry.startsWith(name)) {
-          return cookieEntry.substring(name.length, cookieEntry.length);
-        }
-      });
-    }
+    let entry = "";
+    decodeURIComponent(document.cookie).split(";").forEach((value) => {
+      let cookieEntry = value.trim();
+      if (cookieEntry.startsWith(name)) {
+        entry = cookieEntry.substring(name.length, cookieEntry.length);
+      }
+    });
+    return entry;
   }
 }
 
@@ -189,7 +184,7 @@ const APICalls = {
   evaluateResponseCodeAction: (jsonModule) => {
     switch (jsonModule.code) {
       case "401":
-        document.dispatchEvent(new CustomEvent(APIEvents.unauthorizedEvent));
+        document.dispatchEvent(new CustomEvent(events.apiActions.authFailure));
       break;
       case "409":
         document.dispatchEvent(new CustomEvent(APIEvents.conflictEvent));
@@ -199,7 +194,7 @@ const APICalls = {
     }
   },
   postRequests: {
-    postDataToApi: async (postData = null, URI) => {
+    postDataToApi: async (URI, postData = null) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
@@ -208,15 +203,19 @@ const APICalls = {
         },
         body: JSON.stringify(postData)
       });
-      let jsonContent = postMsg.json();
+      let jsonContent = await postMsg.json();
       APICalls.evaluateResponseCodeAction(jsonContent.code);
       return jsonContent;
     },
     sendAuthentication: async (registrationData, isLogin = false) => {
-      let authRequest = await APICalls.postDataToApi(registrationData, 
-        isLogin
-        ? "api/auth/login.php"
-        : "api/auth/registration.php");
+      let authRequest = await APICalls.postRequests.postDataToApi(isLogin
+        ? APICalls.createApiUrl(APIConstants.apiPages.login)
+        : APICalls.createApiUrl(APIConstants.apiPages.registration),
+        registrationData);
+      if (authRequest.code == "200") {
+        let customEvt = new CustomEvent(events.apiActions.authSuccess);
+        document.dispatchEvent(customEvt);
+      }
       return authRequest;
     },
     sendCommunityRequest: async (communityData, target = null) => {
@@ -225,7 +224,7 @@ const APICalls = {
       if (target != null) {
         communityUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(communityData, communityUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(communityUrl,communityData);
       return commentRequest;
     },
     sendPostRequest: async (postData, target = null) => {
@@ -234,7 +233,7 @@ const APICalls = {
       if (target != null) {
         postUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postData, postUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(postUrl, postData);
       return commentRequest;
     },
     sendCommentRequest: async (commentData, target = null) => {
@@ -243,7 +242,7 @@ const APICalls = {
       if (target != null) {
         commentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postData, commentUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(commentUrl, postData);
       return commentRequest;
     },
     sendSubcommentRequest: async (subcommentData, target = null) => {
@@ -252,7 +251,7 @@ const APICalls = {
       if (target != null) {
         subCommentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postData, subCommentUrl);
+      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl, postData);
       return commentRequest;
     },
     editCommunityRequest: async (communityData, target = null) => {
@@ -289,7 +288,7 @@ const APICalls = {
     },
     getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
       let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
-      communityUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
+      commentUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       commentUrl.searchParams.append("target", targetPostId);
       APICalls.addUrlPageSelection(page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, commentUrl);
@@ -318,8 +317,8 @@ const JSONUtils = {
     }
   },
   login: {
-    buildLogin: (email, password) => {
-      return {"email":email, "password":password};
+    buildLogin: (username, password) => {
+      return {"username":username, "password":password};
     }
   },
   post: {
@@ -458,6 +457,26 @@ class ButtonHandler {
   }
 }
 
+function openUserPage(username) {
+  headPageLoader.flushPage();
+  mainPageLoader.flushPage();
+  footPageLoader.flushPage();
+  let head = document.createElement("p");
+  head.innerText = username;
+  mainGlobalVariables.page.mainContentHeading.appendChild(head);
+  let foot = document.createElement("div");
+  let footButton = document.createElement("button");
+  foot.style.display = "flex";
+  foot.style.justifyContent = "center";
+  footButton.innerText = "Send friend request";
+  footButton.onclick = () => {};
+  foot.appendChild(footButton);
+  mainGlobalVariables.page.mainContentFooting.appendChild(foot);
+  /*
+  mainGlobalVariables.page.mainContentPage.appendChild();
+  */
+}
+
 class PostBuilder {
   count = 0;
   defaultPfp = "./media/users/placeholder.webp";
@@ -467,7 +486,8 @@ class PostBuilder {
       this.IDPrefix = IDPrefix;
   }
 
-  makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg) {
+  makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
+      let container = document.createElement("div");
       let post = document.createElement("article");
       let head = document.createElement("div");
       let userImage = document.createElement("img");
@@ -478,7 +498,6 @@ class PostBuilder {
       let like = document.createElement("button");
       let dislike = document.createElement("button");
       let comment = document.createElement("button");
-      
 
       post.id = this.IDPrefix + "-post-" + this.count++;
       post.className = "post";
@@ -499,6 +518,17 @@ class PostBuilder {
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
 
+      userPfp.onclick = () => openUserPage(userString);
+
+      post.onclick = () => {
+        let comments = APICalls.getRequests.getCommentsRequest(postId, 0, 10);
+        let builder = new CommentBuilder(titleString);
+        for (let i in comments) {
+          container.appendChild(builder.makeComment(comments[i].name, comments[i].content, null, comments[i].date, comments[i].id));
+        }
+      }
+
+      container.appendChild(post);
       post.appendChild(head);
       head.appendChild(userImage);
       head.appendChild(title);
@@ -514,7 +544,7 @@ class PostBuilder {
       buttons.appendChild(dislike);
       buttons.appendChild(comment);
       
-      return post;
+      return container;
   }
 }
 
@@ -535,6 +565,15 @@ class CommunityBuilder {
       let follow = document.createElement("button");
       let desc = document.createElement("p");
       
+      community.onclick = () => {
+        let posts = APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+        let builder = new PostBuilder("search");
+        mainPageLoader.flushPage();
+        for (let i in posts) {
+          posts[i];
+          mainGlobalVariables.page.mainContentPage.appendChild(builder.makePost());
+        }
+      }
       community.id = this.IDPrefix + "-community-" + this.count++;
       community.className = "community";
       community.style.margin = "10px";
@@ -569,7 +608,7 @@ class CommentBuilder {
       this.IDPrefix = IDPrefix;
   }
 
-  makeComment(userString, contentString, userPfp, dateString, numSubComments = "", id, isSub = false) {
+  makeComment(userString, contentString, userPfp, dateString, id, numSubComments = "", isSub = false) {
     let container = document.createElement("div");
     let comment = document.createElement("article");
     let head = document.createElement("div");
@@ -599,7 +638,6 @@ class CommentBuilder {
     like.innerText = "Like";
     dislike.innerText = "Dislike";
     
-    
     container.appendChild(comment);
     comment.appendChild(head);
     head.appendChild(pfp);
@@ -609,6 +647,8 @@ class CommentBuilder {
     comment.appendChild(buttons);
     buttons.appendChild(like);
     buttons.appendChild(dislike);
+
+    user.onclick = () => openUserPage(userString);
 
     if (!isSub) {
       let reply = document.createElement("button");
@@ -649,7 +689,7 @@ class CommentBuilder {
       buttons.appendChild(thread);
       thread.onclick = () => {
         buttons.removeChild(thread);
-        let replies = APICalls.getRequests.getSubcommentsRequest(id, 0, 100);
+        let replies = APICalls.getRequests.getSubcommentsRequest(id, 0, numSubComments);
         for (let i in replies) {
           tmp = replies[i];
           container.appendChild(this.makeComment(tmp.username, tmp.content, null, tmp.date, 0, tmp.id, true));

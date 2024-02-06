@@ -1,0 +1,36 @@
+.formpane {
+    justify-content: space-evenly;
+    width: 100%;
+    display: flex;
+    height: 85%;
+  }
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: black;
+    background-color: #E0DFD5;
+    flex-grow: 1;
+    max-width: 350px;
+    margin-top: 8vh;
+    -webkit-box-shadow: 0px 0px 14px 30px #E0DFD5; 
+    box-shadow: 0px 0px 14px 30px #E0DFD5;
+}
+
+form > input, select {
+    width: 80%;
+    margin: 3px 0px;
+    border-radius: 10px;
+    background-color: #E8E9EB;
+    min-height: 20px;
+    border: 1px solid black;
+    transition: 500ms;
+}
+  
+form > button {
+    width: 80%;
+    margin: 4px 0px;
+    transition: 500ms;
+    border-radius: 10px;
+}
