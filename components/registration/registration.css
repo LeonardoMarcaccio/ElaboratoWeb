@@ -1,24 +1,90 @@
-.registration-pane {
-    color: black;
-    justify-content: space-evenly;
-    width: 100%;
-    display: flex;
-    height: 85%;
+#registration-pane {
+  display: flex;
+  /*flex-direction: column;*/
+  justify-content: space-evenly;
+  color: black;
+  width: 100%;
+  height: 85%;
+}
+#forms-container {
+  box-shadow: 0px 0px 14px 30px #E0DFD5;
+  background-color: #E0DFD5;
+  max-width: 350px;
+  margin-top: 8vh;
+  flex-grow: 1;
 }
 
-.InteractionPane {
-    background-color: #E0DFD5;
-    max-width: 390px;
-    max-height: 844px;
-    width: 100%;
-    height: 100%;
-    margin: auto;
-    padding: 1% 3%;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
+#forms-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+#forms-container>form>div {
+  display: flex;
+  flex-direction: column;
+}
+#forms-container > form > #registration-non-essential {
+  display: none;
 }
 
-.InteractionPane h1, h2 {
-    text-align: center;
+#forms-container > form > h2 {
+  margin-bottom: 5vh;
+}
+
+#forms-container > form > div > * {
+  margin: 3px 0px;
+  transition: 500ms;
+  align-self: center;
+}
+
+#forms-container > form > div > input,textarea {
+  width: 80%;
+  margin: 3px 0px;
+  border-radius: 10px;
+  background-color: #E8E9EB;
+  min-height: 20px;
+  border: 1px solid black;
+  transition: 500ms;
+}
+
+#forms-container > form > div > textarea {
+  resize: none;
+}
+
+#forms-container > form > div > button {
+  width: 80%;
+  margin: 4px 0px;
+  transition: 500ms;
+}
+
+#registration-selectionbar {
+  text-align: center;
+}
+
+#registration-selectionbar > button {
+  min-height: 30px;
+  min-width: 55px;
+  font-size: 1rem;
+  margin: 2px 6px;
+  height: 5vh;
+  background-color: transparent;
+  border: none;
+  transition: none;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+#registration-selectionbar > button:hover {
+  background-color: #F09D51;
+  transition: none;
+}
+#registration-selectionbar > button:active {
+  background-color: #F06543;
+  border-radius: 10px;
+  transition: none;
+}
+
+.wrong {
+  -webkit-box-shadow: 0px 0px 6px 2px #f00;
+  box-shadow: 0px 0px 6px 2px #f00;
 }
