@@ -275,14 +275,14 @@ const APICalls = {
     getCommunitiesRequest: async (page = null, maxPerPage = null) => {
       let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
-      APICalls.addUrlPageSelection(page, maxPerPage);
+      APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, communityUrl);
       return commentRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
       let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
-      APICalls.addUrlPageSelection(page, maxPerPage);
+      APICalls.addUrlPageSelection(postUrl, page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(targetCommunityId, postUrl);
       return commentRequest;
     },
@@ -290,7 +290,7 @@ const APICalls = {
       let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       commentUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       commentUrl.searchParams.append("target", targetPostId);
-      APICalls.addUrlPageSelection(page, maxPerPage);
+      APICalls.addUrlPageSelection(commentUrl, page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, commentUrl);
       return commentRequest;
     },
@@ -298,8 +298,22 @@ const APICalls = {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       subCommentUrl.searchParams.append("target", targetCommentId);
-      APICalls.addUrlPageSelection(page, maxPerPage);
+      APICalls.addUrlPageSelection(subCommentUrl, page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, subCommentUrl);
+      return commentRequest;
+    },
+    getUserInfo: async (username) => {
+      let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      userUrl.searchParams.append("type", "userinfo");
+      userUrl.searchParams.append("target", username);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return commentRequest;
+    },
+    getFriendList: async (username) => {
+      let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      userUrl.searchParams.append("type", "friendlist");
+      userUrl.searchParams.append("target", username);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return commentRequest;
     }
   }
@@ -464,6 +478,7 @@ function openUserPage(username) {
   let head = document.createElement("p");
   head.innerText = username;
   mainGlobalVariables.page.mainContentHeading.appendChild(head);
+  let userInfo = APICalls.getRequests.getUserInfo(username);
   let foot = document.createElement("div");
   let footButton = document.createElement("button");
   foot.style.display = "flex";
