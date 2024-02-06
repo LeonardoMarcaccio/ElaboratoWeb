@@ -458,6 +458,26 @@ class ButtonHandler {
   }
 }
 
+function openUserPage(username) {
+  headPageLoader.flushPage();
+  mainPageLoader.flushPage();
+  footPageLoader.flushPage();
+  let head = document.createElement("p");
+  head.innerText = username;
+  mainGlobalVariables.page.mainContentHeading.appendChild(head);
+  let foot = document.createElement("div");
+  let footButton = document.createElement("button");
+  foot.style.display = "flex";
+  foot.style.justifyContent = "center";
+  footButton.innerText = "Send friend request";
+  footButton.onclick = () => {};
+  foot.appendChild(footButton);
+  mainGlobalVariables.page.mainContentFooting.appendChild(foot);
+  /*
+  mainGlobalVariables.page.mainContentPage.appendChild();
+  */
+}
+
 class PostBuilder {
   count = 0;
   defaultPfp = "./media/users/placeholder.webp";
@@ -498,6 +518,8 @@ class PostBuilder {
       like.innerText = "Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
+
+      userPfp.onclick = () => openUserPage(userString);
 
       post.onclick = () => {
         let comments = APICalls.getRequests.getCommentsRequest(postId, 0, 10);
@@ -617,7 +639,6 @@ class CommentBuilder {
     like.innerText = "Like";
     dislike.innerText = "Dislike";
     
-    
     container.appendChild(comment);
     comment.appendChild(head);
     head.appendChild(pfp);
@@ -627,6 +648,8 @@ class CommentBuilder {
     comment.appendChild(buttons);
     buttons.appendChild(like);
     buttons.appendChild(dislike);
+
+    user.onclick = () => openUserPage(userString);
 
     if (!isSub) {
       let reply = document.createElement("button");
