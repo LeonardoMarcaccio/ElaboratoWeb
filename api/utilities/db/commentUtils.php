@@ -3,7 +3,7 @@
     function createComment($targetPostID, $requestBody, mysqli $database) {
         $commentObj = jsonToComment($requestBody);
         $content = $commentObj->getContent();
-        $username = "cantepente1";//getUsernameByToken($_COOKIE['token'], $database);
+        $username = getUsernameByToken($_COOKIE['token'], $database);
 
         $statement = $database->prepare("INSERT INTO comment VALUES(0, NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
@@ -48,7 +48,11 @@
         }
     }
     
-    function createSubcomment($originID, $content, $username, mysqli $database) {
+    function createSubcomment($originID, $requestBody, mysqli $database) {
+        $commentObj = jsonToComment($requestBody);
+        $content = $commentObj->getContent();
+        $username = getUsernameByToken($_COOKIE['token'], $database);
+
         $statement = $database->prepare("INSERT INTO comment VALUES(0, NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
