@@ -84,7 +84,12 @@
 
     function getPostComment($targetPostID, $pages, $maxPerPage, mysqli $database) {
         $n = $pages*$maxPerPage;
-        $statement = $database->prepare("SELECT * FROM comment WHERE CommentID IN (SELECT CommentID FROM answer WHERE postID=?) ORDER BY date DESC LIMIT ?");
+        $statement = $database->prepare(
+            "SELECT comment.*, COUNT(subcomment.Sub_CommentID) AS replies
+            FROM comment LEFT JOIN subcomment on comment.CommentID = subcomment.CommentID
+            GROUP BY comment.CommentID HAVING CommentID IN (SELECT CommentID FROM answer WHERE postID = 2)
+            ORDER BY comment.Date DESC LIMIT 10"
+        );
         $statement->bind_param("ii", $targetPostID, $n);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,

@@ -54,8 +54,12 @@
 
     function getCommunityPost($targetCommunityName, $pages, $maxPerPage, mysqli $database) {
         $n = $pages*$maxPerPage;
-        $statement = $database->prepare("SELECT * FROM post LIMIT ? WHERE Name=? ORDER BY Date DESC");
-        $statement->bind_param("is", $n, $targetCommunityName);
+        $statement = $database->prepare(
+            "SELECT post.*, COUNT(answer.CommentID) AS replies
+            FROM post LEFT JOIN answer ON post.PostID = answer.PostID
+            GROUP BY post.PostID HAVING post.Name = ? ORDER BY `post`.`Date` DESC LIMIT ?"
+        );
+        $statement->bind_param("si", $targetCommunityName, $n);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,                
             DB_CONNECTION_ERROR, 500);
