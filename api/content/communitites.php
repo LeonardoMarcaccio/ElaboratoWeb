@@ -229,15 +229,3 @@
 
     return $query->get_result();
   }
-
-  function getPostComment($targetPostID, $requestBody, $pages, $maxPerPage, mysqli $database) {
-    $n = $pages*$maxPerPage;
-    $query = $database->prepare("SELECT * FROM answer LIMIT ? WHERE postID=? ORDER BY date DESC");
-    $query->bind_param("is", $n, $targetPostID);
-    if (!$query->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-
-    return $query->get_result();
-  }
