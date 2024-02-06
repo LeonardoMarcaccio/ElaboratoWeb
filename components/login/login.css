@@ -6,6 +6,7 @@
 }
 
 .formpane > form {
+  color: black;
   background-color: #E0DFD5;
   flex-grow: 1;
   max-width: 350px;
@@ -17,4 +18,49 @@
 
 .formpane > form > * {
   margin: 3px 0px;
+  transition: 500ms;
+}
+
+.formpane > form > input {
+  width: 80%;
+  margin: 3px 0px;
+  border-radius: 10px;
+  background-color: #E8E9EB;
+  min-height: 20px;
+  border: 1px solid black;
+  transition: 500ms;
+}
+
+.formpane > form > button {
+  width: 80%;
+  margin: 4px 0px;
+  transition: 500ms;
+}
+
+.formpane > form > button {
+  min-height: 30px;
+  min-width: 55px;
+  font-size: 1rem;
+  margin: 2px 6px;
+  height: 5vh;
+  background-color: transparent;
+  border: none;
+  transition: none;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.formpane > form > button:hover {
+  background-color: #F09D51;
+  transition: none;
+}
+.formpane > form > button:active {
+  background-color: #F06543;
+  border-radius: 10px;
+  transition: none;
+}
+
+.wrong {
+  -webkit-box-shadow: 0px 0px 6px 2px #f00;
+  box-shadow: 0px 0px 6px 2px #f00;
 }

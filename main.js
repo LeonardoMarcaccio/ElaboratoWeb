@@ -96,10 +96,11 @@ async function mainPageInit() {
   
   let loader = new PageLoader(mainGlobalVariables.page.mainContentPage);
   loader.loadPage("login");
+  //loader.loadPage("registration");
   cookieUtilities.readCookie("token");
 
   documentUtilities.addScriptFile("./components/nav/nav.js");
-  documentUtilities.addScriptFile("./components/registration/registration.js");
+  //documentUtilities.addScriptFile("./components/registration/registration.js");
   
 }
 
