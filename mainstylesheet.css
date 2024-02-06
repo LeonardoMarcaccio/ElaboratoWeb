@@ -51,16 +51,14 @@ body {
 
 #main-content-heading {
   flex-grow: 0;
-  max-height: 75px;
 }
 #main-content-page {
+  overflow: auto;
   flex-grow: 1;
-  overflow-y: auto;
 }
 #main-content-footing {
   flex-grow: 0;
-  min-height: 50px;
-  max-height: 150px;
+
 }
 
 #loading-banner {
