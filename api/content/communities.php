@@ -119,7 +119,7 @@
         } else {
           //post from id
           if ($target == "") {
-            $postList = getRecentPost($pageSize, getUsernameByToken($_SERVER['token'], $database), $database);
+            $postList = getRecentPost($pageSize, getUsernameByToken($_COOKIE['token'], $database), $database);
           } else {
             $postList = array(getPost($target, $database));
           }
