@@ -71,6 +71,13 @@
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
+      case "checkSub":
+        if (isset($_GET['target'])) {
+          isSub(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        }
+      break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
