@@ -1,14 +1,17 @@
 const loginElements = {
-  emailField: document.getElementById("login-email"),
+  usernameField: document.getElementById("login-username"),
   passwField: document.getElementById("login-passw"),
   loginBtn: document.getElementById("login-login"),
   registerBtn: document.getElementById("login-goto-register")
 }
 
 const loginFunctions = {
-  triggerCredentialErrror: () => {
-    loginElements.emailField.classList.add("wrong");
-    loginElements.passwField.classList.add("wrong");
+  triggerCredentialErrror: (element) => {
+    element.classList.add("wrong");
+  },
+  clearCredentialError: () => {
+    loginElements.usernameField.classList.remove("wrong");
+    loginElements.passwField.classList.remove("wrong");
   }
 }
 
@@ -20,12 +23,16 @@ document.addEventListener(APIEvents.unauthorizedEvent, () => {
 });
 
 loginElements.loginBtn.onclick = () => {
-  if (loginElements.emailField.value == "" && loginElements.passwField.value == "") {
-    loginFunctions.triggerCredentialErrror();
+  loginFunctions.clearCredentialError();
+  if (loginElements.usernameField.value == "") {
+    loginFunctions.triggerCredentialErrror(loginElements.usernameField);
+  }
+  if(loginElements.passwField.value == "") {
+    loginFunctions.triggerCredentialErrror(loginElements.passwField);
     return;
   }
   APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
-    loginElements.emailField.value, loginElements.passwField.value));
+    loginElements.usernameField.value, loginElements.passwField.value), true);
 }
 
 loginElements.registerBtn.onclick = () => {
