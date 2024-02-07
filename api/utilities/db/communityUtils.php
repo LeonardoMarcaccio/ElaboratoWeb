@@ -15,7 +15,7 @@
             $username
         );
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
     }
@@ -31,7 +31,7 @@
         );
 
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
     }
@@ -41,7 +41,7 @@
         $statement = $database->prepare("SELECT * FROM community WHERE name LIKE '%{$communityName}%' LIMIT ?");
         $statement->bind_param("i", $n);
         if (!$statement->execute()) {
-          throw new ApiError("Internal Server Error", 500,                
+          throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
@@ -58,3 +58,22 @@
 
         return $result;
     }
+
+    function subCommunity($username, $communityName, mysqli $database) {
+        $statement = $database->prepare("INSERT INTO `join`(`Name`, `Username`) VALUES (?,?)");
+        $statement->bind_param("ss", $username, $communityName);
+        if (!$statement->execute()) {
+          throw new ApiError("Internal Server Error", 500,
+            DB_CONNECTION_ERROR, 500);
+        }
+    }
+
+    function unsubCommunity($username, $communityName, mysqli $database) {
+        $statement = $database->prepare("DELETE FROM `join` WHERE `Name` = ? AND `Username` = ?");
+        $statement->bind_param("ss", $username, $communityName);
+        if (!$statement->execute()) {
+          throw new ApiError("Internal Server Error", 500,
+            DB_CONNECTION_ERROR, 500);
+        }
+    }
+
