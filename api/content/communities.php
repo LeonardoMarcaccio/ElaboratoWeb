@@ -178,7 +178,7 @@
       break;
       case "checkSub":
         if (isset($_GET['target'])) {
-          isSub(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
+          $result = array(isSub(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database));
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }

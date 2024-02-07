@@ -334,7 +334,7 @@ const APICalls = {
     },
     isFollowing: async (community) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
-      userUrl.searchParams.append("type", APIConstants.communityActions.types.community);
+      userUrl.searchParams.append("type", "checkSub");
       userUrl.searchParams.append("target", community);
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return commentRequest;
@@ -706,7 +706,7 @@ class CommunityBuilder {
       this.IDPrefix = IDPrefix;
   }
   
-  makeCommunity(titleString, descString, commImg) {
+  async makeCommunity(titleString, descString, commImg) {
       let community = document.createElement("article");
       let head = document.createElement("div");
       let image = document.createElement("img");
@@ -725,7 +725,7 @@ class CommunityBuilder {
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
-      follow.innerText = APICalls.getRequests.isFollowing(titleString) ? "Unfollow" : "Follow";
+      follow.innerText = (await APICalls.getRequests.isFollowing(titleString)).response[0] ? "Unfollow" : "Follow";
       desc.innerText = descString;
       desc.style.textAlign = "left";
       

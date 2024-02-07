@@ -71,7 +71,7 @@
     }
 
     function isSub($username, $communityName, mysqli $database) {
-        $statement = $database->prepare("SELECT FROM `join` WHERE `Name` = ? AND `Username` = ?");
+        $statement = $database->prepare("SELECT * FROM `join` WHERE `Name` = ? AND `Username` = ?");
         $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
           throw new ApiError("Internal Server Error", 500,

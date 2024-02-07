@@ -13,8 +13,8 @@ async function loadCommunities(page) {
     let newPage = await APICalls.getRequests.getCommunitiesRequest(document.getElementById("search-keyword").value, page, 16);
     newPage = newPage.response;
     for (let i in newPage) {
-        mainGlobalVariables.page.mainContentPage.appendChild(
-                communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image));
+        let tmp = await communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
+        mainGlobalVariables.page.mainContentPage.appendChild(tmp);
     }
 }
 
