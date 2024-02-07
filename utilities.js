@@ -153,7 +153,7 @@ const APIEvents = {
 const APIConstants = {
   apiPages: {
     login: "api/auth/login.php",
-    registration: "api/auth/register.php",
+    registration: "api/auth/registration.php",
     communities: "api/content/communities.php",
     users: "api/content/users.php",
   },
@@ -321,7 +321,49 @@ const APICalls = {
 }
 
 const JSONUtils = {
+  mapJsonVals: (obj) => {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+  
+    if (typeof obj === 'object') {
+      if (Array.isArray(obj)) {
+        return obj.map((item) => replaceEmptyWithNull(item));
+      } else {
+        const result = {};
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            result[key] = JSONUtils.mapJsonVals(obj[key]);
+          }
+        }
+        return result;
+      }
+    } else {
+      return obj === "" ? null : obj;
+    }
+  },
   registration: {
+    imgToJSON: async (imageFile) => {
+      let reader = new FileReader();
+      let rfile = new Promise((accepted, rejected) => {
+        reader.onload = () => {
+          accepted(reader.result);
+        }
+        reader.onerror = () => {
+          rejected(new Error("Could not read file!"));
+        }
+      });
+      reader.readAsBinaryString(imageFile);
+      let readFile = await rfile;
+
+      let encodedProfilePicture = btoa(readFile);
+      let profilePictureExtension = imageFile.name.split(".")[1];
+
+      return {
+          "image":encodedProfilePicture != "" ? encodedProfilePicture : null,
+          "format":encodedProfilePicture != "" ? profilePictureExtension : null
+          };
+    },
     buildRegistration: (username, email, password, firstname = null, lastname = null,   //NOSONAR
       gender = null, biography = null, personalwebsite = null, pfp = null, phonenumbers = null) => {
       return {"username":username, "email":email, "password":password,
