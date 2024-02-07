@@ -1,8 +1,11 @@
 .user-profile-image-box {
-    height: 100%;
+    max-height: 50px;
+    max-width: 50px;
+    height: 2vh;
+    width: 2vw;
 }
 .user-profile-image-box > img {
-    height: 100%;
+    aspect-ratio: 1/1;
 }
 
 #page-profile {
