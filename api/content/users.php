@@ -47,18 +47,26 @@
   }
 
   function userGetRequest($database, $user) {
-    if(!isset($_SERVER['type'])
-      && !isset($_SERVER['target'])) {
-      throw new ApiError("Bad Request", 400);
+    if(!isset($_SERVER['type'])) {
+      throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     $result = null;
     switch($_SERVER['type']) {
       case "friendlist":
-        $result = getFriendList($user, $database);
+        if (!isset($_SERVER['target'])){
+          $result = getFriendList($user, $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        }
       break;
       case "userinfo":
-        $result = filterInfoLevel(getUser($user, $database),
-          checkInfoLevel($user, $_GET['target'], $database));
+        if (isset($_SERVER['target'])) {
+          $result = filterInfoLevel(getUser($user, $database),
+            checkInfoLevel($user, $_GET['target'], $database));
+        } else {
+          $result = filterInfoLevel(getUser($user, $database),
+            checkInfoLevel($user, $user, $database));
+        }
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
