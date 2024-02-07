@@ -5,4 +5,10 @@ let jsonComment = {
     "username":"Bomboclatter41",
     "id":"0"
 }
-mainGlobalVariables.page.mainContentPage.appendChild(commentBuilder.makeComment(jsonComment.username, jsonComment.content, null, jsonComment.date, jsonComment.id));
+
+postLoader = new ContentLoader((unused) => {
+    for (let i=0; i<10; i++) {
+        mainGlobalVariables.page.mainContentPage.appendChild(commentBuilder.makeComment(jsonComment.username, jsonComment.content, null, jsonComment.date, jsonComment.id));
+    }
+});
+postLoader.loadMore();
