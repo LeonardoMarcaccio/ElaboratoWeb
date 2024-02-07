@@ -1,16 +1,21 @@
 <link rel='stylesheet' type='text/css' media='screen' href='components/registration/registration.css'>
 <div id="registration-pane">
   <div id="forms-container">
-    <form id="registration-form">
+    <form id="registration-form" action="">
       <div id="registration-essential">
-        <label for="registration-username">Username:</label>
+        <label for="registration-username">Username*</label>
         <input id="registration-username" type="text" name="registration-username" placeholder="username" required="required">
-        <label for="registration-email">Email:</label>
+        <p class="essentialRegistrationError" id="registration-username-specialchar-error">Username must not contain special characters and must be less than 50 characters long</p>
+        <p class="essentialRegistrationError" id="registration-username-taken-error">Username already taken</p>
+        <label for="registration-email">Email*</label>
         <input id="registration-email" type="email" name="registration-email" placeholder="email" required="required">
-        <label for="registration-password">Password:</label>
+        <p class="essentialRegistrationError" id="registration-email-taken-error">Email already used</p>
+        <label for="registration-password">Password*</label>
         <input id="registration-password" type="password" name="registration-password" placeholder="password" required="required">
-        <label for="registration-password-retype">Re-type password:</label>
+        <p class="essentialRegistrationError" id="registration-password-error">Password must be at least <b>9</b> characters long and <b>must</b> contain at least 1 of number and special character </br><b>[!@#$%^&*(),.?":{}|<>]</b></p>
+        <label for="registration-password-retype">Re-type password*</label>
         <input id="registration-password-retype" type="password" name="registration-password-retype" placeholder="retype password" required="required">
+        <p class="essentialRegistrationError" id="registration-password-retype-error">Paswords must match</p>
       </div>
       <div id="registration-non-essential">
         <label for="registration-firstname">First Name:</label>

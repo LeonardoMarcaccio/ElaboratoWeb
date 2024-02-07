@@ -19,7 +19,7 @@ document.addEventListener(APIEvents.unauthorizedEvent, () => {
   new PageLoader(mainGlobalVariables.page.mainContentFooting);  //NOSONAR
   new PageLoader(mainGlobalVariables.page.mainContentHeading);  //NOSONAR
   let pageLoader = new PageLoader(mainGlobalVariables.page.mainContentPage);
-  pageLoader.loadPage("registration");
+  pageLoader.loadPage("login");
 });
 
 loginElements.loginBtn.onclick = () => {
