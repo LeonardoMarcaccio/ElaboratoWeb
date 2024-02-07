@@ -7,8 +7,12 @@ send.type = "button";
 form.appendChild(bar);
 form.appendChild(send);
 
-function loadChat() {
-    let messages = APICalls.getRequests.getMessages(/* self, target*/);
+send.onclick = () => {
+    APICalls.postRequests.sendMessageRequest(/* self, target, content*/);
+};
+
+chatLoader.switchLoadMethod((page) => {
+    let messages = APICalls.getRequests.getMessages(/* self, target, page*/);
     let messageCount = messages.length;
     let chat = document.getElementById("page-dm-upper");
     let user = document.createElement("p");
@@ -18,6 +22,12 @@ function loadChat() {
     user.id = "user-dm";
     prev.id = "message-bottom";
     mainGlobalVariables.page.mainContentHeading.appendChild(user);
+
+    if (page == 0) {
+        chat.appendChild(prev);
+    } else {
+        chat.insertBefore(prev, chat.firstChild);
+    }
     
     for (let i=0; i<messageCount; i++) {
         let tmp = document.createElement("p");
@@ -29,11 +39,6 @@ function loadChat() {
 
     chat.removeChild(document.getElementById("message-bottom"));
     mainGlobalVariables.page.mainContentFooting.appendChild(form);
-}
+});
 
-send.onclick = () => {
-    APICalls.postRequests.sendMessageRequest(/* self, target, content*/);
-};
-
-chatLoader.updateLoadMethod(loadChat);
-chatLoader.loadChat();
+chatLoader.loadChat(0);

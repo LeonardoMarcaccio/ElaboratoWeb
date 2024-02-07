@@ -24,4 +24,6 @@ mainPage.addEventListener('scroll', () => {
             break;
         }
     }
+
+    
 });
