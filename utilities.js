@@ -194,7 +194,7 @@ const APICalls = {
     }
   },
   postRequests: {
-    postDataToApi: async (URI = "localhost", postData = null) => {
+    postDataToApi: async (URI, postData = null) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
@@ -259,7 +259,7 @@ const APICalls = {
     }
   },
   getRequests: {
-    getDataToApi: async (getData = null, URI = "localhost") => {
+    getDataToApi: async (getData = null, URI) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.GET,
         cache: "no-cache",
@@ -277,7 +277,7 @@ const APICalls = {
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       communityUrl.searchParams.append("target", communityName);
       APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(communityName, communityUrl);
       return commentRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
@@ -310,21 +310,11 @@ const APICalls = {
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return commentRequest;
     },
-    getFriendList: async (username = null) => {
+    getFriendList: async (username) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       userUrl.searchParams.append("type", "friendlist");
-      if (username == null) {
-        userUrl.searchParams.append("target", username);
-      }
+      userUrl.searchParams.append("target", username);
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
-      return commentRequest;
-    },
-    getMessages: async (target, page = null, maxPerPage = null) => {
-      let messageUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
-      messageUrl.searchParams.append("type", "friendlist");
-      messageUrl.searchParams.append("target", target);
-      APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, messageUrl);
       return commentRequest;
     }
   }

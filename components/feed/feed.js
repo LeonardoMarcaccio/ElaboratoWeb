@@ -9,7 +9,8 @@ let jsonComment = {
 */
 
 async function loadPosts(page) {
-    let tmpCommunity = await APICalls.getRequests.getCommunitiesRequest(null, page, 1);
+    console.log("Entered");
+    let tmpCommunity = await APICalls.getRequests.getCommunitiesRequest("", page, 1);
     console.log(tmpCommunity);
     console.log(tmpCommunity[0]);
     let newPage = await APICalls.getRequests.getPostsRequest(tmpCommunity[0].name, page, 8);

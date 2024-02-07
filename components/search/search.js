@@ -23,4 +23,3 @@ document.getElementById("search-start").onclick = () => {
 }
 
 communityLoader = new ContentLoader((page) => loadCommunities(page));
-communityLoader.loadMore();
