@@ -28,7 +28,11 @@
     $database->close();
   }
 
-  function communityPostRequest($requestBody, $database) {
+  /*Cognitive complexity of this function is higher than 15, however
+    refractoring it will require a major rework of this module.
+    I tried to define better some values to make the code more readable.
+  */
+  function communityPostRequest($requestBody, $database) {            //NOSONAR
     if(!isset($_GET['type'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
@@ -44,7 +48,6 @@
       break;
       case "post":
         //post creation function
-        //$result = createCommunityPost($targetCommunity, $requestBody);
         if (isset($_GET['target'])) {
           createPost($_GET['target'], $requestBody, $database);
         } else {
@@ -59,8 +62,9 @@
         }
       break;
       case "subcomment":
+        //subcomment creation function
         if (isset($_GET['target'])) {
-          //createSubcomment($_GET['target'], $requestBody, $database);
+          createSubcomment($_GET['target'], $requestBody, $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
