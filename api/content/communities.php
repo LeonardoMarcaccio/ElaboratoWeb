@@ -28,7 +28,11 @@
     $database->close();
   }
 
-  function communityPostRequest($requestBody, $database) {
+  /*Cognitive complexity of this function is higher than 15, however
+    refractoring it will require a major rework of this module.
+    I tried to define better some values to make the code more readable.
+  */
+  function communityPostRequest($requestBody, $database) {            //NOSONAR
     if(!isset($_GET['type'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
@@ -44,7 +48,6 @@
       break;
       case "post":
         //post creation function
-        //$result = createCommunityPost($targetCommunity, $requestBody);
         if (isset($_GET['target'])) {
           createPost($_GET['target'], $requestBody, $database);
         } else {
@@ -59,8 +62,9 @@
         }
       break;
       case "subcomment":
+        //subcomment creation function
         if (isset($_GET['target'])) {
-          //createSubcomment($_GET['target'], $requestBody, $database);
+          createSubcomment($_GET['target'], $requestBody, $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
@@ -85,18 +89,18 @@
     if(!isset($_GET['type'])) {
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
-    $targetSelected = !isset($_GET['selection']);
-    $dividerProvided = !isset($_GET['pageIndex']) && !isset($_GET['pageSize']);
+    $targetSelected = !isset($_GET['target']);
+    $dividerProvided = !isset($_GET['page']) && !isset($_GET['maxPerPage']);
     $result = null;
     $pageSize = DEFAULT_PAGE_SIZE;
     $pageIndex = DEFAULT_PAGE_INDEX;
     $type = $_GET['type'];
     $target = $targetSelected
-      ? $_GET['selection']
+      ? $_GET['target']
       : null;
     if ($dividerProvided) {
-      $pageSize = $_GET['pageSize'];
-      $pageIndex = $_GET['pageIndex'];
+      $pageSize = $_GET['maxPerPage'];
+      $pageIndex = $_GET['page'];
     }
 
     if (isset($_GET['contentId'])) {

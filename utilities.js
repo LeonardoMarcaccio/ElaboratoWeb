@@ -194,7 +194,7 @@ const APICalls = {
     }
   },
   postRequests: {
-    postDataToApi: async (URI, postData = null) => {
+    postDataToApi: async (URI = "localhost", postData = null) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
@@ -259,7 +259,7 @@ const APICalls = {
     }
   },
   getRequests: {
-    getDataToApi: async (getData = null, URI) => {
+    getDataToApi: async (getData = null, URI = "localhost") => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.GET,
         cache: "no-cache",
@@ -310,11 +310,21 @@ const APICalls = {
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return commentRequest;
     },
-    getFriendList: async (username) => {
+    getFriendList: async (username = null) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       userUrl.searchParams.append("type", "friendlist");
-      userUrl.searchParams.append("target", username);
+      if (username == null) {
+        userUrl.searchParams.append("target", username);
+      }
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return commentRequest;
+    },
+    getMessages: async (target, page = null, maxPerPage = null) => {
+      let messageUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      messageUrl.searchParams.append("type", "friendlist");
+      messageUrl.searchParams.append("target", target);
+      APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, messageUrl);
       return commentRequest;
     }
   }
