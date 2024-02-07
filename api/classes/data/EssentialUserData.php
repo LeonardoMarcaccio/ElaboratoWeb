@@ -1,5 +1,5 @@
 <?php
-  class EssentialUserData {
+  class EssentialUserData implements JsonSerializable {
     private $username;            // Essential
     private $email;               // Essential
     private $password;            // Essential
@@ -27,5 +27,11 @@
     }
     public function setPassword($password) {
       $this->password = $password;
+    }
+
+    public function jsonSerialize(): mixed {
+      return ['username' => $this->username,
+        'email' => $this->email,
+        'password' => $this->password];
     }
   }
