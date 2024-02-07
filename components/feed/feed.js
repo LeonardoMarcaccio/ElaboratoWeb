@@ -1,3 +1,4 @@
+/*
 let commentBuilder = new CommentBuilder("");
 let jsonComment = {
     "date":"2024-02-06 18:27:53",
@@ -5,26 +6,27 @@ let jsonComment = {
     "username":"Bomboclatter41",
     "id":"0"
 }
+*/
 
-postLoader = new ContentLoader((unused) => {
-    for (let i=0; i<10; i++) {
-        mainGlobalVariables.page.mainContentPage.appendChild(commentBuilder.makeComment(jsonComment.username, jsonComment.content, null, jsonComment.date, jsonComment.id));
+async function loadPosts(page) {
+    let tmpCommunity = await APICalls.getRequests.getCommunitiesRequest(null, page, 1);
+    console.log(tmpCommunity);
+    console.log(tmpCommunity[0]);
+    let newPage = await APICalls.getRequests.getPostsRequest(tmpCommunity[0].name, page, 8);
+    let userPfp = await APICalls.getRequests.getUserInfo(newPage[i].username);
+    userPfp = userPfp.pfp;
+    for (let i in newPage) {
+        mainGlobalVariables.page.mainContentPage.appendChild(
+                postBuilder.makePost(newPage[i].title, userPfp, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId));
     }
-});
-postLoader.loadMore();
+}
 
 document.getElementById("nav-feed").onclick = () => {
     mainPageLoader.flushPage();
     postLoader.reset();
-    postLoader.switchLoadMethod((page) => {
-        let tmpCommunity = APICalls.getRequests.getCommunitiesRequest(page, 1);
-        let newPage = APICalls.getRequests.getPostsRequest(tmpCommunity[0].name, page, 8);
-        let userPfp = APICalls.getRequests.getUserInfo(newPage[i].username);
-        userPfp = userPfp.pfp;
-        for (let i in newPage) {
-            mainGlobalVariables.page.mainContentPage.appendChild(
-                    postBuilder.makePost(newPage[i].title, userPfp, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId));
-        }
-    });
+    postLoader.switchLoadMethod((page) => loadPosts(page));
     postLoader.loadMore();
 }
+
+postLoader = new ContentLoader((page) => loadPosts(page));
+postLoader.loadMore();
