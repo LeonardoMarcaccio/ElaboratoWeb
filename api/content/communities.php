@@ -90,7 +90,7 @@
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     $targetSelected = !isset($_GET['selection']);
-    $dividerProvided = !isset($_GET['pageIndex']) && !isset($_GET['pageSize']);
+    $dividerProvided = !isset($_GET['page']) && !isset($_GET['maxPerPage']);
     $result = null;
     $pageSize = DEFAULT_PAGE_SIZE;
     $pageIndex = DEFAULT_PAGE_INDEX;
@@ -99,8 +99,8 @@
       ? $_GET['selection']
       : null;
     if ($dividerProvided) {
-      $pageSize = $_GET['pageSize'];
-      $pageIndex = $_GET['pageIndex'];
+      $pageSize = $_GET['maxPerPage'];
+      $pageIndex = $_GET['page'];
     }
 
     if (isset($_GET['contentId'])) {

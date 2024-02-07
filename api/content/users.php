@@ -26,12 +26,12 @@
   }
 
   function userPostRequest($database, $user) {
-    if(!isset($_SERVER['type'])
-      && !isset($_SERVER['target'])) {
+    if(!isset($_GET['type'])
+      && !isset($_GET['target'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     $usrObj = jsonToLogin(file_get_contents("php://input"));
-    switch($_SERVER['type']) {
+    switch($_GET['type']) {
       case "friend":
         addFriend($user, $_GET["target"], $database);
       break;
@@ -47,25 +47,32 @@
   }
 
   function userGetRequest($database, $user) {
-    if(!isset($_SERVER['type'])) {
+    if(!isset($_GET['type'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     $result = null;
-    switch($_SERVER['type']) {
+    switch($_GET['type']) {
       case "friendlist":
-        if (!isset($_SERVER['target'])){
+        if (!isset($_GET['target'])){
           $result = getFriendList($user, $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
       case "userinfo":
-        if (isset($_SERVER['target'])) {
+        if (isset($_GET['target'])) {
           $result = filterInfoLevel(getUser($user, $database),
             checkInfoLevel($user, $_GET['target'], $database));
         } else {
           $result = filterInfoLevel(getUser($user, $database),
             checkInfoLevel($user, $user, $database));
+        }
+      break;
+      case "messagelist":
+        if (isset($_GET['target']) && isset($_GET['page']) && isset($_GET['maxPerPage'])) {
+          $result = getChat($_GET['target'], $_GET['page'], $_GET['maxPerPage'], $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
         }
       break;
       default:
