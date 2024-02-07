@@ -38,7 +38,7 @@
     }
 
     function getCommunities($communityName, $pages, $maxPerPage, mysqli $database) {
-        $n = $pages * $maxPerPage;
+        $n = ($pages + 1) * $maxPerPage;
         $statement = $database->prepare("SELECT * FROM community WHERE name LIKE '%{$communityName}%' LIMIT ?");
         $statement->bind_param("i", $n);
         if (!$statement->execute()) {

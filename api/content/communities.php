@@ -125,7 +125,7 @@
         }
         $result = array();
         foreach ($postList as $singlePost) {
-          array_push($singlePost, new Post($singlePost['Date'],
+          array_push($result, new Post($singlePost['Date'],
             $singlePost['Content'], $singlePost['Title'],
             $singlePost['Name'], $singlePost['Username'],
             $singlePost['Image'], $singlePost['PostID']));
