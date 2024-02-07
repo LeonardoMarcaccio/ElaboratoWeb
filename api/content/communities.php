@@ -104,10 +104,10 @@
       $pageSize = 1;
     }
 
-    switch($_SERVER['type']) {
+    switch($type) {
       case "community":
         //community getting function
-        $result = getCommunities(getUsernameByToken($_COOKIE['token'], $database), $type, $pageIndex, $pageSize, $database);
+        $result = getCommunities(getUsernameByToken($_COOKIE['token'], $database), $target, $pageIndex, $pageSize, $database);
       break;
       case "post":
         $postList = null;

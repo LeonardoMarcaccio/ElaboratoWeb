@@ -20,7 +20,7 @@ document.getElementById("nav-feed").onclick = () => {
         let tmpCommunity = APICalls.getRequests.getCommunitiesRequest(page, 1);
         let newPage = APICalls.getRequests.getPostsRequest(tmpCommunity[0].name, page, 8);
         let userPfp = APICalls.getRequests.getUserInfo(newPage[i].username);
-        userPfp = userPfp.image;
+        userPfp = userPfp.pfp;
         for (let i in newPage) {
             mainGlobalVariables.page.mainContentPage.appendChild(
                     postBuilder.makePost(newPage[i].title, userPfp, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId));

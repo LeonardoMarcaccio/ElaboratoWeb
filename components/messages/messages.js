@@ -8,11 +8,11 @@ form.appendChild(bar);
 form.appendChild(send);
 
 send.onclick = () => {
-    APICalls.postRequests.sendMessageRequest(/* self, target, content*/);
+    APICalls.postRequests.sendMessageRequest(target, content);
 };
 
 chatLoader.switchLoadMethod((page) => {
-    let messages = APICalls.getRequests.getMessages(/* self, target, page*/);
+    let messages = APICalls.getRequests.getMessages(target, page);
     let messageCount = messages.length;
     let chat = document.getElementById("page-dm-upper");
     let user = document.createElement("p");
