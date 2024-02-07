@@ -118,7 +118,11 @@
           $postList = getCommunityPost($target, $requestBody, $pageIndex, $pageSize, $database);
         } else {
           //post from id
-          $postList = array(getPost($target, $database));
+          if ($target == "") {
+            $postList = getRecentPost($pageSize, getUsernameByToken($_SERVER['token'], $database), $database);
+          } else {
+            $postList = array(getPost($target, $database));
+          }
         }
         $result = array();
         foreach ($postList as $singlePost) {
