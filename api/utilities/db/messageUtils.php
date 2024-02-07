@@ -1,6 +1,8 @@
 <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/userUtils.php";  //NOSONAR
 
-    function createMessage($username, $friendUsername, $content, mysqli $database) {
+    function createMessage($friendUsername, $content, mysqli $database) {
+        $username = getUsernameByToken($_COOKIE['token'], $database);
         $statement = $database->prepare("INSERT INTO message VALUES(?, ?, NOW(), ?)");
         $statement->bind_param("sss", $username, $friendUsername, $content);
         if (!$statement->execute()) {
@@ -9,7 +11,8 @@
         }
     }
 
-    function getChat($username, $friendUsername, $pages, $maxPerPage, mysqli $database) {
+    function getChat($friendUsername, $pages, $maxPerPage, mysqli $database) {
+        $username = getUsernameByToken($_COOKIE['token'], $database);
         $n = $pages * $maxPerPage;
         $statement = $database->prepare(
             "SELECT * FROM message

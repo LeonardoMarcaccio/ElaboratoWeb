@@ -472,25 +472,63 @@ class ButtonHandler {
   }
 }
 
+function printUserInfo(userInfo) {
+  let all = document.createElement("div");
+  let head = document.createElement("div");
+  let pfp = document.createElement("img");
+  let username = document.createElement("p");
+  let gender = document.createElement("p");
+  let bio = document.createElement("p");
+  let website = document.createElement("p");
+
+  all.style.display = "flex";
+  all.style.flexDirection = "column";
+  head.style.display = "flex";
+  head.style.flexDirection = "row";
+  username.innerText = userInfo.username;
+  pfp.src = userInfo.pfp;
+  gender.innerText = userInfo.gender;
+  bio.innerText = userInfo.biography;
+  website.innerText = userInfo.personalwebsite;
+
+  all.appendChild(head);
+  head.appendChild(pfp);
+  head.appendChild(username);
+  head.appendChild(gender);
+  all.appendChild(bio);
+  all.appendChild(website);
+  return all;
+}
+
 function openUserPage(username) {
   headPageLoader.flushPage();
   mainPageLoader.flushPage();
   footPageLoader.flushPage();
+  let userInfo = APICalls.getRequests.getUserInfo(username);
   let head = document.createElement("p");
   head.innerText = username;
   mainGlobalVariables.page.mainContentHeading.appendChild(head);
-  let userInfo = APICalls.getRequests.getUserInfo(username);
-  let foot = document.createElement("div");
-  let footButton = document.createElement("button");
-  foot.style.display = "flex";
-  foot.style.justifyContent = "center";
-  footButton.innerText = "Send friend request";
-  footButton.onclick = () => {};
-  foot.appendChild(footButton);
-  mainGlobalVariables.page.mainContentFooting.appendChild(foot);
-  /*
-  mainGlobalVariables.page.mainContentPage.appendChild();
-  */
+  mainGlobalVariables.page.mainContentPage.appendChild(printUserInfo(userInfo));
+  
+  if (userInfo.friendship != "self") {
+    let foot = document.createElement("div");
+    let footButton = document.createElement("button");
+    foot.style.display = "flex";
+    foot.style.justifyContent = "center";
+    if (userInfo.friendship == "no") {
+      footButton.innerText = "Send friend request";
+      footButton.onclick = () => {
+        //APICalls
+        footButton.style.disabled = true;
+        footButton.innerText = "Friend request sent";
+      };
+    } else {
+      footButton.style.disabled = true;
+      footButton.innerText = "Friend request sent";
+    }
+    foot.appendChild(footButton);
+    mainGlobalVariables.page.mainContentFooting.appendChild(foot);
+  }
 }
 
 class PostBuilder {
