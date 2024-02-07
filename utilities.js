@@ -256,6 +256,20 @@ const APICalls = {
     },
     editCommunityRequest: async (communityData, target = null) => {
 
+    },
+    sub: async (community) => {
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      subCommentUrl.searchParams.append("type", "sub");
+      subCommentUrl.searchParams.append("target", community);
+      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl);
+      return commentRequest;
+    },
+    unsub: async (community) => {
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      subCommentUrl.searchParams.append("type", "unsub");
+      subCommentUrl.searchParams.append("target", community);
+      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl);
+      return commentRequest;
     }
   },
   getRequests: {
@@ -315,6 +329,13 @@ const APICalls = {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       userUrl.searchParams.append("type", "friendlist");
       userUrl.searchParams.append("target", username);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return commentRequest;
+    },
+    isFollowing: async (community) => {
+      let userUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      userUrl.searchParams.append("type", APIConstants.communityActions.types.community);
+      userUrl.searchParams.append("target", community);
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return commentRequest;
     }
@@ -704,25 +725,27 @@ class CommunityBuilder {
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
-      follow.innerText = /*APICalls.getRequests.isFollowing()*/ false ? "Unfollow" : "Follow";
+      follow.innerText = APICalls.getRequests.isFollowing(titleString) ? "Unfollow" : "Follow";
       desc.innerText = descString;
       desc.style.textAlign = "left";
       
-      community.onclick = () => {
-        let posts = APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+      desc.onclick = async () => {
+        let posts = await APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+        posts = posts.response;
         let builder = new PostBuilder("search");
         mainPageLoader.flushPage();
         for (let i in posts) {
           posts[i];
-          mainGlobalVariables.page.mainContentPage.appendChild(builder.makePost());
+          mainGlobalVariables.page.mainContentPage.appendChild(
+              builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].image, posts[i].postId));
         }
       }
 
-      follow.onclick = () => {
+      follow.onclick = async () => {
         if (follow.innerText == "Follow") {
-
+          await APICalls.postRequests.sub(titleString);
         } else {
-          
+          await APICalls.postRequests.unsub(titleString);
         }
       };
 

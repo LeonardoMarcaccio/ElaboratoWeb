@@ -60,6 +60,8 @@
     }
 
     function subCommunity($username, $communityName, mysqli $database) {
+        var_dump($username);
+        var_dump($communityName);
         $statement = $database->prepare("INSERT INTO `join`(`Name`, `Username`) VALUES (?,?)");
         $statement->bind_param("ss", $username, $communityName);
         if (!$statement->execute()) {
@@ -87,6 +89,8 @@
     function unsubCommunity($username, $communityName, mysqli $database) {
         $statement = $database->prepare("DELETE FROM `join` WHERE `Name` = ? AND `Username` = ?");
         $statement->bind_param("ss", $username, $communityName);
+        var_dump($username);
+        var_dump($communityName);
         if (!$statement->execute()) {
           throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);

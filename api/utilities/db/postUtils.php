@@ -54,7 +54,7 @@
     }
 
     function getCommunityPost($targetCommunityName, $pages, $maxPerPage, mysqli $database) {
-        $n = $pages*$maxPerPage;
+        $n = ($pages + 1)*$maxPerPage;
         $statement = $database->prepare(
             "SELECT post.*, COUNT(answer.CommentID) AS replies
             FROM post LEFT JOIN answer ON post.PostID = answer.PostID
