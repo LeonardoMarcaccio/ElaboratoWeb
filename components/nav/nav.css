@@ -30,7 +30,7 @@ nav > div > button,#nav-post {
 }
 nav > div > button:hover,#nav-post:hover {
   border-radius: 10px;
-  background-color: #EEC8A6;
+  background-color: #EEC6A654;
 }
 nav > div > button:disabled,#nav-post:disabled {
   background-color: #F09D51;
