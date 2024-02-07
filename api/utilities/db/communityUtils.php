@@ -68,6 +68,22 @@
         }
     }
 
+    function isSub($username, $communityName, mysqli $database) {
+        $statement = $database->prepare("SELECT FROM `join` WHERE `Name` = ? AND `Username` = ?");
+        $statement->bind_param("ss", $username, $communityName);
+        if (!$statement->execute()) {
+          throw new ApiError("Internal Server Error", 500,
+            DB_CONNECTION_ERROR, 500);
+        }
+
+        $communities = $statement->get_result();
+        if (mysqli_num_rows($communities) === 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     function unsubCommunity($username, $communityName, mysqli $database) {
         $statement = $database->prepare("DELETE FROM `join` WHERE `Name` = ? AND `Username` = ?");
         $statement->bind_param("ss", $username, $communityName);
