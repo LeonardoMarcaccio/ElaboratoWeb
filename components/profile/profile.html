@@ -1,36 +1,31 @@
 <link rel="stylesheet" href="/components/profile/profile.css">
-<div id="profile-section-container">
-  <div id="profile-container">
-    <h1 id="profile-username"></h1>
-    <!-- <img class="user-profile-image" id="profile-profile-image" src="/media/users/placeholder.webp"> -->
-    <div id="profile-general-content">
-      <label for="profile-username">Username:</label> 
-      <input type="text" id="profile-username" name="profile-username" value="" readonly>
-
-      <label for="profile-email">Email:</label> 
-      <input type="text" id="profile-email" name="profile-email" value="" readonly>
-
-      <label for="profile-email">Password:</label> 
-      <input type="text" id="profile-password" name="profile-password" value="" readonly>
+<div class="profile-user-container">
+  <div class="profile-user-pane">
+    <div class="profile-user-pane-head">
+      <div id="profile-user-image-box">
+        <img src="/media/users/Linus.jpg" alt="profile user image">
+      </div>
+      <div id="profile-user-name-box">
+        <h1 id="profile-user-username">MarcoFMig</h1>
+        <p><b>Marco</b></p>
+        <p><b>Francolini</b></p>
+      </div>
     </div>
-    <div id="profile-extra-content">
-      <label for="profile-firstName">First Name:</label> 
-      <input type="text" id="profile-firstName" name="profile-firstName" value="" readonly>
-
-      <label for="profile-lastName">Last Name:</label> 
-      <input type="text" id="profile-lastName" name="profile-lastName" value="" readonly>
-
-      <label for="profile-gender">Gender:</label> 
-      <input type="text" id="profile-gender" name="profile-gender" value="" readonly>
-
-      <label for="profile-biography">Biography:</label> 
-      <input type="text" id="profile-biography" name="profile-biography" value="" readonly>
-
-      <label for="profile-peronalWebsite">Pesronal Website:</label> 
-      <input type="text" id="profile-peronalWebsite" name="profile-peronalWebsite" value="" readonly>
-
-      <label for="profile-phoneNumbers">Password:</label> 
-      <input type="text" id="profile-phoneNumbers" name="profile-phoneNumbers" value="" readonly>
+    <div class="profile-user-pane-body">
+      <div id="profile-user-bio-container">
+        <h2>Bio</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin viverra nisi eu mauris interdum, id pulvinar ex placerat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nam sit amet dignissim turpis, vel feugiat tellus. Etiam commodo mi at mauris pharetra bibendum. Nulla enim ante, rhoncus vel lobortis vel, euismod vitae massa. Mauris id urna nec augue ultricies scelerisque nec eget odio. Maecenas vel elit interdum, feugiat tortor vitae, porttitor odio. Do</p>
+      </div>
+      <div class="profile-user-secondary">
+        <div>
+          <h2>Personal Website</h2>
+          <a href="https://www.google.it/">https://www.google.it/</a>
+        </div>
+        <div>
+          <h3>Phone Number</h3>
+          <p>+39 391 417 5818</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

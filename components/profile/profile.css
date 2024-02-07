@@ -1,26 +1,60 @@
-.user-profile-image-box {
-    max-height: 50px;
-    max-width: 50px;
-    height: 2vh;
-    width: 2vw;
+.profile-user-container {
+  justify-content: space-evenly;
+  width: 100%;
+  display: flex;
+  height: 100%;
 }
-.user-profile-image-box > img {
-    aspect-ratio: 1/1;
+.profile-user-pane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: black;
+  background-color: #E0DFD5;
+  flex-grow: 1;
+  max-width: 500px;
+  max-height: 500px;
+  margin-top: 8vh;
+  -webkit-box-shadow: 0px 0px 14px 30px #E0DFD5; 
+  box-shadow: 0px 0px 14px 30px #E0DFD5;
 }
-
-#page-profile {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    align-items: center;
-    background-color: rgb(200, 200, 200);
-    max-height: 5.5vh;
+.profile-user-pane-head {
+  display: flex;
+  justify-content: space-evenly;
+  max-height: 100px;
+  flex-grow: 0;
 }
-
-#page-profile > button {
-    font-size: 1rem;
-    height: 5vh;
-    flex-grow: 2;
-    border: none;
-    background-color: transparent;
+.profile-user-pane-body {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-wrap: wrap;
+}
+.profile-user-secondary {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+#profile-user-image-box > img {
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1/1;
+}
+#profile-user-image-box {
+  width: 100%;
+  height: 100%;
+  flex-grow: 0;
+}
+#profile-user-name-box > * {
+  display: inline;
+  margin: 5px;
+}
+#profile-user-username {
+  flex-grow: 1;
+}
+#profile-user-bio-container > h2 {
+  text-align: center;
+}
+#profile-user-bio-container > p {
+  text-align: left;
 }
