@@ -8,17 +8,14 @@ let jsonComment = {
 }
 */
 
+let postBuilder = new PostBuilder("feed");
+
 async function loadPosts(page) {
-    console.log("Entered");
-    let tmpCommunity = await APICalls.getRequests.getCommunitiesRequest("", page, 1);
-    console.log(tmpCommunity);
-    console.log(tmpCommunity[0]);
-    let newPage = await APICalls.getRequests.getPostsRequest(tmpCommunity[0].name, page, 8);
-    let userPfp = await APICalls.getRequests.getUserInfo(newPage[i].username);
-    userPfp = userPfp.pfp;
+    let newPage = await APICalls.getRequests.getPostsRequest("", page, 8);
+    newPage = newPage.response;
     for (let i in newPage) {
         mainGlobalVariables.page.mainContentPage.appendChild(
-                postBuilder.makePost(newPage[i].title, userPfp, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId));
+                postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId));
     }
 }
 
