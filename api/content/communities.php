@@ -71,13 +71,21 @@
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
-      case "checkSub":
+      case "sub":
         if (isset($_GET['target'])) {
-          isSub(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
+          subCommunity(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
+      case "unsub":
+        if (isset($_GET['target'])) {
+          unsubCommunity(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        }
+      break;
+      
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
@@ -166,6 +174,13 @@
           array_push($singlePost, new Comment($singleComment['Date'],
             $singleComment['Content'], $singleComment['Username'],
             $singleComment['CommentID']));
+        }
+      break;
+      case "checkSub":
+        if (isset($_GET['target'])) {
+          isSub(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
+        } else {
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
       default:
