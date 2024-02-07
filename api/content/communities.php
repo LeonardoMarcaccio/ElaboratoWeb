@@ -115,7 +115,7 @@
         //post getting function
         if (!$targetSelected) {
           //post from community
-          $postList = getCommunityPost($target, $requestBody, $pageIndex, $pageSize, $database);
+          $postList = getCommunityPost($target, $pageIndex, $pageSize, $database);
         } else {
           //post from id
           if ($target == "") {
