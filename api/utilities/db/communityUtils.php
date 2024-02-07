@@ -38,7 +38,7 @@
     }
 
     function getCommunities($communityName, $pages, $maxPerPage, mysqli $database) {
-        $n = $pages * $maxPerPage;
+        $n = ($pages + 1) * $maxPerPage;
         $statement = $database->prepare("SELECT * FROM community WHERE name LIKE '%{$communityName}%' LIMIT ?");
         $statement->bind_param("i", $n);
         if (!$statement->execute()) {
@@ -66,6 +66,22 @@
           throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
+    }
+
+    function isSub($username, $communityName, mysqli $database) {
+        $statement = $database->prepare("SELECT FROM `join` WHERE `Name` = ? AND `Username` = ?");
+        $statement->bind_param("ss", $username, $communityName);
+        if (!$statement->execute()) {
+          throw new ApiError("Internal Server Error", 500,
+            DB_CONNECTION_ERROR, 500);
+        }
+
+        $communities = $statement->get_result();
+        if (mysqli_num_rows($communities) === 0) {
+            return false;
+        }
+
+        return true;
     }
 
     function unsubCommunity($username, $communityName, mysqli $database) {

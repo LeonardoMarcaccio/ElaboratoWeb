@@ -45,7 +45,6 @@
       break;
       case "post":
         //post creation function
-        //$result = createCommunityPost($targetCommunity, $requestBody);
         if (isset($_GET['target'])) {
           createPost($_GET['target'], $requestBody, $database);
         } else {
@@ -61,7 +60,7 @@
       break;
       case "subcomment":
         if (isset($_GET['target'])) {
-          //createSubcomment($_GET['target'], $requestBody, $database);
+          createSubcomment($_GET['target'], $requestBody, $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
@@ -126,7 +125,7 @@
         }
         $result = array();
         foreach ($postList as $singlePost) {
-          array_push($singlePost, new Post($singlePost['Date'],
+          array_push($result, new Post($singlePost['Date'],
             $singlePost['Content'], $singlePost['Title'],
             $singlePost['Name'], $singlePost['Username'],
             $singlePost['Image'], $singlePost['PostID']));

@@ -277,14 +277,15 @@ const APICalls = {
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       communityUrl.searchParams.append("target", communityName);
       APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(communityName, communityUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
       return commentRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
       let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
+      postUrl.searchParams.append("target", targetCommunityId);
       APICalls.addUrlPageSelection(postUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(targetCommunityId, postUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, postUrl);
       return commentRequest;
     },
     getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
@@ -292,7 +293,7 @@ const APICalls = {
       commentUrl.searchParams.append("type", APIConstants.communityActions.types.comment);
       commentUrl.searchParams.append("target", targetPostId);
       APICalls.addUrlPageSelection(commentUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(postData, commentUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, commentUrl);
       return commentRequest;
     },
     getSubcommentsRequest: async (targetCommentId, page = null, maxPerPage = null) => {
@@ -300,7 +301,7 @@ const APICalls = {
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       subCommentUrl.searchParams.append("target", targetCommentId);
       APICalls.addUrlPageSelection(subCommentUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(postData, subCommentUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, subCommentUrl);
       return commentRequest;
     },
     getUserInfo: async (username) => {
