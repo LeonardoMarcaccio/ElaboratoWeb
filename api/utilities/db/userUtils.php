@@ -1,5 +1,6 @@
 <?php
   require_once "generalUtils.php";                                    //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
   function getUser($username, mysqli $database) {
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");

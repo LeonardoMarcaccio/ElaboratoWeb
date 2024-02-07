@@ -1,4 +1,6 @@
 <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
+
 
     function createComment($targetPostID, $requestBody, mysqli $database) {
         $commentObj = jsonToComment($requestBody);

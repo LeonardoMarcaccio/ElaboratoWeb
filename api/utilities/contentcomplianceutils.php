@@ -1,4 +1,5 @@
 <?php
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/ComplianceTest.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/EmailValidityReport.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/reports/FullComplianceReport.php';  //NOSONAR

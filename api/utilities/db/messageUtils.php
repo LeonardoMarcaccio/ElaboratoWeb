@@ -1,4 +1,5 @@
 <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/userUtils.php";  //NOSONAR
 
     function createMessage($friendUsername, $content, mysqli $database) {

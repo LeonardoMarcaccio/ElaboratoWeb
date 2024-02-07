@@ -2,6 +2,7 @@
 
 use function PHPSTORM_META\type;
 
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EncodedImage.php';    //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/community/Post.php';  //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/classes/data/EssentialUserData.php';  //NOSONAR

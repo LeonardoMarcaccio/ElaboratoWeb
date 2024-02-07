@@ -1,4 +1,5 @@
 <?php
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
   function areUsersFriends($userA, $userB, mysqli $database) {
     $query = $database->prepare("SELECT * FROM friendship WHERE (Fri_Username=? OR Fri_Username=?) AND (Username=? OR Username=?) LIMIT 2");

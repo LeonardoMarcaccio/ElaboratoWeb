@@ -1,4 +1,6 @@
 <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
+
     function addVote($username, $postID, $value, mysqli $database) {
         $statement = $database->prepare("SELECT Value FROM vote WHERE PostID=? and Username=?");
         $statement->bind_param("is", $postID, $username);

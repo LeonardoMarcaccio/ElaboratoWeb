@@ -1,4 +1,5 @@
 <?php
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
     function notifyMessage ($to, mysqli $database) {
         $statement = $database->prepare("SELECT Email FROM user WHERE Username = ?");
