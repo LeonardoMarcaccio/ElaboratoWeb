@@ -204,7 +204,7 @@ const APICalls = {
         body: JSON.stringify(postData)
       });
       let jsonContent = await postMsg.json();
-      APICalls.evaluateResponseCodeAction(jsonContent.code);
+      APICalls.evaluateResponseCodeAction(jsonContent);
       return jsonContent;
     },
     sendAuthentication: async (registrationData, isLogin = false) => {
@@ -269,7 +269,7 @@ const APICalls = {
         body: getData != null ? JSON.stringify(getData) : getData
       });
       let jsonContent = postMsg.json();
-      APICalls.evaluateResponseCodeAction(jsonContent.code);
+      APICalls.evaluateResponseCodeAction(jsonContent);
       return jsonContent;
     },
     getCommunitiesRequest: async (communityName, page = null, maxPerPage = null) => {
@@ -277,7 +277,7 @@ const APICalls = {
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       communityUrl.searchParams.append("target", communityName);
       APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(postData, communityUrl);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
       return commentRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {

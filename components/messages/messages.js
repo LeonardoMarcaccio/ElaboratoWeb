@@ -7,12 +7,12 @@ send.type = "button";
 form.appendChild(bar);
 form.appendChild(send);
 
-send.onclick = () => {
-    APICalls.postRequests.sendMessageRequest(target, content);
+send.onclick = async () => {
+    await APICalls.postRequests.sendMessageRequest(target, content);
 };
 
-chatLoader.switchLoadMethod((page) => {
-    let messages = APICalls.getRequests.getMessages(target, page);
+chatLoader.switchLoadMethod(async (page) => {
+    let messages = await APICalls.getRequests.getMessages(target, page, 16);
     let messageCount = messages.length;
     let chat = document.getElementById("page-dm-upper");
     let user = document.createElement("p");
