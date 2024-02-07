@@ -63,7 +63,7 @@
         var_dump($username);
         var_dump($communityName);
         $statement = $database->prepare("INSERT INTO `join`(`Name`, `Username`) VALUES (?,?)");
-        $statement->bind_param("ss", $username, $communityName);
+        $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
           throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
@@ -72,7 +72,7 @@
 
     function isSub($username, $communityName, mysqli $database) {
         $statement = $database->prepare("SELECT FROM `join` WHERE `Name` = ? AND `Username` = ?");
-        $statement->bind_param("ss", $username, $communityName);
+        $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
           throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
@@ -88,9 +88,7 @@
 
     function unsubCommunity($username, $communityName, mysqli $database) {
         $statement = $database->prepare("DELETE FROM `join` WHERE `Name` = ? AND `Username` = ?");
-        $statement->bind_param("ss", $username, $communityName);
-        var_dump($username);
-        var_dump($communityName);
+        $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
           throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
