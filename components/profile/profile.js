@@ -18,12 +18,19 @@ async function refreshprofileUserInfo() {
   let userData = userInfo.response;
 
   profileUserElements.username.innerHTML = genericUtilities.setIfNotNull(userData.username);
-  profileUserElements.firstname.innerHTML = genericUtilities.setIfNotNull(userData.firstname);
-  profileUserElements.lastname.innerHTML = genericUtilities.setIfNotNull(userData.lastname);
-  profileUserElements.bio.innerHTML = genericUtilities.setIfNotNull(userData.biography, "Tell the world more about yourself!");
+  profileUserElements.firstname.innerHTML = "<b>"+genericUtilities.setIfNotNull(userData.firstname)+"</b>";
+  profileUserElements.lastname.innerHTML = "<b>"+genericUtilities.setIfNotNull(userData.lastname)+"</b>";
+  if (userData.biography != null) {
+    profileUserElements.bio.innerHTML = userData.biography;
+    profileUserElements.bio.style.color = "black";
+  } else {
+    profileUserElements.bio.innerHTML = "Tell the world more about yourself!";
+    profileUserElements.bio.style.color = "gray";
+  }
   if (userData.personalwebsite != null) {
     profileUserElements.personalwebsitetitle.style.display = "block";
     profileUserElements.personalwebsite.style.display = "block";
+    profileUserElements.personalwebsite.href = userData.personalwebsite;
     profileUserElements.personalwebsite.innerHTML = userData.personalwebsite;
   } else {
     profileUserElements.personalwebsitetitle.style.display = "none";
