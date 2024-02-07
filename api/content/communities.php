@@ -2,6 +2,7 @@
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/postUtils.php";     //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/sessionUtils.php";  //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/jsonutils.php";        //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/communityUtils.php";        //NOSONAR
 
   define("DEFAULT_PAGE_SIZE", 5);
   define("DEFAULT_PAGE_INDEX", 0);
@@ -28,11 +29,7 @@
     $database->close();
   }
 
-  /*Cognitive complexity of this function is higher than 15, however
-    refractoring it will require a major rework of this module.
-    I tried to define better some values to make the code more readable.
-  */
-  function communityPostRequest($requestBody, $database) {            //NOSONAR
+  function communityPostRequest($requestBody, $database) {
     if(!isset($_GET['type'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
@@ -48,6 +45,7 @@
       break;
       case "post":
         //post creation function
+        //$result = createCommunityPost($targetCommunity, $requestBody);
         if (isset($_GET['target'])) {
           createPost($_GET['target'], $requestBody, $database);
         } else {
@@ -62,9 +60,8 @@
         }
       break;
       case "subcomment":
-        //subcomment creation function
         if (isset($_GET['target'])) {
-          createSubcomment($_GET['target'], $requestBody, $database);
+          //createSubcomment($_GET['target'], $requestBody, $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
@@ -89,18 +86,18 @@
     if(!isset($_GET['type'])) {
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
-    $targetSelected = !isset($_GET['target']);
-    $dividerProvided = !isset($_GET['page']) && !isset($_GET['maxPerPage']);
+    $targetSelected = isset($_GET['selection']);
+    $dividerProvided = isset($_GET['pageIndex']) && isset($_GET['pageSize']);
     $result = null;
     $pageSize = DEFAULT_PAGE_SIZE;
     $pageIndex = DEFAULT_PAGE_INDEX;
     $type = $_GET['type'];
     $target = $targetSelected
-      ? $_GET['target']
+      ? $_GET['selection']
       : null;
     if ($dividerProvided) {
-      $pageSize = $_GET['maxPerPage'];
-      $pageIndex = $_GET['page'];
+      $pageSize = $_GET['pageSize'];
+      $pageIndex = $_GET['pageIndex'];
     }
 
     if (isset($_GET['contentId'])) {
@@ -111,7 +108,7 @@
     switch($type) {
       case "community":
         //community getting function
-        $result = getCommunities(getUsernameByToken($_COOKIE['token'], $database), $target, $pageIndex, $pageSize, $database);
+        $result = getCommunities($target, $pageIndex, $pageSize, $database);
       break;
       case "post":
         $postList = null;
