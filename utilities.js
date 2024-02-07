@@ -22,6 +22,13 @@ const genericUtilities = {
       resultingVector.push(singleProperty);
     }
     return resultingVector;
+  },
+  setIfNotNull: (value, returnIfNull = "") => {
+    if (value != null) {
+      return value;
+    } else {
+      return returnIfNull;
+    }
   }
 }
 
@@ -318,10 +325,12 @@ const APICalls = {
       let commentRequest = await APICalls.getRequests.getDataToApi(null, subCommentUrl);
       return commentRequest;
     },
-    getUserInfo: async (username) => {
+    getUserInfo: async (username = null) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       userUrl.searchParams.append("type", "userinfo");
-      userUrl.searchParams.append("target", username);
+      if (username != null) {
+        userUrl.searchParams.append("target", username);
+      }
       let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return commentRequest;
     },
