@@ -129,13 +129,13 @@
         //post getting function
         if (!$targetSelected) {
           //post from community
-          $postList = getCommunityPost($target, $pageIndex, $pageSize, $database);
+          $postList = array(getPost($target, $database));
         } else {
           //post from id
           if ($target == "") {
             $postList = getRecentPost($pageSize, getUsernameByToken($_COOKIE['token'], $database), $database);
           } else {
-            $postList = array(getPost($target, $database));
+            $postList = getCommunityPost($target, $pageIndex, $pageSize, $database);
           }
         }
         $result = array();
