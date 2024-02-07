@@ -11,8 +11,10 @@
   min-height: 268px;
   max-height: 268px;
   text-align: left;
+  border-radius: 10px;
 }
 
 #cookie-banner-consent-btn {
-  
+  width: 100%;
+  margin: 0px 0px;
 }
