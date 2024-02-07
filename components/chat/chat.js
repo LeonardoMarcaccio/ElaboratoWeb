@@ -1,16 +1,4 @@
-class DelayedChatLoader {
-    loadMethod = () => {};
-
-    updateLoadMethod(loadMethod = () => {}) {
-        this.loadMethod = loadMethod;
-    }
-
-    loadChat() {
-        this.loadMethod();
-    }
-}
-
-let chatLoader = new DelayedChatLoader();
+let chatLoader = new ContentLoader(() => {});
 let chatCache = null;
 let messagePage = null;
 let bois = null;

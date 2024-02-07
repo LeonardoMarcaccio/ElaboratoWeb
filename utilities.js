@@ -272,9 +272,10 @@ const APICalls = {
       APICalls.evaluateResponseCodeAction(jsonContent.code);
       return jsonContent;
     },
-    getCommunitiesRequest: async (page = null, maxPerPage = null) => {
+    getCommunitiesRequest: async (communityName, page = null, maxPerPage = null) => {
       let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
+      communityUrl.searchParams.append("target", communityName);
       APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, communityUrl);
       return commentRequest;
