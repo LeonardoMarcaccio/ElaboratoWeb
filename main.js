@@ -115,6 +115,11 @@ async function mainPageInit() {
   } else {
     loader.loadPage("feed");
   }
+
+  let cookieBanner = await AssetManager.loadAsset("cookiebanner.html");
+  DOMUtilities.addChildElementToNode(document.body, cookieBanner);
+  documentUtilities.addScriptFile("./components/cookiebanner/cookiebanner.js");
+
   //loader.loadPage("registration");
   cookieUtilities.readCookie("token");
 

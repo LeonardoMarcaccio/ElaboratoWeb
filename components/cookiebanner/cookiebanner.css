@@ -1,0 +1,18 @@
+.cookie-banner {
+  display: none;
+  position: fixed;
+  left: 50%;
+  top: 25vh;
+  transform: translate(-50%, 0);
+  z-index: 100;
+  background-color: gray;
+  min-width: 424px;
+  max-width: 424px;
+  min-height: 268px;
+  max-height: 268px;
+  text-align: left;
+}
+
+#cookie-banner-consent-btn {
+  
+}
