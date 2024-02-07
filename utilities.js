@@ -153,7 +153,7 @@ const APIEvents = {
 const APIConstants = {
   apiPages: {
     login: "api/auth/login.php",
-    registration: "api/auth/register.php",
+    registration: "api/auth/registration.php",
     communities: "api/content/communities.php",
     users: "api/content/users.php",
   },
@@ -272,9 +272,10 @@ const APICalls = {
       APICalls.evaluateResponseCodeAction(jsonContent.code);
       return jsonContent;
     },
-    getCommunitiesRequest: async (page = null, maxPerPage = null) => {
+    getCommunitiesRequest: async (communityName, page = null, maxPerPage = null) => {
       let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
+      communityUrl.searchParams.append("target", communityName);
       APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
       let commentRequest = await APICalls.getRequests.getDataToApi(postData, communityUrl);
       return commentRequest;
@@ -320,7 +321,49 @@ const APICalls = {
 }
 
 const JSONUtils = {
+  mapJsonVals: (obj) => {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+  
+    if (typeof obj === 'object') {
+      if (Array.isArray(obj)) {
+        return obj.map((item) => replaceEmptyWithNull(item));
+      } else {
+        const result = {};
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            result[key] = JSONUtils.mapJsonVals(obj[key]);
+          }
+        }
+        return result;
+      }
+    } else {
+      return obj === "" ? null : obj;
+    }
+  },
   registration: {
+    imgToJSON: async (imageFile) => {
+      let reader = new FileReader();
+      let rfile = new Promise((accepted, rejected) => {
+        reader.onload = () => {
+          accepted(reader.result);
+        }
+        reader.onerror = () => {
+          rejected(new Error("Could not read file!"));
+        }
+      });
+      reader.readAsBinaryString(imageFile);
+      let readFile = await rfile;
+
+      let encodedProfilePicture = btoa(readFile);
+      let profilePictureExtension = imageFile.name.split(".")[1];
+
+      return {
+          "image":encodedProfilePicture != "" ? encodedProfilePicture : null,
+          "format":encodedProfilePicture != "" ? profilePictureExtension : null
+          };
+    },
     buildRegistration: (username, email, password, firstname = null, lastname = null,   //NOSONAR
       gender = null, biography = null, personalwebsite = null, pfp = null, phonenumbers = null) => {
       return {"username":username, "email":email, "password":password,
@@ -471,25 +514,63 @@ class ButtonHandler {
   }
 }
 
+function printUserInfo(userInfo) {
+  let all = document.createElement("div");
+  let head = document.createElement("div");
+  let pfp = document.createElement("img");
+  let username = document.createElement("p");
+  let gender = document.createElement("p");
+  let bio = document.createElement("p");
+  let website = document.createElement("p");
+
+  all.style.display = "flex";
+  all.style.flexDirection = "column";
+  head.style.display = "flex";
+  head.style.flexDirection = "row";
+  username.innerText = userInfo.username;
+  pfp.src = userInfo.pfp;
+  gender.innerText = userInfo.gender;
+  bio.innerText = userInfo.biography;
+  website.innerText = userInfo.personalwebsite;
+
+  all.appendChild(head);
+  head.appendChild(pfp);
+  head.appendChild(username);
+  head.appendChild(gender);
+  all.appendChild(bio);
+  all.appendChild(website);
+  return all;
+}
+
 function openUserPage(username) {
   headPageLoader.flushPage();
   mainPageLoader.flushPage();
   footPageLoader.flushPage();
+  let userInfo = APICalls.getRequests.getUserInfo(username);
   let head = document.createElement("p");
   head.innerText = username;
   mainGlobalVariables.page.mainContentHeading.appendChild(head);
-  let userInfo = APICalls.getRequests.getUserInfo(username);
-  let foot = document.createElement("div");
-  let footButton = document.createElement("button");
-  foot.style.display = "flex";
-  foot.style.justifyContent = "center";
-  footButton.innerText = "Send friend request";
-  footButton.onclick = () => {};
-  foot.appendChild(footButton);
-  mainGlobalVariables.page.mainContentFooting.appendChild(foot);
-  /*
-  mainGlobalVariables.page.mainContentPage.appendChild();
-  */
+  mainGlobalVariables.page.mainContentPage.appendChild(printUserInfo(userInfo));
+  
+  if (userInfo.friendship != "self") {
+    let foot = document.createElement("div");
+    let footButton = document.createElement("button");
+    foot.style.display = "flex";
+    foot.style.justifyContent = "center";
+    if (userInfo.friendship == "no") {
+      footButton.innerText = "Send friend request";
+      footButton.onclick = () => {
+        //APICalls
+        footButton.style.disabled = true;
+        footButton.innerText = "Friend request sent";
+      };
+    } else {
+      footButton.style.disabled = true;
+      footButton.innerText = "Friend request sent";
+    }
+    foot.appendChild(footButton);
+    mainGlobalVariables.page.mainContentFooting.appendChild(foot);
+  }
 }
 
 class PostBuilder {
