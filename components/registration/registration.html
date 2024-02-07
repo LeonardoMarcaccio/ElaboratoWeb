@@ -1,7 +1,7 @@
 <link rel='stylesheet' type='text/css' media='screen' href='components/registration/registration.css'>
 <div id="registration-pane">
   <div id="forms-container">
-    <form>
+    <form id="registration-form">
       <div id="registration-essential">
         <label for="registration-username">Username:</label>
         <input id="registration-username" type="text" name="registration-username" placeholder="username" required="required">
@@ -14,19 +14,19 @@
       </div>
       <div id="registration-non-essential">
         <label for="registration-firstname">First Name:</label>
-        <input id="registration-firstname" type="text" name="registration-username" placeholder="your real name">
+        <input id="registration-firstname" type="text" name="registration-firstname" placeholder="your real name">
         <label for="registration-lastname">Last Name:</label>
-        <input id="registration-lastname" type="text" name="registration-username" placeholder="your real last name">
+        <input id="registration-lastname" type="text" name="registration-lastname" placeholder="your real last name">
         <label for="registration-gender">Gender:</label>
-        <input id="registration-gender" type="text" name="registration-username" placeholder="how do you identify?">
+        <input id="registration-gender" type="text" name="registration-gender" placeholder="how do you identify?">
         <label for="registration-biography">Biography:</label>
-        <textarea id="registration-biography" type="text" name="registration-username" maxlength="500" placeholder="what would you like to tell everyone?"></textarea>
+        <textarea id="registration-biography" type="text" name="registration-biography" maxlength="500" placeholder="what would you like to tell everyone?"></textarea>
         <label for="registration-personalwebsite">Personal website:</label>
-        <input id="registration-personalwebsite" type="text" name="registration-username" placeholder="https://www.myblog.com/">
+        <input id="registration-personalwebsite" type="text" name="registration-personalwebsite" placeholder="https://www.myblog.com/">
         <label for="registration-profilepicture">Profile picture:</label>
-        <input id="registration-profilepicture" type="file" name="registration-username" placeholder="username">
+        <input id="registration-profilepicture" type="file" name="registration-profilepicture" placeholder="username">
         <label for="registration-phonenumber">Phone number:</label>
-        <input id="registration-phonenumber" type="text" name="registration-username" placeholder="your phone number">
+        <input id="registration-phonenumber" type="text" name="registration-phonenumber" placeholder="your phone number">
       </div>
       <div id="registration-selectionbar">
         <button id="registration-send-data" type="submit">Register</button>

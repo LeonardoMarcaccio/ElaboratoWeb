@@ -8,3 +8,20 @@ let mainButtonHandler = new ButtonHandler(mainPageLoader, ["feed", "post", "chat
 mainButtonHandler.activate();
 let headButtonHandler = new ButtonHandler(headPageLoader, ["search", "profile"], "nav-", "mainContentPageChange", [mainPageLoader, footPageLoader]);
 headButtonHandler.activate();
+
+let postLoader = null;
+let communityLoader = null;
+let messageLoader = null;
+const mainPage = mainGlobalVariables.page.mainContentPage;
+mainPage.addEventListener('scroll', () => {
+    const scrollableHeight = mainPage.scrollHeight - mainPage.clientHeight;
+
+    if (mainPage.scrollTop >= scrollableHeight) {
+        switch (mainPageLoader.prevPage != null ? mainPageLoader.prevPage : headPageLoader.prevPage) {
+            case "feed": postLoader.loadMore();
+            break;
+            case "search": communityLoader.loadMore();
+            break;
+        }
+    }
+});

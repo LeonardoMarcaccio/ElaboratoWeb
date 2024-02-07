@@ -4,4 +4,10 @@ let jsonCommunity = {
     "description":"This is a sample description for a sample community",
     "image":null
 }
-mainGlobalVariables.page.mainContentPage.appendChild(communityBuilder.makeCommunity(jsonCommunity.name, jsonCommunity.description, jsonCommunity.image));
+
+communityLoader = new ContentLoader((unused) => {
+    for (let i=0; i<14; i++) {
+        mainGlobalVariables.page.mainContentPage.appendChild(communityBuilder.makeCommunity(jsonCommunity.name, jsonCommunity.description, jsonCommunity.image));
+    }
+});
+communityLoader.loadMore();

@@ -513,6 +513,8 @@ class PostBuilder {
       let like = document.createElement("button");
       let dislike = document.createElement("button");
       let comment = document.createElement("button");
+      const bar = document.createElement("form");
+      let flag = true;
 
       post.id = this.IDPrefix + "-post-" + this.count++;
       post.className = "post";
@@ -533,7 +535,36 @@ class PostBuilder {
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
 
-      userPfp.onclick = () => openUserPage(userString);
+      like.onclick = () => {};
+      dislike.onclick = () => {};
+      comment.onclick = () => {
+        if (comment.innerText == "Comment") {
+          comment.innerText = "Undo";
+          if (flag) {
+            flag = false;
+            let input = document.createElement("textarea");
+            let send = document.createElement("input");
+            
+            bar.style.display = "flex";
+            input.placeholder = "Reply";
+            input.style.resize = "none";
+            input.style.width = "300px";
+            send.type = "button";
+            send.value = "Send";
+            bar.appendChild(input);
+            bar.appendChild(send);
+            send.onclick = () => {
+              APICalls.postRequests.sendCommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.innerText, APICalls.getRequests.getUser(), 0]));
+            }
+          }
+          container.appendChild(bar);
+        } else {
+          comment.innerText = "Comment";
+          container.removeChild(bar);
+        }
+      };
+
+      userImage.onclick = () => openUserPage(userString);
 
       post.onclick = () => {
         let comments = APICalls.getRequests.getCommentsRequest(postId, 0, 10);
@@ -580,15 +611,6 @@ class CommunityBuilder {
       let follow = document.createElement("button");
       let desc = document.createElement("p");
       
-      community.onclick = () => {
-        let posts = APICalls.getRequests.getPostsRequest(titleString, 0, 10);
-        let builder = new PostBuilder("search");
-        mainPageLoader.flushPage();
-        for (let i in posts) {
-          posts[i];
-          mainGlobalVariables.page.mainContentPage.appendChild(builder.makePost());
-        }
-      }
       community.id = this.IDPrefix + "-community-" + this.count++;
       community.className = "community";
       community.style.margin = "10px";
@@ -600,10 +622,28 @@ class CommunityBuilder {
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
-      follow.innerText = "Follow";
+      follow.innerText = /*APICalls.getRequests.isFollowing()*/ false ? "Unfollow" : "Follow";
       desc.innerText = descString;
       desc.style.textAlign = "left";
       
+      community.onclick = () => {
+        let posts = APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+        let builder = new PostBuilder("search");
+        mainPageLoader.flushPage();
+        for (let i in posts) {
+          posts[i];
+          mainGlobalVariables.page.mainContentPage.appendChild(builder.makePost());
+        }
+      }
+
+      follow.onclick = () => {
+        if (follow.innerText == "Follow") {
+
+        } else {
+          
+        }
+      };
+
       community.appendChild(head);
       head.appendChild(image);
       head.appendChild(title);
@@ -662,7 +702,9 @@ class CommentBuilder {
     comment.appendChild(buttons);
     buttons.appendChild(like);
     buttons.appendChild(dislike);
-
+    
+    like.onclick = () => {};
+    dislike.onclick = () => {};
     user.onclick = () => openUserPage(userString);
 
     if (!isSub) {
@@ -730,5 +772,26 @@ const JSONBuilder = {
       }
     }
     return JSON.parse(tmp);
+  }
+}
+
+class ContentLoader {
+  currentPage = 0;
+  loadMethod = () => {};
+
+  constructor (loadMethod) {
+      this.switchLoadMethod(loadMethod);
+  }
+
+  switchLoadMethod(loadMethod) {
+    this.loadMethod = loadMethod;
+  }
+
+  loadMore() {
+      this.loadMethod(this.currentPage++);
+  }
+
+  reset() {
+      this.currentPage = 0;
   }
 }
