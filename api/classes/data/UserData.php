@@ -1,7 +1,7 @@
 <?php
   require_once "EssentialUserData.php";                 //NOSONAR
 
-  class UserData extends EssentialUserData {
+  class UserData extends EssentialUserData implements JsonSerializable {
     private $firstName;           // Non Essential
     private $lastName;            // Non Essential
     private $gender;              // Non Essential
@@ -73,5 +73,16 @@
     }
     public function setId($id) {
       $this->id = $id;
+    }
+
+    public function jsonSerialize(): mixed {
+      return array_merge(parent::jsonSerialize(),
+      ['firstname' => $this->firstName,
+        'lastname' => $this->lastName,
+        'gender' => $this->gender,
+        'biography' => $this->biography,
+        'personalwebsite' => $this->personalWebsite,
+        'pfp' => $this->pfp,
+        'phonenumber' => $this->phoneNumbers]);
     }
   }
