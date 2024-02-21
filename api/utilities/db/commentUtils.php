@@ -1,7 +1,9 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
-
+    /**
+     * Create a Comment from a given target Post ID and a body containing the JSON to generate the Comment
+     */
     function createComment($targetPostID, $requestBody, mysqli $database) {
         $commentObj = jsonToComment($requestBody);
         $content = $commentObj->getContent();
@@ -14,7 +16,9 @@
             DB_CONNECTION_ERROR, 500);
         }
         
-        $statement = $database->prepare("SELECT CommentID FROM comment WHERE Username=? ORDER BY CommentID DESC LIMIT 1");
+        $statement = $database->prepare(
+            "SELECT CommentID FROM comment WHERE Username=? ORDER BY CommentID DESC LIMIT 1"
+        );
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
@@ -24,7 +28,7 @@
         $commentID = $statement->get_result();
         
         if (mysqli_num_rows($commentID) !== 1) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
         
@@ -36,6 +40,9 @@
         }
     }
     
+    /**
+     * Modify the Comment with it's updated version contained in form of a JSON inside the request body
+     */
     function modifyComment($requestBody, mysqli $database) {
         $commentBody = jsonToComment($requestBody);
         $statement = $database->prepare("UPDATE commenta SET Date = NOW(), Content = ? WHERE CommentID = ?");
@@ -45,11 +52,14 @@
             $commentBody->getID()
         );
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                //NOSONAR
+            throw new ApiError("Internal Server Error", 500,
               DB_CONNECTION_ERROR, 500);
         }
     }
     
+    /**
+     * Create a Subcomment from a given origin Comment ID and a body containing the JSON to generate the comment
+     */
     function createSubcomment($originID, $requestBody, mysqli $database) {
         $commentObj = jsonToComment($requestBody);
         $content = $commentObj->getContent();
@@ -62,7 +72,9 @@
             DB_CONNECTION_ERROR, 500);
         }
 
-        $statement = $database->prepare("SELECT CommentID FROM comment WHERE Username=? ORDER BY CommentID DESC LIMIT 1");
+        $statement = $database->prepare(
+            "SELECT CommentID FROM comment WHERE Username=? ORDER BY CommentID DESC LIMIT 1"
+        );
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,
@@ -72,7 +84,7 @@
         $commentID = $statement->get_result();
         
         if (mysqli_num_rows($commentID) !== 1) {
-            throw new ApiError("Internal Server Error", 500,                
+            throw new ApiError("Internal Server Error", 500,
             DB_CONNECTION_ERROR, 500);
         }
 
@@ -84,13 +96,19 @@
         }
     }
 
+    /**
+     * Returns an array of the Comments in a specified Post given the Post ID,
+     * the number of pages and the number of Comments in each page.
+     * 
+     * If Pages or MaxPerPage are = 0, only the first Comment will be showned.
+     */
     function getPostComment($targetPostID, $pages, $maxPerPage, mysqli $database) {
-        $n = $pages*$maxPerPage;
+        $n = ($pages!=0 && $maxPerPage!=0) ? $pages*$maxPerPage : 1;
         $statement = $database->prepare(
             "SELECT comment.*, COUNT(subcomment.Sub_CommentID) AS replies
             FROM comment LEFT JOIN subcomment on comment.CommentID = subcomment.CommentID
-            GROUP BY comment.CommentID HAVING CommentID IN (SELECT CommentID FROM answer WHERE postID = 2)
-            ORDER BY comment.Date DESC LIMIT 10"
+            GROUP BY comment.CommentID HAVING CommentID IN (SELECT CommentID FROM answer WHERE postID = ?)
+            ORDER BY comment.Date DESC LIMIT ?"
         );
         $statement->bind_param("ii", $targetPostID, $n);
         if (!$statement->execute()) {
@@ -112,9 +130,19 @@
         return $result;
     }
 
+    /**
+     * Returns an array of the Subcomments in a specified Comment given the Comment ID,
+     * the number of pages and the number of SubComments in each page.
+     * 
+     * If Pages or MaxPerPage are = 0, only the first Subcomment will be showned.
+     */
     function getSubComment($targetCommentID, $pages, $maxPerPage, mysqli $database) {
         $n = $pages*$maxPerPage;
-        $statement = $database->prepare("SELECT * FROM comment WHERE CommentID IN (SELECT CommentID FROM subcomment WHERE CommentID=?) ORDER BY date DESC LIMIT ?");
+        $statement = $database->prepare(
+            "SELECT * FROM comment WHERE CommentID IN (
+                SELECT CommentID FROM subcomment WHERE CommentID=?
+            ) ORDER BY date DESC LIMIT ?"
+        );
         $statement->bind_param("ii", $targetCommentID, $n);
         if (!$statement->execute()) {
             throw new ApiError("Internal Server Error", 500,

@@ -12,6 +12,9 @@
     }
   }
 
+  /**
+   * Generate an unique Token used for the Session
+   */
   function generateUniqueToken(mysqli $database) {
     $query = $database->prepare("SELECT * FROM sessione WHERE Token = ? LIMIT 1");
     $generatedToken = null;
@@ -29,15 +32,9 @@
     return $generatedToken;
   }
 
-  function updateSession($token, $username, mysqli $database) {
-    $statement = $database->prepare("UPDATE sessione SET Date = NOW() WHERE Token = ?");
-    $statement->bind_param("ss", $token, $username);
-    if (!$statement->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
-        DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
-    }
-  }
-
+  /**
+   * Return a Username given it's current Session Token
+   */
   function getUsernameByToken($token, mysqli $database) {
     $statement = $database->prepare("SELECT Username FROM sessione WHERE Token = ?");
     $statement->bind_param("s", $token);
@@ -51,6 +48,9 @@
     return ($username !== null) ? $username["Username"] : false;
   }
 
+  /**
+   * Remove all the tokens which have their TTL exhausted
+   */
   function deleteOldTokens(mysqli $database, $ttlToken) {
     $statement = $database->prepare("DELETE FROM sessione WHERE TIMESTAMPDIFF(SECOND, Date, NOW()) > ?");
     $statement->bind_param("i", $ttlToken);
@@ -60,6 +60,9 @@
     }
   }
 
+  /**
+   * Return the validity of a token
+   */
   function checkTokenValidity($token, mysqli $database) {
     deleteOldTokens($database, DEFAULT_TOKEN_TTL);
     $statement = $database->prepare("SELECT * FROM sessione WHERE Token = ?");
