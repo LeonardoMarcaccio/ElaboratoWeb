@@ -231,8 +231,8 @@ const APICalls = {
       if (target != null) {
         communityUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(communityUrl,communityData);
-      return commentRequest;
+      let communityRequest = await APICalls.postRequests.postDataToApi(communityUrl, communityData);
+      return communityRequest;
     },
     sendPostRequest: async (postData, target = null) => {
       let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
@@ -240,8 +240,8 @@ const APICalls = {
       if (target != null) {
         postUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(postUrl, postData);
-      return commentRequest;
+      let postRequest = await APICalls.postRequests.postDataToApi(postUrl, postData);
+      return postRequest;
     },
     sendCommentRequest: async (commentData, target = null) => {
       let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
@@ -249,7 +249,7 @@ const APICalls = {
       if (target != null) {
         commentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(commentUrl, postData);
+      let commentRequest = await APICalls.postRequests.postDataToApi(commentUrl, commentData);
       return commentRequest;
     },
     sendSubcommentRequest: async (subcommentData, target = null) => {
@@ -258,8 +258,8 @@ const APICalls = {
       if (target != null) {
         subCommentUrl.searchParams.append("target", target);
       }
-      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl, postData);
-      return commentRequest;
+      let subCommentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl, subcommentData);
+      return subCommentRequest;
     },
     editCommunityRequest: async (communityData, target = null) => {
 
@@ -268,15 +268,15 @@ const APICalls = {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       subCommentUrl.searchParams.append("type", "sub");
       subCommentUrl.searchParams.append("target", community);
-      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl);
-      return commentRequest;
+      let subResponse = await APICalls.postRequests.postDataToApi(subCommentUrl);
+      return subResponse;
     },
     unsub: async (community) => {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       subCommentUrl.searchParams.append("type", "unsub");
       subCommentUrl.searchParams.append("target", community);
-      let commentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl);
-      return commentRequest;
+      let unsubResponse = await APICalls.postRequests.postDataToApi(subCommentUrl);
+      return unsubResponse;
     }
   },
   getRequests: {
@@ -298,16 +298,16 @@ const APICalls = {
       communityUrl.searchParams.append("type", APIConstants.communityActions.types.community);
       communityUrl.searchParams.append("target", communityName);
       APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
-      return commentRequest;
+      let communityRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
+      return communityRequest;
     },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
       let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
       postUrl.searchParams.append("target", targetCommunityId);
       APICalls.addUrlPageSelection(postUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, postUrl);
-      return commentRequest;
+      let postRequest = await APICalls.getRequests.getDataToApi(null, postUrl);
+      return postRequest;
     },
     getCommentsRequest: async (targetPostId, page = null, maxPerPage = null) => {
       let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
@@ -322,8 +322,8 @@ const APICalls = {
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       subCommentUrl.searchParams.append("target", targetCommentId);
       APICalls.addUrlPageSelection(subCommentUrl, page, maxPerPage);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, subCommentUrl);
-      return commentRequest;
+      let subCommentRequest = await APICalls.getRequests.getDataToApi(null, subCommentUrl);
+      return subCommentRequest;
     },
     getUserInfo: async (username = null) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
@@ -331,22 +331,22 @@ const APICalls = {
       if (username != null) {
         userUrl.searchParams.append("target", username);
       }
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
-      return commentRequest;
+      let userRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return userRequest;
     },
     getFriendList: async (username) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       userUrl.searchParams.append("type", "friendlist");
       userUrl.searchParams.append("target", username);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
-      return commentRequest;
+      let friendlist = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return friendlist;
     },
     isFollowing: async (community) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       userUrl.searchParams.append("type", "checkSub");
       userUrl.searchParams.append("target", community);
-      let commentRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
-      return commentRequest;
+      let communityFollow = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return communityFollow;
     }
   }
 }
@@ -873,6 +873,13 @@ class CommentBuilder {
 }
 
 const JSONBuilder = {
+  /**
+   * Creates a JSON object
+   * 
+   * @param {string[]} fieldArray the array containing the field names
+   * @param {string[]} valueArray the array containing the corresponding values
+   * @returns the JSON object
+   */
   build(fieldArray, valueArray) {
     let limit = fieldArray.length - 1;
     let tmp = "{";
