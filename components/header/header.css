@@ -3,7 +3,7 @@
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    padding: 10px;
+    padding: 5px;
 }
 
 #header-illustration > h1,p {
@@ -24,4 +24,22 @@
 #header-bg {
     display: flex;
     flex-flow: row;
+}
+
+@media only screen and (max-width: 700px) {
+    #header-image {
+        display: none;
+    }
+
+    #header-bg {
+        background-image: url("/media/images/playpal-onlymage_WO.webp");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position-y: center;
+        background-position-x: left;
+    }
+}
+
+header {
+    padding-top: 5px;
 }
