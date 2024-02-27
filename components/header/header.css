@@ -2,6 +2,7 @@
     background-color: transparent;
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     padding: 10px;
 }
 
@@ -11,10 +12,16 @@
     margin: 5px;
 }
 
-#header-bg {
+#header-image {
     background-image: url("/media/images/playpal-onlymage_WO.webp");
     background-repeat: no-repeat;
     background-size: contain;
     background-position-y: center;
     background-position-x: left;
+    min-width: 140px;
+}
+
+#header-bg {
+    display: flex;
+    flex-flow: row;
 }
