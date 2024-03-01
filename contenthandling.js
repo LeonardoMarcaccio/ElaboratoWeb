@@ -1,6 +1,18 @@
+/**
+ * Constants used for contenthandling.
+ */
 const contentHandlingConsts = {
+  /**
+   * Supported html extensions.
+   */
   htmlExtensions: ["html", "htm"],
+  /**
+   * Supported css extensions.
+   */
   cssExtensions: ["css"],
+  /**
+   * Supported js extensions.
+   */
   jsExtensions: ["js"]
 }
 
@@ -78,22 +90,54 @@ class AssetLoader {
   /**
    * Loads an asset from an external source.
    * @param {string | string[]} assets
-   * @returns String containing the request's content
+   * @param {object} configuration configuration for the function
+   * @returns {Promise<string> | Promise<Error>} String containing the request's content
    * @throws Error if the content could not be retrieved
    */
-  async loadAsset(assets, configuration = {literalElement: true, loadHtml: false, loadCss: false, loadJs: false}) {
+  async loadAsset(assets, 
+    configuration = {
+      /**
+       * Wether or not the name should represent a resource name or a literal resource name
+       * with it's corresponding extension
+       */
+      literalElement: true,
+      /**
+       * Wether or not to load the HTML extension (.html)
+       */
+      loadHtml: false,
+      /**
+       * Wether or not to load the CSS extension (.css)
+       */
+      loadCss: false,
+      /**
+       * Wether or not to load the JS extension (.js)
+       */
+      loadJs: false
+    }) {
     let result;
     let targetAssets;
+    // This might need some dry check
     if (configuration.literalElement) {
       targetAssets = assets;
+    } else if (assets instanceof Array) {
+      targetAssets = Array();
+      assets.forEach((singleAssetName) => {
+        let pathContainer = this.extractAssetPath(singleAssetName);
+        let rawname = this.extractAssetName(singleAssetName);
+        let nameVector = this.generateAssetVariantVector(rawname, {html: configuration.loadHtml, htm: false, css: configuration.loadCss, js: configuration.loadJs});
+        nameVector.map((singleName) => pathContainer + singleName);
+        targetAssets = targetAssets.concat(nameVector);
+      });
+    } else if (assets instanceof String) {
+      targetAssets = Array();
+      let pathContainer = this.extractAssetPath(singleAssetName);
+      let rawname = this.extractAssetName(singleAssetName);
+      let nameVector = this.generateAssetVariantVector(rawname, {html: configuration.loadHtml, htm: false, css: configuration.loadCss, js: configuration.loadJs});
+      nameVector.forEach((singleName) => targetAssets.push(pathContainer + singleName));
     } else {
-      if (assets instanceof Array) {
-
-      } else if (assets instanceof String) {
-        let tmpString
-      }
+      throw new Error("Wrong type passed while using automatic extension completion!");
     }
-    if (Array.isArray(targetAssets)) {
+    if (targetAssets instanceof Array) {
       result = Array();
       for (let asset in targetAssets) {
         result.push(await fetch(this.sourceFolder + asset));
@@ -107,10 +151,58 @@ class AssetLoader {
   }
 
   /**
-   * 
-   * @param {String} asset 
+   * Extracts the name from an asset's full path.
+   * @param {string} asset the asset's full path
+   * @return {string} the asset's name, if available, otherwhise an empty string
    */
   extractAssetName(asset) {
     return asset.slice(asset.lastIndexOf("/") + 1, asset.slice.lastIndexOf("."));
+  }
+  /**
+   * Extracts the path from an asset's full path.
+   * @param {string} asset the asset's full path
+   * @returns the asset's path, if available, otherwise an empty string
+   */
+  extractAssetPath(asset) {
+    return asset.slice(0, asset.lastIndexOf("/") + 1);
+  }
+  /**
+   * Generates a new Array with variants for the selected file extensions, by default every type
+   * @param {string} assetName the raw name of the asset, do not pass extensions
+   * @param {string} configuration configuration for the function
+   * @returns {Array<string>} an array containing strings with the requested extensions
+   */
+  generateAssetVariantVector(assetName,
+    configuration = {
+      /**
+       * Wether or not to generate the HTML extension name (.html)
+       */
+      html: true,
+      /**
+       * Wether or not to generate the HTML extension name (.htm)
+       */
+      htm: false,
+      /**
+       * Wether or not to generate the CSS extension name (.css)
+       */
+      css: true,
+      /**
+       * Wether or not to generate the JS extension name (.js)
+       */
+      js: true
+    }) {
+    let assetNameVariants = Array();
+    if (configuration.html) {
+      assetNameVariants.push(assetName + contentHandlingConsts.htmlExtensions[0]);
+    } else if (configuration.htm) {
+      assetNameVariants.push(assetName + contentHandlingConsts.htmlExtensions[1]);
+    }
+    if (configuration.css) {
+      assetNameVariants.push(assetName + contentHandlingConsts.cssExtensions[0]);
+    }
+    if (configuration.js) {
+      assetNameVariants.push(assetName + contentHandlingConsts.jsExtensions[0]);
+    }
+    return assetNameVariants;
   }
 };
