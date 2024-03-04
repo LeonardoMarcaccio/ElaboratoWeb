@@ -38,7 +38,12 @@
     // Punctuation check
     $punctuationCheck = preg_match('/[!@#$%^&*(),.?":{}|<>]/', $password) > 0;
     // Se la password supera tutti i controlli, è considerata sicura
-    return new PasswordValidityReport($lengthCheck, $capitalCheck, $nonCapitalCheck, $numberCheck, $specialCharCheck, $punctuationCheck);
+    return new PasswordValidityReport($lengthCheck,
+        $capitalCheck,
+        $nonCapitalCheck,
+        $numberCheck,
+        $specialCharCheck,
+        $punctuationCheck);
   }
 
   function checkEmailValidity($email) {
@@ -47,14 +52,17 @@
   }
 
   function checkNonEssValidity(UserData $userContainer) {
-    $firstNameCheck = standardStringValidity($userContainer->getFirstName(), 50,
+    const $lengthName = 50;
+    const $lengthDesc = 500;
+    const $lengthPfp = 2083;
+    $firstNameCheck = standardStringValidity($userContainer->getFirstName(), $lengthName,
       '/[!@#$%^&*(),.?":{}|<>]/');
-    $lastNameCheck = standardStringValidity($userContainer->getLastName(), 50,
+    $lastNameCheck = standardStringValidity($userContainer->getLastName(), $lengthName,
       '/[!@#$%^&*(),.?":{}|<>]/');
     $genderCheck = true;
-    $biographyValid = standardStringValidity($userContainer->getBiography(), 500);
-    $personalWebsiteCheck = standardStringValidity($userContainer->getPersonalWebsite(), 500);
-    $profilePicCheck = standardStringValidity($userContainer->getPfp(), 2083);
+    $biographyValid = standardStringValidity($userContainer->getBiography(), $lengthDesc);
+    $personalWebsiteCheck = standardStringValidity($userContainer->getPersonalWebsite(), $lengthDesc);
+    $profilePicCheck = standardStringValidity($userContainer->getPfp(), $lengthPfp);
     $phoneNumberCheck = true;     // TODO: Check for each number if it conforms with standards.
 
     return new NonEssValidity($firstNameCheck, $lastNameCheck,

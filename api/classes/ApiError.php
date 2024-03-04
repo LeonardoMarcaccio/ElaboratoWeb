@@ -31,3 +31,8 @@
       return $this->apiErrorCode;
     }
   }
+
+  function getInternalError() {
+    return new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE,
+      DB_CONNECTION_ERROR, DB_CONNECTION_ERROR_CODE);
+  }

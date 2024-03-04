@@ -10,8 +10,7 @@
         $statement = $database->prepare("INSERT INTO message VALUES(?, ?, NOW(), ?)");
         $statement->bind_param("sss", $username, $friendUsername, $content);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -28,14 +27,12 @@
             ORDER BY message.Timestamp DESC LIMIT ?");
         $statement->bind_param("ssssi", $username, $friendUsername, $friendUsername, $username, $n);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $communities = $statement->get_result();
         if (mysqli_num_rows($communities) === 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $result = array();
@@ -45,5 +42,3 @@
 
         return $result;
     }
-
-    

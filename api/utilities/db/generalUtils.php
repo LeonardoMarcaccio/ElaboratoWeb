@@ -7,8 +7,7 @@
     $statement = $database->prepare("SELECT COUNT(*) FROM $table WHERE $columnName = ?");
     $statement->bind_param("s", $value);
     if (!$statement->execute()) {
-      throw new ApiError("Internal Server Error", 500,                //NOSONAR
-        DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
     $value = $statement->get_result();
     $countResult = mysqli_fetch_assoc($value);

@@ -2,7 +2,7 @@
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
     /**
-     * Create a Community from a JSON body containg the data for the Community
+     * Create a Community from a JSON body containing the data for the Community
      */
     function createCommunity($requestBody, mysqli $database) {
         $communityBody = jsonToCommunity($requestBody);
@@ -21,13 +21,12 @@
             $username
         );
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
     /**
-     * Modify a Community from a JSON body containg the data for the Community
+     * Modify a Community from a JSON body containing the data for the Community
      */
     function modifyCommunity($requestBody, mysqli $database) {
         $communityBody = jsonToCommunity($requestBody);
@@ -40,24 +39,22 @@
         );
 
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
     /**
      * Returns an array of the Communities containing the Community Name given,
      * the number of pages and the number of Communities in each page.
-     * 
-     * If Pages or MaxPerPage are = 0, only the first Community will be showned.
+     *
+     * If Pages or MaxPerPage are = 0, only the first Community will be showed.
      */
     function getCommunities($communityName, $pages, $maxPerPage, mysqli $database) {
         $n = ($pages!=0 && $maxPerPage!=0) ? $pages*$maxPerPage : 1;
         $statement = $database->prepare("SELECT * FROM community WHERE name LIKE '%{$communityName}%' LIMIT ?");
         $statement->bind_param("i", $n);
         if (!$statement->execute()) {
-          throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $result = array();
@@ -82,8 +79,7 @@
         $statement = $database->prepare("INSERT INTO `join`(`Name`, `Username`) VALUES (?,?)");
         $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
-          throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -94,8 +90,7 @@
         $statement = $database->prepare("SELECT * FROM `join` WHERE `Name` = ? AND `Username` = ?");
         $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
-          throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $communities = $statement->get_result();
@@ -113,8 +108,7 @@
         $statement = $database->prepare("DELETE FROM `join` WHERE `Name` = ? AND `Username` = ?");
         $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
-          throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+          throw getInternalError();
         }
     }
 

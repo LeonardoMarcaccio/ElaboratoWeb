@@ -5,8 +5,7 @@
         $statement = $database->prepare("SELECT Value FROM vote WHERE PostID=? and Username=?");
         $statement->bind_param("is", $postID, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $oldValue = $statement->get_result();
@@ -27,8 +26,7 @@
         $statement = $database->prepare("INSERT INTO vote VALUES(?, ?, ?)");
         $statement->bind_param("isi", $postID, $username, $value);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -36,8 +34,7 @@
         $statement = $database->prepare("UPDATE vote SET value=? WHERE PostID=? AND Username=?");
         $statement->bind_param("iis", $value, $postID, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -45,8 +42,7 @@
         $statement = $database->prepare("DELETE FROM vote WHERE PostID=? AND Username=?");
         $statement->bind_param("is", $postID, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,                
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 

@@ -37,8 +37,7 @@
         $gender, $biography, $personalWebsite, $pfp, $phoneNumbers);
 
         if (!$registrationStatement->execute()) {
-          throw new ApiError("Internal Server Error", 500,
-          "Error while contacting database", 500);
+          throw getInternalError();
         }
         echo $password = password_hash($password, PASSWORD_DEFAULT);
         $token = generateUniqueToken($database);
@@ -47,7 +46,7 @@
         createSession($token, $username, $database);
         exit(generateJSONResponse(200, "Ok"));
       }
-      exit(generateJSONResponse(401, "Invalid Information", $report));
+      exit(generateJSONResponse(API_INVALID_USER_DATA_ERROR_CODE, "Invalid Information", $report));
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));

@@ -17,6 +17,10 @@ use function PHPSTORM_META\type;
   define("USER_CONTENT_FOLDER", "/media/users/");
   define("SUPPORTED_IMAGE_FORMATS", array("jpg", "png", "gif", "webp"));
 
+  function getInvalidDataError() {
+    return new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+  }
+
   function jsonToImage($jsonObject) {
     if ($jsonObject !== null) {
       return new EncodedImage(
@@ -24,7 +28,7 @@ use function PHPSTORM_META\type;
         attemptValExtraction($jsonObject, 'format')
       );
     } else {
-      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+      throw getInvalidDataError();
     }
   }
 
@@ -43,7 +47,7 @@ use function PHPSTORM_META\type;
         decodeAndStoreImage(jsonToImage(attemptValExtraction($assArray, 'pfp'))),
         attemptValExtraction($assArray, 'phonenumbers'));
     } else {
-      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+      throw getInvalidDataError();
     }
   }
 
@@ -52,7 +56,7 @@ use function PHPSTORM_META\type;
     if ($assArray !== null) {
       return new EssentialUserData($assArray['username'], null, $assArray['password']);
     } else {
-      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+      throw getInvalidDataError();
     }
   }
 
@@ -64,7 +68,7 @@ use function PHPSTORM_META\type;
       $communityDescription = attemptValExtraction($assArray, 'description');
       return new Community($communityName, $communityDescription, $communityImage);
     } else {
-      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+      throw getInvalidDataError();
     }
   }
 
@@ -80,7 +84,7 @@ use function PHPSTORM_META\type;
       $postId = attemptValExtraction($assArray, 'id');
       return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
     } else {
-      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+      throw getInvalidDataError();
     }
   }
 
@@ -93,7 +97,7 @@ use function PHPSTORM_META\type;
       $commentId = attemptValExtraction($assArray, 'id');
       return new Comment($commentDate, $commentContent, $commentUsername, $commentId);
     } else {
-      throw new ApiError("Ok", 200, API_INVALID_USER_DATA_ERROR, API_INVALID_USER_DATA_ERROR_CODE);
+      throw getInvalidDataError();
     }
   }
     

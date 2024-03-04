@@ -10,20 +10,20 @@
     if (isset($_COOKIE["token"])) {
         
       if (!isValueInColumn("sessione", "Token", $_COOKIE["token"], $database)) {
-        throw new ApiError("Unauthorized Access", 401);
+        throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
       }
 
       $query = $database->prepare("DELETE FROM sessione WHERE token = ?");
       $query->bind_param("s", $_COOKIE["token"]);
       if (!$query->execute()) {
-        throw new ApiError("Internal Server Error", 500,
-          DB_CONNECTION_ERROR, 500);
+        throw getInternalError();
       }
 
-      setcookie('token', '', -1, "/");
+      const $noExpire = -1;
+      setcookie('token', '', $noExpire, "/");
       exit(generateJSONResponse(200, "Ok"));
     } else {
-      throw new ApiError("Unauthorized Access", 401);
+      throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
 
   } catch (ApiError $thrownError) {

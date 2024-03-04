@@ -6,8 +6,7 @@
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                  //NOSONAR
-      DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
     
     $resultingUser = mysqli_fetch_assoc($query->get_result());
@@ -42,8 +41,7 @@
     $query = $database->prepare("SELECT Fri_Username FROM friendship WHERE Username=? LIMIT 1");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                  //NOSONAR
-      DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
     $friendsArray = array();
     $resultingUser = mysqli_fetch_assoc($query->get_result());
@@ -63,14 +61,12 @@
     $statement = $database->prepare("SELECT COUNT(*) AS val FROM friendship WHERE Fri_Username = ? AND Username = ?");
     $statement->bind_param("ss", $queriedUser, $queryingUser);
     if (!$statement->execute()) {
-      throw new ApiError("Internal Server Error", 500,                //NOSONAR
-      DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
     
     $count = $statement->get_result();
     if (mysqli_num_rows($count) === 0) {
-        throw new ApiError("Internal Server Error", 500,                
-        DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
 
     $sol = mysqli_fetch_assoc($count);
@@ -91,8 +87,7 @@
     $query = $database->prepare("INSERT INTO friendship (Fri_Username, Username) VALUES (?, ?)");
     $query->bind_param("ss", $friendedUser, $friendingUser);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                //NOSONAR
-      DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
   }
 
@@ -100,8 +95,7 @@
     $query = $database->prepare("DELETE FROM friendship WHERE Fri_Username = ? AND Username = ?");
     $query->bind_param("ss", $friendedUser, $friendingUser);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                //NOSONAR
-      DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
   }
 
@@ -131,8 +125,7 @@
     $query = $database->prepare("SELECT * FROM user WHERE Username=? LIMIT 1");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
-      throw new ApiError("Internal Server Error", 500,                  //NOSONAR
-      DB_CONNECTION_ERROR, 500);
+      throw getInternalError();
     }
     
     $resultingUser = mysqli_fetch_assoc($query->get_result());

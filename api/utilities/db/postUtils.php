@@ -14,8 +14,7 @@
         $statement = $database->prepare("INSERT INTO post VALUES(0, NOW(), ?, 0, ?, ?, ?, ?)");
         $statement->bind_param("sssss", $content, $title, $image, $targetCommunity, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -32,8 +31,7 @@
         );
 
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -46,14 +44,12 @@
         );
         $statement->bind_param("si",$username, $n_post);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $posts = $statement->get_result();
         if (mysqli_num_rows($posts) === 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
         
         $result = array();
@@ -67,7 +63,7 @@
     /**
      * Returns an array of the Posts contained in the given Community, having a size based on
      * the number of pages and the number of Post in each page.
-     * 
+     *
      * If Pages or MaxPerPage are = 0, only the first Post will be showned.
      */
     function getCommunityPost($targetCommunityName, $pages, $maxPerPage, mysqli $database) {
@@ -79,14 +75,12 @@
         );
         $statement->bind_param("si", $targetCommunityName, $n);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $posts = $statement->get_result();
         if (mysqli_num_rows($posts) == 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
         
         $result = array();
@@ -104,27 +98,23 @@
         $statement = $database->prepare("SELECT COUNT(*) AS value FROM vote WHERE PostID=? and Value=1");
         $statement->bind_param("s", $postID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $likes = $statement->get_result();
         if (mysqli_num_rows($likes) === 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $statement = $database->prepare("SELECT COUNT(*) AS value FROM vote WHERE PostID=? and Value=0");
         $statement->bind_param("s", $postID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $dislikes = $statement->get_result();
         if (mysqli_num_rows($dislikes) === 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $newValue = mysqli_fetch_assoc($likes)["value"] - mysqli_fetch_assoc($dislikes)["value"];
@@ -132,8 +122,7 @@
         $statement = $database->prepare("UPDATE post SET Likes=? WHERE PostID=?");
         $statement->bind_param("is", $newValue, $postID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
@@ -144,14 +133,12 @@
         $statement = $database->prepare("SELECT * FROM post WHERE PostID=?");
         $statement->bind_param("s", $postID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $post = $statement->get_result();
         if (mysqli_num_rows($post) !== 1) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         return mysqli_fetch_assoc($post);

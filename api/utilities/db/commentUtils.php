@@ -12,8 +12,7 @@
         $statement = $database->prepare("INSERT INTO comment VALUES(0, NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
         
         $statement = $database->prepare(
@@ -21,22 +20,19 @@
         );
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $commentID = $statement->get_result();
         
         if (mysqli_num_rows($commentID) !== 1) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
         
         $statement = $database->prepare("INSERT INTO answer VALUES(?, ?)");
         $statement->bind_param("ii", mysqli_fetch_assoc($commentID)["CommentID"], $targetPostID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
     
@@ -52,8 +48,7 @@
             $commentBody->getID()
         );
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-              DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
     
@@ -68,8 +63,7 @@
         $statement = $database->prepare("INSERT INTO comment VALUES(0, NOW(), ?, ?)");
         $statement->bind_param("ss", $content, $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $statement = $database->prepare(
@@ -77,29 +71,26 @@
         );
         $statement->bind_param("s", $username);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $commentID = $statement->get_result();
         
         if (mysqli_num_rows($commentID) !== 1) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $statement = $database->prepare("INSERT INTO subcomment VALUES(?, ?)");
         $statement->bind_param("ii", mysqli_fetch_assoc($commentID)["CommentID"], $originID);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
     }
 
     /**
      * Returns an array of the Comments in a specified Post given the Post ID,
      * the number of pages and the number of Comments in each page.
-     * 
+     *
      * If Pages or MaxPerPage are = 0, only the first Comment will be showned.
      */
     function getPostComment($targetPostID, $pages, $maxPerPage, mysqli $database) {
@@ -112,14 +103,12 @@
         );
         $statement->bind_param("ii", $targetPostID, $n);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $comments = $statement->get_result();
         if (mysqli_num_rows($comments) === 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $result = array();
@@ -133,7 +122,7 @@
     /**
      * Returns an array of the Subcomments in a specified Comment given the Comment ID,
      * the number of pages and the number of SubComments in each page.
-     * 
+     *
      * If Pages or MaxPerPage are = 0, only the first Subcomment will be showned.
      */
     function getSubComment($targetCommentID, $pages, $maxPerPage, mysqli $database) {
@@ -145,14 +134,12 @@
         );
         $statement->bind_param("ii", $targetCommentID, $n);
         if (!$statement->execute()) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $comments = $statement->get_result();
         if (mysqli_num_rows($comments) === 0) {
-            throw new ApiError("Internal Server Error", 500,
-            DB_CONNECTION_ERROR, 500);
+            throw getInternalError();
         }
 
         $result = array();
