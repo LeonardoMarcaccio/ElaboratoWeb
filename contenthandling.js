@@ -45,21 +45,22 @@ class ElementHandler {
     if (this.recurse) {
       await this.targetElement.addContent(content);
     } else {
-      if (content instanceof HTMLElement) {                           //NOSONAR
+      if (content instanceof HTMLElement || content instanceof NodeList) {                           //NOSONAR
+        //TODO: Fix error in adding child nodes
         let loadTask = new Promise((success, failure) => {
           content.onload = success();
           content.onerror = failure(new Error("Error during element load!"));
           this.targetElement.appendChild(content);
         });
         await loadTask;
-      } else if (content instanceof String) {
+      } else if (typeof content == 'string') {
         let tmpElement = document.createElement("template");
-        tmpElement.innerHTML(content);
-        let tmpChilds = tmpElement.childNodes();
+        tmpElement.innerHTML = content;
+        let tmpChilds = tmpElement.childNodes;
         this.addContent(tmpChilds);
       } else if (content instanceof Array) {
         for (let singleElement in content) {
-          await this.addContent(singleElement);
+          await this.addContent(content[singleElement]);
         }
       } else {
         throw new Error("Wrong type of content added!");
@@ -128,10 +129,10 @@ class AssetLoader {
         nameVector.map((singleName) => pathContainer + singleName);
         targetAssets = targetAssets.concat(nameVector);
       });
-    } else if (assets instanceof String) {
+    } else if (typeof assets == 'string') {
       targetAssets = Array();
-      let pathContainer = this.extractAssetPath(singleAssetName);
-      let rawname = this.extractAssetName(singleAssetName);
+      let pathContainer = this.extractAssetPath(assets);
+      let rawname = this.extractAssetName(assets);
       let nameVector = this.generateAssetVariantVector(rawname, {html: configuration.loadHtml, htm: false, css: configuration.loadCss, js: configuration.loadJs});
       nameVector.forEach((singleName) => targetAssets.push(pathContainer + singleName));
     } else {
@@ -140,7 +141,7 @@ class AssetLoader {
     if (targetAssets instanceof Array) {
       result = Array();
       for (let asset in targetAssets) {
-        result.push(await fetch(this.sourceFolder + asset));
+        result.push(await fetch(this.sourceFolder + targetAssets[asset]));
       }
     } else if (targetAssets instanceof String) {
       result = await fetch(this.sourceFolder + targetAssets);
@@ -156,7 +157,11 @@ class AssetLoader {
    * @return {string} the asset's name, if available, otherwhise an empty string
    */
   extractAssetName(asset) {
-    return asset.slice(asset.lastIndexOf("/") + 1, asset.slice.lastIndexOf("."));
+    let indexOfExt = asset.lastIndexOf(".");
+    indexOfExt = indexOfExt == -1
+      ? asset.length
+      : indexOfExt;
+    return asset.slice(asset.lastIndexOf("/") + 1,  indexOfExt);
   }
   /**
    * Extracts the path from an asset's full path.
@@ -193,15 +198,15 @@ class AssetLoader {
     }) {
     let assetNameVariants = Array();
     if (configuration.html) {
-      assetNameVariants.push(assetName + contentHandlingConsts.htmlExtensions[0]);
+      assetNameVariants.push(assetName + "." + contentHandlingConsts.htmlExtensions[0]);
     } else if (configuration.htm) {
-      assetNameVariants.push(assetName + contentHandlingConsts.htmlExtensions[1]);
+      assetNameVariants.push(assetName + "." + contentHandlingConsts.htmlExtensions[1]);
     }
     if (configuration.css) {
-      assetNameVariants.push(assetName + contentHandlingConsts.cssExtensions[0]);
+      assetNameVariants.push(assetName + "." + contentHandlingConsts.cssExtensions[0]);
     }
     if (configuration.js) {
-      assetNameVariants.push(assetName + contentHandlingConsts.jsExtensions[0]);
+      assetNameVariants.push(assetName + "." + contentHandlingConsts.jsExtensions[0]);
     }
     return assetNameVariants;
   }

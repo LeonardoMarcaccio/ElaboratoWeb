@@ -436,6 +436,9 @@ const JSONUtils = {
 
 let sharedCache = new Map();
 
+/**
+ * @deprecated
+ */
 class PageLoader {
   pageCache = sharedCache;
   prevPage = null;
@@ -477,6 +480,9 @@ class PageLoader {
   }
 }
 
+/**
+ * @deprecated
+ */
 class ButtonHandler {
   loader = null;
   eventList = null;
