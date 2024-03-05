@@ -51,6 +51,7 @@ const events = {
   }
 }
 
+
 let mainGlobalVariables = {
   page: {
     body: null,
@@ -69,6 +70,57 @@ let mainGlobalVariables = {
   },
   buttonData: {
     lastSelection: null
+  },
+  userData: {
+    userLoggedIn: false
+  }
+}
+
+const mainHandler = {
+  contentHandling: {
+    setHeadingContent: (content) => {
+      mainHandler.contentHandling.clearHeadingContent();
+      mainGlobalVariables.page.mainContentHeading.appendChild(content);
+    },
+    setBodyContent: (content) => {
+      mainHandler.contentHandling.clearBodyContent();
+      mainGlobalVariables.page.mainContentPage.appendChild(content);
+    },
+    setFootingContent: (content) => {
+      mainHandler.contentHandling.clearFootingContent();
+      mainGlobalVariables.page.mainContentFooting.appendChild(content);
+    },
+    clearHeadingContent: () => {
+      mainGlobalVariables.page.mainContentHeading.innerHTML = "";
+    },
+    clearBodyContent: () => {
+      mainGlobalVariables.page.mainContentPage.innerHTML = "";
+    },
+    clearFootingContent: () => {
+      mainGlobalVariables.page.mainContentFooting.innerHTML = "";
+    },
+    purgePageContent: () => {
+      mainHandler.contentHandling.clearHeadingContent();
+      mainHandler.contentHandling.clearBodyContent();
+      mainHandler.contentHandling.clearFootingContent();
+    },
+    simplePageSwitch: (heading = null, body = null, footing = null) => {
+      if (heading == null) {
+        mainHandler.contentHandling.clearHeadingContent();
+      } else {
+        mainHandler.contentHandling.setHeadingContent(heading);
+      }
+      if (body == null) {
+        mainHandler.contentHandling.clearBodyContent();
+      } else {
+        mainHandler.contentHandling.setHeadingContent(body);
+      }
+      if (footing == null) {
+        mainHandler.contentHandling.clearFootingContent();
+      } else {
+        mainHandler.contentHandling.setHeadingContent(footing);
+      }
+    }
   }
 }
 
@@ -78,10 +130,6 @@ function enableMainLoadingBanner(enable) {
   } else {
     mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
   }
-}
-
-function registerMainEvents() {
-  console.debug("Registering main events");
 }
 
 function fetchMainPageComponents() {
@@ -132,9 +180,13 @@ function fillStructure() {
   mainGlobalVariables.page.contentShaper.addContent(mainGlobalVariables.page.nav.getContent());
 }
 
+function updateLoginStatus() {
+  mainGlobalVariables.userData.userLoggedIn = !(cookieUtilities.readCookie("validatedLogin") == "");
+  console.log(!(cookieUtilities.readCookie("validatedLogin") == ""));
+}
+
 async function mainPageInit() {
   let fetchPromise = fetchMainPageComponents();
-  registerMainEvents();
   loadpageStructure();
   let promiseResult = await fetchPromise;
   if (promiseResult instanceof Error) {
@@ -142,6 +194,7 @@ async function mainPageInit() {
     return;
   }
   fillStructure();
+  updateLoginStatus();
   enableMainLoadingBanner(false);
 }
 

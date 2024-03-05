@@ -188,6 +188,11 @@ const APICalls = {
       url.searchParams.append("maxPerPage", maxPerPage);
     }
   },
+  /**
+   * Assumes that the JSON is well-formed based on the API documentation
+   * fires events based on response codes inside the received JSON.
+   * @param {JSON} jsonModule  the JSON object to parse
+   */
   evaluateResponseCodeAction: (jsonModule) => {
     switch (jsonModule.code) {
       case "401":
@@ -200,8 +205,17 @@ const APICalls = {
         return;
     }
   },
+  /**
+   * A collection of methods that perform API calls using the POST method.
+   */
   postRequests: {
-    postDataToApi: async (URI, postData = null) => {
+    /**
+     * Sends POST request to a given URI and returns a JSON response.
+     * @param {URL} URL           the request's target destination
+     * @param {string} postData   the request's content
+     * @return {JSON}             a JSON response
+     */
+    postDataToApi: async (URL, postData = null) => {
       let postMsg = await fetch(URI, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
@@ -214,6 +228,13 @@ const APICalls = {
       APICalls.evaluateResponseCodeAction(jsonContent);
       return jsonContent;
     },
+    /**
+     * Sends authentication data to the api.
+     * @param {JSON} registrationData   registration data to send
+     * @param {Boolean} isLogin         wether to format data for a login or a registration
+     * @returns                         a JSON response
+     * @see {@link APICalls.postRequests.postDataToApi}
+     */
     sendAuthentication: async (registrationData, isLogin = false) => {
       let authRequest = await APICalls.postRequests.postDataToApi(isLogin
         ? APICalls.createApiUrl(APIConstants.apiPages.login)
