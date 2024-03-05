@@ -44,27 +44,26 @@ class ElementHandler {
   async addContent(content) {
     if (this.recurse) {
       await this.targetElement.addContent(content);
-    } else {
-      if (content instanceof HTMLElement || content instanceof NodeList || content instanceof DocumentFragment) {                           //NOSONAR
-        //TODO: Fix error in adding child nodes
-        let loadTask = new Promise((success, failure) => {
-          content.onload = success();
-          content.onerror = failure(new Error("Error during element load!"));
-          this.targetElement.appendChild(content);
-        });
-        await loadTask;
-      } else if (typeof content == 'string') {
-        let tmpElement = document.createElement("template");
-        tmpElement.innerHTML = content;
-        let tmpChilds = tmpElement.content;
-        this.addContent(tmpChilds);
-      } else if (content instanceof Array) {
-        for (let singleElement in content) {
-          await this.addContent(content[singleElement]);
-        }
-      } else {
-        throw new Error("Wrong type of content added!");
+    } else if (content instanceof HTMLElement
+      || content instanceof NodeList
+      || content instanceof DocumentFragment) {
+      let loadTask = new Promise((success, failure) => {
+        content.onload = success();
+        content.onerror = failure(new Error("Error during element load!"));
+        this.targetElement.appendChild(content);
+      });
+      await loadTask;
+    } else if (typeof content == 'string') {
+      let tmpElement = document.createElement("template");
+      tmpElement.innerHTML = content;
+      let tmpChilds = tmpElement.content;
+      this.addContent(tmpChilds);
+    } else if (content instanceof Array) {
+      for (let singleElement in content) {
+        await this.addContent(content[singleElement]);
       }
+    } else {
+      throw new Error("Wrong type of content added!");
     }
   }
   /**
