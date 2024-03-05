@@ -50,13 +50,18 @@ class ElementHandler {
       let loadTask = new Promise((success, failure) => {
         content.onload = success();
         content.onerror = failure(new Error("Error during element load!"));
-        this.targetElement.appendChild(content);
+        if (content instanceof NodeList) {
+          content.forEach(singleNode => this.targetElement.appendChild(this.scriptTagFix(singleNode)));
+        } else {
+          this.targetElement.appendChild(this.scriptTagFix(content));
+        }
       });
       await loadTask;
     } else if (typeof content == 'string') {
       let tmpElement = document.createElement("template");
       tmpElement.innerHTML = content;
       let tmpChilds = tmpElement.content;
+      tmpChilds = tmpChilds.childNodes;
       this.addContent(tmpChilds);
     } else if (content instanceof Array) {
       for (let singleElement in content) {
@@ -77,6 +82,18 @@ class ElementHandler {
         this.targetElement.removeChild(this.targetElement.lastChild());
       }
     }
+  }
+  /**
+   * Forces parsing of an html script element.
+   * @param {HTMLScriptElement} scriptNode the node to be parsed
+   */
+  scriptTagFix(scriptNode) {
+    if (scriptNode instanceof HTMLScriptElement) {
+      let newNode = document.createElement("script");
+      newNode.src = scriptNode.src;
+      return newNode;
+    }
+    return scriptNode;
   }
 };
 
