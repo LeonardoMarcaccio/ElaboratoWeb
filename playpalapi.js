@@ -2,6 +2,17 @@
  * Namespace for the calls that can be made to the API.
  */
 const API = {
+  HTTPMethods: {
+    GET: "GET",
+    HEAD: "HEAD",
+    POST: "POST",
+    PUT: "PUT",
+    DELETE: "DELETE",
+    CONNECT: "CONNECT",
+    OPTIONS: "OPTIONS",
+    TRACE: "TRACE",
+    PATCH: "PATCH",
+  },
   /**
    * Namespace containing utility functions to simplify some actions.
    */
@@ -9,10 +20,13 @@ const API = {
 
   },
   postRequest: (URL) => {
-
+    return fetch(URL, {
+      method: API.HTTPMethods.POST
+    });
   },
   getRequest: (URL) => {
-
+    // Seems dumb, but future updates will benefit from this.
+    return fetch(URL);
   }
 }
 /**
