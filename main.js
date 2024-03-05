@@ -72,6 +72,14 @@ let mainGlobalVariables = {
   }
 }
 
+function enableMainLoadingBanner(enable) {
+  if (enable) {
+    mainGlobalVariables.dynamicElements.loadingBanner.style.display = "flex";
+  } else {
+    mainGlobalVariables.dynamicElements.loadingBanner.style.display = "none";
+  }
+}
+
 function registerMainEvents() {
   console.debug("Registering main events");
 }
@@ -92,6 +100,7 @@ function fetchMainPageComponents() {
 }
 
 function loadpageStructure() {
+  mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
   mainGlobalVariables.page.body = new ElementHandler(document.body);
 
   // Main content page generation
@@ -133,6 +142,7 @@ async function mainPageInit() {
     return;
   }
   fillStructure();
+  enableMainLoadingBanner(false);
 }
 
 document.body.onload = () => {

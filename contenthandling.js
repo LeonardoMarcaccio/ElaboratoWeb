@@ -45,7 +45,7 @@ class ElementHandler {
     if (this.recurse) {
       await this.targetElement.addContent(content);
     } else {
-      if (content instanceof HTMLElement || content instanceof NodeList) {                           //NOSONAR
+      if (content instanceof HTMLElement || content instanceof NodeList || content instanceof DocumentFragment) {                           //NOSONAR
         //TODO: Fix error in adding child nodes
         let loadTask = new Promise((success, failure) => {
           content.onload = success();
@@ -56,7 +56,7 @@ class ElementHandler {
       } else if (typeof content == 'string') {
         let tmpElement = document.createElement("template");
         tmpElement.innerHTML = content;
-        let tmpChilds = tmpElement.childNodes;
+        let tmpChilds = tmpElement.content;
         this.addContent(tmpChilds);
       } else if (content instanceof Array) {
         for (let singleElement in content) {
