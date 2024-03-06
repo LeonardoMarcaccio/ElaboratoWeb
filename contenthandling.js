@@ -68,7 +68,7 @@ class ElementHandler {
         await this.addContent(content[singleElement]);
       }
     } else {
-      throw new Error("Wrong type of content added!");
+      throw new Error("Wrong type of content added!\nTried to add: " + typeof content);
     }
   }
   /**
@@ -96,6 +96,16 @@ class ElementHandler {
     return scriptNode;
   }
 };
+
+class DynamicPage {
+  constructor(pageUrl, opts = {lazy: true, cache: true, autofetch: false, js: false, css: false}) {
+    this.cached = false;
+    this.sourceUrl = pageUrl;
+    this.opts = opts;
+  }
+  async load() {}
+  reset() {}
+}
 
 /**
  * Class for an AssetLoader that can request content from an external server.
