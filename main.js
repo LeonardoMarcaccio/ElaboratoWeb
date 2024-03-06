@@ -147,7 +147,27 @@ function fetchMainPageComponents() {
   });
 }
 
+function fetchScriptComponents() {
+  return new Promise(async (success, failure) => {
+    let baseFolder = "/components/";
+    try {
+      let scriptPaths = [baseFolder + "login.js"];
+      let scriptPromises = Array();
+      for (let scriptPathIndex in scriptPaths) {
+        scriptPromises.push(DOMUtilities.addScript(scriptPaths[scriptPathIndex]));
+      }
+      for (let scriptPromiseIndex in scriptPromises) {
+        await scriptPromises[scriptPromiseIndex];
+      }
+      success();
+    } catch (error) {
+      failure(error);
+    }
+  });
+}
+
 function loadpageStructure() {
+  // Essential base elements assignment
   mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
   mainGlobalVariables.page.body = new ElementHandler(document.body);
 
@@ -186,11 +206,17 @@ function updateLoginStatus() {
 }
 
 async function mainPageInit() {
-  let fetchPromise = fetchMainPageComponents();
+  let mainPageFetchPromise = fetchMainPageComponents();
+  let scriptFetchPromise = fetchScriptComponents();
   loadpageStructure();
-  let promiseResult = await fetchPromise;
-  if (promiseResult instanceof Error) {
-    console.error(promiseResult);
+  let mainPagePromiseResult = await mainPageFetchPromise;
+  let scriptPromiseResult = await scriptFetchPromise;
+  if (mainPagePromiseResult instanceof Error) {
+    console.error(mainPagePromiseResult);
+    return;
+  }
+  if (scriptPromiseResult instanceof Error) {
+    console.error(scriptPromiseResult);
     return;
   }
   fillStructure();
