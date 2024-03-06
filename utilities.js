@@ -129,6 +129,10 @@ const AssetManager = {
 }
 
 const DOMUtilities = {
+  stringToTemplate: (node) => {
+    let tmp = document.createElement("template");
+    return tmp.innerHTML = node;
+  },
   addChildElementToNode: (elementToAdd, node) => {
     let tmp = document.createElement("template");
     tmp.innerHTML = node;
@@ -149,6 +153,26 @@ const DOMUtilities = {
   loadAndAdd: async (src, add) => {
     let obtainedAsset = await AssetManager.loadAsset(add);
     DOMUtilities.addChildElementToNode(src, obtainedAsset);
+  },
+  /**
+   * Adds a script tag to a given element.
+   * @param {ElementHandler | HTMLElement} destination  target element to append
+   * @param {URL} scriptSrc                             path to the script file
+   * @returns {Promise<void>}                           a promise that will
+   *                                                    complete once the element
+   *                                                    is ready
+   */
+  addScript: (destination = document.body, scriptSrc) => {
+    return new Promise((success, failure) => {
+    let scriptTag = document.createElement("script");
+    scriptTag.src = scriptSrc;
+    scriptTag.onload = success;
+    scriptTag.onerror = failure;
+    if (destination instanceof ElementHandler) {
+      destination.addContent(scriptTag);
+    } else {
+      destination.appendChild(scriptTag);
+    }});
   }
 }
 
