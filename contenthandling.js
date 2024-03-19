@@ -79,7 +79,7 @@ class ElementHandler {
       this.targetElement.clearContent();
     } else {
       while(this.targetElement.firstChild) {
-        this.targetElement.removeChild(this.targetElement.lastChild());
+        this.targetElement.removeChild(this.targetElement.lastChild);
       }
     }
   }

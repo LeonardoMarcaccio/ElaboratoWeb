@@ -80,24 +80,24 @@ const mainHandler = {
   contentHandling: {
     setHeadingContent: (content) => {
       mainHandler.contentHandling.clearHeadingContent();
-      mainGlobalVariables.page.mainContentHeading.appendChild(content);
+      mainGlobalVariables.page.mainContentHeading.addContent(content);
     },
     setBodyContent: (content) => {
       mainHandler.contentHandling.clearBodyContent();
-      mainGlobalVariables.page.mainContentPage.appendChild(content);
+      mainGlobalVariables.page.mainContentPage.addContent(content);
     },
     setFootingContent: (content) => {
       mainHandler.contentHandling.clearFootingContent();
-      mainGlobalVariables.page.mainContentFooting.appendChild(content);
+      mainGlobalVariables.page.mainContentFooting.addContent(content);
     },
     clearHeadingContent: () => {
-      mainGlobalVariables.page.mainContentHeading.innerHTML = "";
+      mainGlobalVariables.page.mainContentHeading.clearContent();
     },
     clearBodyContent: () => {
-      mainGlobalVariables.page.mainContentPage.innerHTML = "";
+      mainGlobalVariables.page.mainContentPage.clearContent();
     },
     clearFootingContent: () => {
-      mainGlobalVariables.page.mainContentFooting.innerHTML = "";
+      mainGlobalVariables.page.mainContentFooting.clearContent();
     },
     purgePageContent: () => {
       mainHandler.contentHandling.clearHeadingContent();
@@ -151,10 +151,10 @@ function fetchScriptComponents() {
   return new Promise(async (success, failure) => {
     let baseFolder = "/components/";
     try {
-      let scriptPaths = [baseFolder + "login.js"];
+      let scriptPaths = [baseFolder + "login/login.js"];
       let scriptPromises = Array();
       for (let scriptPathIndex in scriptPaths) {
-        scriptPromises.push(DOMUtilities.addScript(scriptPaths[scriptPathIndex]));
+        scriptPromises.push(DOMUtilities.addScript(document.body, scriptPaths[scriptPathIndex]));
       }
       for (let scriptPromiseIndex in scriptPromises) {
         await scriptPromises[scriptPromiseIndex];
