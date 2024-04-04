@@ -52,12 +52,18 @@ class ElementHandler {
         content.onload = success();
         content.onerror = failure(new Error("Error during element load!"));
         if (content instanceof NodeList) {
-          if (singleNode instanceof HTMLScriptElement && !options.ignoreLinkedJs) {
-            content.forEach(singleNode => this.targetElement.appendChild(this.scriptTagFix(singleNode)));
-          }
+          content.forEach(singleNode => {
+            if (!options.ignoreLinkedJs || (!options.ignoreLinkedJs && !singleNode instanceof HTMLScriptElement)) {
+              this.targetElement.appendChild(this.scriptTagFix(singleNode));
+            } else {
+              this.targetElement.appendChild(singleNode);
+            }
+          });
         } else {
-          if (content instanceof HTMLScriptElement && !options.ignoreLinkedJs) {
+          if (!options.ignoreLinkedJs || (!options.ignoreLinkedJs && !content instanceof HTMLScriptElement)) {
             this.targetElement.appendChild(this.scriptTagFix(content));
+          } else {
+            this.targetElement.appendChild(content);
           }
         }
       });
