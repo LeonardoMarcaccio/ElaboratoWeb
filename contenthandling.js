@@ -124,7 +124,7 @@ class DynamicPage {
    * Returns and stores it in an internal cache in order to do a faster search.
    * @param {string} nodeName     the node's id
    * @param {boolean} forceUpdate true to discard cache and force search
-   * @returns                     requested node if it exists
+   * @returns {HTMLElement}       requested node if it exists
    */
   lazyNodeIdQuery(nodeName, forceUpdate = false) {
     if (!forceUpdate && this.nodeMap.has(nodeName)) {
