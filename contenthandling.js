@@ -40,8 +40,9 @@ class ElementHandler {
   /**
    * Adds content to the elementhandler's handled child.
    * @param {HTMLElement | ElementHandler} content the content to be added
+   * @param {object} options                       wether or not to fix linked js
    */
-  async addContent(content) {
+  async addContent(content, options = {ignoreLinkedJs: false}) {
     if (this.recurse) {
       await this.targetElement.addContent(content);
     } else if (content instanceof HTMLElement
@@ -51,9 +52,13 @@ class ElementHandler {
         content.onload = success();
         content.onerror = failure(new Error("Error during element load!"));
         if (content instanceof NodeList) {
-          content.forEach(singleNode => this.targetElement.appendChild(this.scriptTagFix(singleNode)));
+          if (singleNode instanceof HTMLScriptElement && !options.ignoreLinkedJs) {
+            content.forEach(singleNode => this.targetElement.appendChild(this.scriptTagFix(singleNode)));
+          }
         } else {
-          this.targetElement.appendChild(this.scriptTagFix(content));
+          if (content instanceof HTMLScriptElement && !options.ignoreLinkedJs) {
+            this.targetElement.appendChild(this.scriptTagFix(content));
+          }
         }
       });
       await loadTask;
