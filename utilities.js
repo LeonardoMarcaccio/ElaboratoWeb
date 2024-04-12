@@ -240,7 +240,7 @@ const APICalls = {
      * @return {JSON}             a JSON response
      */
     postDataToApi: async (URL, postData = null) => {
-      let postMsg = await fetch(URI, {
+      let postMsg = await fetch(URL, {
         method: AJAXUtilities.HTTPMethods.POST,
         cache: "no-cache",
         headers: {

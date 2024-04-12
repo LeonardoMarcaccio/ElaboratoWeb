@@ -7,12 +7,25 @@ let userList = null;
 let elem = null;
 
 function loadChatList() {
-    mainPageLoader.flushPage();
-    bois = APICalls.getRequests.getFriendList(/* self */);
+    /*
+    self = APICalls.getRequests.getUserInfo();
+    self = self.username;
+    bois = APICalls.getRequests.getFriendList(self);
+    */
+    bois = [{"username":"TestUser2",
+            "email":"TestUserEmail2@mail.com",
+            "password":null,
+            "firstname":"Jane",
+            "lastname":"Smith",
+            "gender":"Female",
+            "biography":"Lorem ipsum",
+            "personalwebsite":"https:\/\/www.Fakesite2.com\/",
+            "pfp":"http:\/\/localhost\/media\/users\/placeholder.webp",
+            "phonenumber":"0000000002"}];
     friendCount = bois.length;
     userList = new Array();
     elem = document.getElementById("page-chat");
-    
+
     for (let i=0; i<friendCount; i++) {
         let tmp = document.createElement("button");
         tmp.textContent = bois[i].username;
@@ -25,23 +38,22 @@ function loadChatList() {
             document.dispatchEvent(evt);
         }
         document.addEventListener(tmp.id, async (evt) => {
-            mainPageLoader.flushPage();
+            mainHandler.contentHandling.clearBodyContent();
             let lambdaOperation = null;
             if (messagePage == null) {
                 lambdaOperation = async () => {
-                    messagePage = await AssetManager.loadAsset("messages.html");
-                    DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, messagePage);
-                    documentUtilities.addScriptFile("/components/messages/messages.js");
+                    messagePage = await loader.loadAsset("messages/messages", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
+                    messagePage = new ElementHandler(await messagePage[0].text()).getContent();
+                    mainHandler.contentHandling.setBodyContent(messagePage);
                 }
             } else {
                 lambdaOperation = async () => {
-                    DOMUtilities.addChildElementToNode(mainGlobalVariables.page.mainContentPage, messagePage);
+                    mainHandler.contentHandling.setBodyContent(messagePage);
                 }
             }
-            DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentHeading, 0);
-            DOMUtilities.removeChildElementsToNode(mainGlobalVariables.page.mainContentPage, mainGlobalVariables.page.mainContentPage.childElementCount);
+            mainHandler.contentHandling.clearHeadingContent();
             await lambdaOperation();
-            chatLoader.loadChat();
+            chatLoader.loadMore();
         });
     }
 }
