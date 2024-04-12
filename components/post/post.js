@@ -1,4 +1,5 @@
-let choices = APICalls.getRequests.getCommunitiesRequest(0,5);
+//  Needs new query
+//let choices = APICalls.getRequests.getCommunitiesRequest(0,5);
 let select = document.getElementById("communities-options");
 for (let i in choices) {
     let tmp = document.createElement("option");

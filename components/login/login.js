@@ -1,22 +1,26 @@
+/*
 class LoginPage extends DynamicPage {
   async load() {
     super.load();
     if (this.opts.cache && this.cached) {
       mainHandler.contentHandling.purgePageContent();
     } else {
-      let loader = new AssetLoader("/components/login/");
+      let loader = new AssetLoader("/components/");
       if (this.opts.cache && !this.cached
         || !this.opts.cache) {
-        this.cachedAsset = await loader.loadAsset("login.html");
+        this.cachedAsset = await loader.loadAsset("/login/login", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
         this.cached = this.opts.cache;
       }
     }
-    mainHandler.contentHandling.setBodyContent(DOMUtilities.stringToTemplate(this.cachedAsset).childNodes);
+    mainHandler.contentHandling.setBodyContent(new ElementHandler(await this.cachedAsset[0].text()).getContent());
   }
   reset() {
     super.reset();
   }
 }
+
+new LoginPage().load();
+*/
 
 const loginElements = {
   usernameField: document.getElementById("login-username"),

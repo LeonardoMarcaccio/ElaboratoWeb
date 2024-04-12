@@ -19,12 +19,12 @@ async function loadPosts(page) {
     }
 }
 
+let postLoader = new ContentLoader((page) => loadPosts(page));
+
 document.getElementById("nav-feed").onclick = () => {
-    mainPageLoader.flushPage();
+    mainHandler.contentHandling.clearBodyContent();
     postLoader.reset();
-    postLoader.switchLoadMethod((page) => loadPosts(page));
     postLoader.loadMore();
 }
 
-postLoader = new ContentLoader((page) => loadPosts(page));
 postLoader.loadMore();

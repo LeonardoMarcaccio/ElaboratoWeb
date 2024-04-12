@@ -773,6 +773,7 @@ class CommunityBuilder {
       let title = document.createElement("h1");
       let follow = document.createElement("button");
       let desc = document.createElement("p");
+      let countPosts = 0;
       
       community.id = this.IDPrefix + "-community-" + this.count++;
       community.className = "community";
@@ -785,19 +786,33 @@ class CommunityBuilder {
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
-      follow.innerText = (await APICalls.getRequests.isFollowing(titleString)).response[0] ? "Unfollow" : "Follow";
+      //  Need to test this with login
+      //follow.innerText = (await APICalls.getRequests.isFollowing(titleString)).response[0] ? "Unfollow" : "Follow";
+      follow.innerText = "Follow";
       desc.innerText = descString;
       desc.style.textAlign = "left";
       
+      community.appendChild(head);
+      head.appendChild(image);
+      head.appendChild(title);
+      head.appendChild(follow);
+      community.appendChild(desc);
+
       desc.onclick = async () => {
-        let posts = await APICalls.getRequests.getPostsRequest(titleString, 0, 10);
-        posts = posts.response;
-        let builder = new PostBuilder("search");
-        mainPageLoader.flushPage();
-        for (let i in posts) {
-          posts[i];
-          mainGlobalVariables.page.mainContentPage.appendChild(
+        if (countPosts == 0) {
+          let posts = await APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+          posts = posts.response;
+          let builder = new PostBuilder("search");
+          for (let i in posts) {
+            posts[i];
+            community.appendChild(
               builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].image, posts[i].postId));
+          countPosts++;
+          }
+        } else {
+          for (; countPosts > 0; countPosts--) {
+            community.removeChild(community.lastChild);
+          }
         }
       }
 
@@ -809,11 +824,6 @@ class CommunityBuilder {
         }
       };
 
-      community.appendChild(head);
-      head.appendChild(image);
-      head.appendChild(title);
-      head.appendChild(follow);
-      community.appendChild(desc);
       
       return community;
   }
