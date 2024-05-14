@@ -1,3 +1,4 @@
+mainHandler.contentHandling.clearBodyContent();
 let form = document.createElement("form");
 let bar = document.createElement("textarea");
 let send = document.createElement("input");
@@ -8,11 +9,13 @@ form.appendChild(bar);
 form.appendChild(send);
 
 send.onclick = async () => {
-    await APICalls.postRequests.sendMessageRequest(target, content);
+    await APICalls.postRequests.sendMessageRequest(chatCache.textContent, bar.textContent);
 };
 
 chatLoader.switchLoadMethod(async (page) => {
-    let messages = await APICalls.getRequests.getMessages(target, page, 16);
+    let username = await APICalls.getRequests.getUserInfo();
+    username = username.response.Username;
+    let messages = await APICalls.getRequests.getMessagesRequest(chatCache.textContent, page, 16);
     let messageCount = messages.length;
     let chat = document.getElementById("page-dm-upper");
     let user = document.createElement("p");
@@ -21,7 +24,7 @@ chatLoader.switchLoadMethod(async (page) => {
     user.className = "user-title";
     user.id = "user-dm";
     prev.id = "message-bottom";
-    mainGlobalVariables.page.mainContentHeading.appendChild(user);
+    mainHandler.contentHandling.setHeadingContent(user);
 
     if (page == 0) {
         chat.appendChild(prev);
@@ -31,14 +34,15 @@ chatLoader.switchLoadMethod(async (page) => {
     
     for (let i=0; i<messageCount; i++) {
         let tmp = document.createElement("p");
-        tmp.textContent = messages[i].content;
-        tmp.className = messages[i].sent ? "message-sent" : "message-received";
+        tmp.textContent = messages[i].Text;
+        tmp.className = messages[i].Username == username ? "message-sent" : "message-received";
         chat.insertBefore(tmp, prev);
         prev = tmp;
     }
 
     chat.removeChild(document.getElementById("message-bottom"));
-    mainGlobalVariables.page.mainContentFooting.appendChild(form);
+    mainHandler.contentHandling.setBodyContent(chat);
+    mainHandler.contentHandling.setFootingContent(form);
 });
 
-chatLoader.loadChat(0);
+chatLoader.loadMore();

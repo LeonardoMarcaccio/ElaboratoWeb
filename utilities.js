@@ -322,6 +322,13 @@ const APICalls = {
       subCommentUrl.searchParams.append("target", community);
       let unsubResponse = await APICalls.postRequests.postDataToApi(subCommentUrl);
       return unsubResponse;
+    },
+    sendMessageRequest: async (target, text) => {
+      let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      commentUrl.searchParams.append("type", "message");
+      commentUrl.searchParams.append("target", target);
+      let commentRequest = await APICalls.postRequests.postDataToApi(commentUrl, text);
+      return commentRequest;
     }
   },
   getRequests: {
@@ -400,6 +407,14 @@ const APICalls = {
       userUrl.searchParams.append("target", community);
       let communityFollow = await APICalls.getRequests.getDataToApi(null, userUrl);
       return communityFollow;
+    },
+    getMessagesRequest: async (targetFriend, page = null, maxPerPage = null) => {
+      let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      commentUrl.searchParams.append("type", "message");
+      commentUrl.searchParams.append("target", targetFriend);
+      APICalls.addUrlPageSelection(commentUrl, page, maxPerPage);
+      let commentRequest = await APICalls.getRequests.getDataToApi(null, commentUrl);
+      return commentRequest;
     }
   }
 }
