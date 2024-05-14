@@ -131,7 +131,8 @@ const AssetManager = {
 const DOMUtilities = {
   stringToTemplate: (node) => {
     let tmp = document.createElement("template");
-    return tmp.innerHTML = node;
+    tmp.innerHTML = node;
+    return tmp;
   },
   addChildElementToNode: (elementToAdd, node) => {
     let tmp = document.createElement("template");

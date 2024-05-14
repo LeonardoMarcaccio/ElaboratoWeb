@@ -10,7 +10,9 @@ class LoginPage extends DynamicPage {
       if (this.opts.cache && !this.cached
         || !this.opts.cache) {
         this.cachedAsset = await loader.loadAsset("/login/login", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
+        this.cachedAsset = await this.cachedAsset[0].text();
         this.cached = this.opts.cache;
+        console.log("test123");
       }
     }
     mainHandler.contentHandling.setBodyContent(DOMUtilities.stringToTemplate(this.cachedAsset).childNodes);
@@ -19,7 +21,7 @@ class LoginPage extends DynamicPage {
     this.loginButton = null;
     this.registerButton = null;
 
-    bindListeners();
+    //bindListeners();
   }
   reset() {
     super.reset();
