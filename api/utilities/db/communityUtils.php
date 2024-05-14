@@ -71,6 +71,29 @@
     }
 
     /**
+     * Returns an array of the Communities that the user is subbed to.
+     */
+    function getSubbedCommunities($username, mysqli $database) {
+        $statement = $database->prepare("SELECT Name From `join` WHERE `Username` = ?");
+        $statement->bind_param("s", $username);
+        if (!$statement->execute()) {
+            throw getInternalError();
+        }
+
+        $result = array();
+        $communities = $statement->get_result();
+        if (mysqli_num_rows($communities) === 0) {
+            return $result;
+        }
+
+        while($tmp = mysqli_fetch_assoc($communities)) {
+            array_push($result, $tmp);
+        }
+
+        return $result;
+    }
+
+    /**
      * Sub a User to the specified Community
      */
     function subCommunity($username, $communityName, mysqli $database) {

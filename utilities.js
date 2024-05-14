@@ -346,6 +346,14 @@ const APICalls = {
       let communityRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
       return communityRequest;
     },
+    getSubbedCommunitiesRequest: async (username, page = null, maxPerPage = null) => {
+      let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      communityUrl.searchParams.append("type", "subbedCommunities");
+      communityUrl.searchParams.append("target", username);
+      APICalls.addUrlPageSelection(communityUrl, page, maxPerPage);
+      let communityRequest = await APICalls.getRequests.getDataToApi(null, communityUrl);
+      return communityRequest;
+    },
     getPostsRequest: async (targetCommunityId, page = null, maxPerPage = null) => {
       let postUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       postUrl.searchParams.append("type", APIConstants.communityActions.types.post);
