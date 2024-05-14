@@ -1,7 +1,8 @@
-/*
 class LoginPage extends DynamicPage {
   async load() {
     super.load();
+    // NOTE: Need to rebuild this if condition
+    mainHandler.contentHandling.purgePageContent();
     if (this.opts.cache && this.cached) {
       mainHandler.contentHandling.purgePageContent();
     } else {
@@ -12,52 +13,66 @@ class LoginPage extends DynamicPage {
         this.cached = this.opts.cache;
       }
     }
-    mainHandler.contentHandling.setBodyContent(new ElementHandler(await this.cachedAsset[0].text()).getContent());
+    mainHandler.contentHandling.setBodyContent(DOMUtilities.stringToTemplate(this.cachedAsset).childNodes);
+    this.usernameField = null;
+    this.passwordField = null;
+    this.loginButton = null;
+    this.registerButton = null;
+
+    bindListeners();
   }
   reset() {
     super.reset();
   }
-}
+  
+  getUsernameField() {
+    return this.lazyNodeIdQuery("login-username");
+  }
+  getPasswordField() {
+    return this.lazyNodeIdQuery("login-passw");
+  }
+  getLoginButton() {
+    return this.lazyNodeIdQuery("login-login");
+  }
+  getRegisterButton() {
+    return this.lazyNodeIdQuery("login-goto-register");
+  }
 
-new LoginPage().load();
-*/
-
-const loginElements = {
-  usernameField: document.getElementById("login-username"),
-  passwField: document.getElementById("login-passw"),
-  loginBtn: document.getElementById("login-login"),
-  registerBtn: document.getElementById("login-goto-register")
-}
-
-const loginFunctions = {
-  triggerCredentialError: (element) => {
+  triggerCredentialError(element) {
     element.classList.add("wrong");
-  },
-  clearCredentialError: () => {
-    loginElements.usernameField.classList.remove("wrong");
-    loginElements.passwField.classList.remove("wrong");
+  }
+  triggerCredentialError() {
+
+  }
+  clearCredentialError() {
+    this.getUsernameField().remove("wrong");
+    this.getPasswordField().remove("wrong");
+  }
+  bindListeners() {
+    this.getLoginButton().onclick = () => {
+      loginFunctions.clearCredentialError();
+      if (this.getUsernameField().value == "") {
+        this.triggerCredentialError(loginElements.usernameField);
+      }
+      if(this.getPasswordField().value == "") {
+        this.triggerCredentialError(loginElements.passwField);
+        return;
+      }
+      APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
+        this.getUsernameField().value, this.getUsernameField().value), true);
+    }
+    
+    this.getRegisterButton().onclick = () => {
+      let registrationEvt = new CustomEvent(events.userSpecific.register);
+      document.dispatchEvent(registrationEvt);
+    }
   }
 }
+
+let loginClass = new LoginPage();
 
 document.addEventListener(APIEvents.unauthorizedEvent, () => {
   mainHandler.contentHandling.purgePageContent();
   //mainHandler.contentHandling.setBodyContent();
 });
 
-loginElements.loginBtn.onclick = () => {
-  loginFunctions.clearCredentialError();
-  if (loginElements.usernameField.value == "") {
-    loginFunctions.triggerCredentialError(loginElements.usernameField);
-  }
-  if(loginElements.passwField.value == "") {
-    loginFunctions.triggerCredentialError(loginElements.passwField);
-    return;
-  }
-  APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
-    loginElements.usernameField.value, loginElements.passwField.value), true);
-}
-
-loginElements.registerBtn.onclick = () => {
-  let pageLoader = new PageLoader(mainGlobalVariables.page.mainContentPage);
-  pageLoader.loadPage("registration");
-}

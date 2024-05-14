@@ -151,7 +151,16 @@ function fetchScriptComponents() {
   return new Promise(async (success, failure) => {
     let baseFolder = "/components/";
     try {
-      let scriptPaths = [baseFolder + "login/login.js"];
+      let scriptPaths = [
+        baseFolder + "login/login.js",
+        //baseFolder + "registration/registration.js",
+        //baseFolder + "chat/chat.js",
+        //baseFolder + "search/search.js",
+        //baseFolder + "profile/profile.js",
+        //baseFolder + "post/post.js",
+        //baseFolder + "post/feed.js",
+        //baseFolder + "post/cookiebanner.js",
+        baseFolder + "settings/settings.js"];
       let scriptPromises = Array();
       for (let scriptPathIndex in scriptPaths) {
         scriptPromises.push(DOMUtilities.addScript(document.body, scriptPaths[scriptPathIndex]));
