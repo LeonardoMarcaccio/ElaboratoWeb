@@ -1,6 +1,6 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
-    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/userUtils.php";  //NOSONAR
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/userUtils.php";  //NOSONAR
 
     /**
      * Send a message to the specified User
@@ -18,7 +18,8 @@
      * Return the chat between two users
      */
     function getChat($friendUsername, $pages, $maxPerPage, mysqli $database) {
-        $username = getUsernameByToken($_COOKIE['token'], $database);
+        $username = "TestUser1";
+        //getUsernameByToken($_COOKIE['token'], $database);
         $n = $pages * $maxPerPage;
         $statement = $database->prepare(
             "SELECT * FROM message
@@ -29,16 +30,15 @@
         if (!$statement->execute()) {
             throw getInternalError();
         }
-
+        
         $communities = $statement->get_result();
         if (mysqli_num_rows($communities) === 0) {
             throw getInternalError();
         }
-
+        
         $result = array();
         while($tmp = mysqli_fetch_assoc($communities)) {
             array_push($result, $tmp);
         }
-
         return $result;
     }

@@ -1,6 +1,8 @@
 async function makeList() {
+    /*
     const user = await APICalls.getRequests.getUserInfo();
     user = user.response.Username;
+    */
     let choices = await APICalls.getRequests.getSubbedCommunitiesRequest(user);
     choices = choices.response;
     let select = document.getElementById("communities-options");

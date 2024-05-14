@@ -3,9 +3,10 @@
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/sessionUtils.php";  //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/jsonutils.php";        //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/communityUtils.php";        //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/messageUtils.php";     //NOSONAR 
 
   define("DEFAULT_PAGE_SIZE", 5);
-  define("DEFAULT_PAGE_INDEX", 0);
+  define("DEFAULT_PAGE_INDEX", 1);
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
@@ -85,7 +86,9 @@
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
-      
+      case "message":
+        createMessage($_GET['target'], $requestBody, $database);
+      break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
@@ -185,6 +188,9 @@
       break;
       case "subbedCommunities":
         $result = getSubbedCommunities($target, $database);
+      break;
+      case "message":
+        $result = getChat($_GET['target'], $pageIndex, $pageSize, $database);
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
