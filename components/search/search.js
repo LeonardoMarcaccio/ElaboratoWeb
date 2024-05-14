@@ -7,22 +7,21 @@ let jsonCommunity = {
 }
 */
 
-let communityBuilder = new CommunityBuilder("search");
+const communityBuilder = new CommunityBuilder("search");
 
 async function loadCommunities(page) {
     let newPage = await APICalls.getRequests.getCommunitiesRequest(document.getElementById("search-keyword").value, page, 16);
     newPage = newPage.response;
     for (let i in newPage) {
         let tmp = await communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
-        mainGlobalVariables.page.mainContentPage.appendChild(tmp);
+        mainGlobalVariables.page.mainContentPage.addContent(tmp);
     }
 }
 
+let communityLoader = new ContentLoader((page) => loadCommunities(page));
+
 document.getElementById("search-start").onclick = () => {
-    mainPageLoader.flushPage();
+    mainHandler.contentHandling.clearBodyContent();
     communityLoader.reset();
-    communityLoader.switchLoadMethod((page) => loadCommunities(page));
     communityLoader.loadMore();
 }
-
-communityLoader = new ContentLoader((page) => loadCommunities(page));

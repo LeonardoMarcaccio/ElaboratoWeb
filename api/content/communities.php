@@ -183,6 +183,9 @@
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
       break;
+      case "subbedCommunities":
+        $result = getSubbedCommunities($target, $database);
+      break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }

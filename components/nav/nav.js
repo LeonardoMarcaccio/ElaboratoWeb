@@ -1,5 +1,6 @@
 let navButtons = document.getElementsByClassName("nav-button");
 let loader = new AssetLoader("/components/");
+let cacheMap = new Map();
 
 for (let btnElement of navButtons) {
   let eventName = btnElement.id.replace("nav-", "");

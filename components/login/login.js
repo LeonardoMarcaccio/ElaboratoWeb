@@ -6,10 +6,10 @@ class LoginPage extends DynamicPage {
     if (this.opts.cache && this.cached) {
       mainHandler.contentHandling.purgePageContent();
     } else {
-      let loader = new AssetLoader("/components/login/");
+      let loader = new AssetLoader("/components/");
       if (this.opts.cache && !this.cached
         || !this.opts.cache) {
-        this.cachedAsset = await loader.loadAsset("login.html");
+        this.cachedAsset = await loader.loadAsset("/login/login", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
         this.cached = this.opts.cache;
       }
     }

@@ -11,20 +11,21 @@ let jsonComment = {
 let postBuilder = new PostBuilder("feed");
 
 async function loadPosts(page) {
+    //  Works when logged in
     let newPage = await APICalls.getRequests.getPostsRequest("", page, 8);
     newPage = newPage.response;
     for (let i in newPage) {
-        mainGlobalVariables.page.mainContentPage.appendChild(
-                postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId));
+        let tmp = postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId);
+        mainGlobalVariables.page.mainContentPage.addContent(tmp);
     }
 }
 
+let postLoader = new ContentLoader((page) => loadPosts(page));
+
 document.getElementById("nav-feed").onclick = () => {
-    mainPageLoader.flushPage();
+    mainHandler.contentHandling.clearBodyContent();
     postLoader.reset();
-    postLoader.switchLoadMethod((page) => loadPosts(page));
     postLoader.loadMore();
 }
 
-postLoader = new ContentLoader((page) => loadPosts(page));
 postLoader.loadMore();

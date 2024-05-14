@@ -43,13 +43,19 @@
     if (!$query->execute()) {
       throw getInternalError();
     }
+    /*  Unused variables
     $friendsArray = array();
     $resultingUser = mysqli_fetch_assoc($query->get_result());
-    while ($resultingUser !== null) {
+    */
+    /*  This is the code that broke
+    while ($resultingUser != null) {
+      var_dump($resultingUser);
       array_push($resultingUser);
       $resultingUser = mysqli_fetch_assoc($query->get_result());
     }
     return $friendsArray;
+    */
+    return mysqli_fetch_assoc($query->get_result());;
   }
 
   function areFriends($queryingUser, $queriedUser, mysqli $database) {
