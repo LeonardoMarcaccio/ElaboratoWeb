@@ -40,8 +40,9 @@ class ElementHandler {
   /**
    * Adds content to the elementhandler's handled child.
    * @param {HTMLElement | ElementHandler} content the content to be added
+   * @param {object} options                       wether or not to fix linked js
    */
-  async addContent(content) {
+  async addContent(content, options = {ignoreLinkedJs: false}) {
     if (this.recurse) {
       await this.targetElement.addContent(content);
     } else if (content instanceof HTMLElement
@@ -51,9 +52,19 @@ class ElementHandler {
         content.onload = success();
         content.onerror = failure(new Error("Error during element load!"));
         if (content instanceof NodeList) {
-          content.forEach(singleNode => this.targetElement.appendChild(this.scriptTagFix(singleNode)));
+          content.forEach(singleNode => {
+            if (!options.ignoreLinkedJs || (!options.ignoreLinkedJs && !singleNode instanceof HTMLScriptElement)) {
+              this.targetElement.appendChild(this.scriptTagFix(singleNode));
+            } else {
+              this.targetElement.appendChild(singleNode);
+            }
+          });
         } else {
-          this.targetElement.appendChild(this.scriptTagFix(content));
+          if (!options.ignoreLinkedJs || (!options.ignoreLinkedJs && !content instanceof HTMLScriptElement)) {
+            this.targetElement.appendChild(this.scriptTagFix(content));
+          } else {
+            this.targetElement.appendChild(content);
+          }
         }
       });
       await loadTask;
@@ -97,14 +108,44 @@ class ElementHandler {
   }
 };
 
+/**
+ * A contract that a dynamic page should respect.
+ */
 class DynamicPage {
-  constructor(pageUrl, opts = {lazy: true, cache: true, autofetch: false, js: false, css: false}) {
+  /**
+   * Constructs a DynamicPage object.
+   * @param {pageUrl} pageUrl a target URL to load
+   * @param {object} opts page options
+   */
+  constructor(pageUrl = null, opts = {lazy: true, cache: true, autofetch: false, js: false, css: false}) {
     this.cached = false;
     this.sourceUrl = pageUrl;
     this.opts = opts;
+    this.nodeMap = new Map();
   }
+  /**
+   * Orders the dynamic page to load.
+   */
   async load() {}
+  /**
+   * Orders the dynamic page to reset it's content.
+   */
   reset() {}
+  /**
+   * Returns and stores it in an internal cache in order to do a faster search.
+   * @param {string} nodeName     the node's id
+   * @param {boolean} forceUpdate true to discard cache and force search
+   * @returns {HTMLElement}       requested node if it exists
+   */
+  lazyNodeIdQuery(nodeName, forceUpdate = false) {
+    if (!forceUpdate && this.nodeMap.has(nodeName)) {
+      return this.nodeMap.get(nodeName);
+    } else {
+      let node = document.getElementById(nodeName);
+      this.nodeMap.set(nodeName, node);
+      return node;
+    }
+  }
 }
 
 /**
