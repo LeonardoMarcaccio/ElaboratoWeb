@@ -4,6 +4,7 @@ let cacheMap = new Map();
 
 for (let btnElement of navButtons) {
   let eventName = btnElement.id.replace("nav-", "");
+  eventName += "-page";
   btnElement.onclick = async () => {
     //let page = await loader.loadAsset("/" + eventName + "/" + eventName, {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
     //mainHandler.contentHandling.setBodyContent(new ElementHandler(await page[0].text()).getContent());
