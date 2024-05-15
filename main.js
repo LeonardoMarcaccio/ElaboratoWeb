@@ -210,8 +210,11 @@ function fillStructure() {
 }
 
 function updateLoginStatus() {
-  mainGlobalVariables.userData.userLoggedIn = !(cookieUtilities.readCookie("validatedLogin") == "");
-  console.log(!(cookieUtilities.readCookie("validatedLogin") == ""));
+  mainGlobalVariables.userData.userLoggedIn = !(cookieUtilities.readCookie("token") == "");
+  if (!mainGlobalVariables.userData.userLoggedIn) {
+    let unauthorizedEvt = new CustomEvent(events.apiActions.unauthorizedEvt);
+    document.dispatchEvent(unauthorizedEvt);
+  }
 }
 
 async function mainPageInit() {

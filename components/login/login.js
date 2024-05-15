@@ -68,8 +68,11 @@ class LoginPage extends DynamicPage {
 
 let loginClass = new LoginPage();
 
-document.addEventListener(APIEvents.unauthorizedEvent, () => {
+document.addEventListener(events.apiActions.unauthorizedEvt, () => {
   mainHandler.contentHandling.purgePageContent();
-  //mainHandler.contentHandling.setBodyContent();
+  loginClass.load();
 });
 
+document.addEventListener(events.apiActions.authSuccess, () => {
+  mainHandler.contentHandling.purgePageContent();
+});
