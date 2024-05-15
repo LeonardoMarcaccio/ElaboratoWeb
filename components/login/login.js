@@ -57,7 +57,7 @@ class LoginPage extends DynamicPage {
         this.triggerCredentialError(this.getPasswordField());
       }
       APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
-        this.getUsernameField().value, this.getUsernameField().value), true);
+        this.getUsernameField().value, this.getPasswordField().value), true);
     }
     
     this.getRegisterButton().onclick = () => {
