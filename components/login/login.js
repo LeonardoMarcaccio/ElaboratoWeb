@@ -10,18 +10,18 @@ class LoginPage extends DynamicPage {
       if (this.opts.cache && !this.cached
         || !this.opts.cache) {
         this.cachedAsset = await loader.loadAsset("/login/login", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
-        this.cachedAsset = await this.cachedAsset[0].text();
+        this.cachedAsset = new ElementHandler(await this.cachedAsset[0].text());
         this.cached = this.opts.cache;
         console.log("test123");
       }
     }
-    mainHandler.contentHandling.setBodyContent(DOMUtilities.stringToTemplate(this.cachedAsset).childNodes);
+    mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
     this.usernameField = null;
     this.passwordField = null;
     this.loginButton = null;
     this.registerButton = null;
 
-    //bindListeners();
+    this.bindListeners();
   }
   reset() {
     super.reset();
@@ -43,22 +43,18 @@ class LoginPage extends DynamicPage {
   triggerCredentialError(element) {
     element.classList.add("wrong");
   }
-  triggerCredentialError() {
-
-  }
   clearCredentialError() {
-    this.getUsernameField().remove("wrong");
-    this.getPasswordField().remove("wrong");
+    this.getUsernameField().classList.remove("wrong");
+    this.getPasswordField().classList.remove("wrong");
   }
   bindListeners() {
     this.getLoginButton().onclick = () => {
-      loginFunctions.clearCredentialError();
+      this.clearCredentialError();
       if (this.getUsernameField().value == "") {
-        this.triggerCredentialError(loginElements.usernameField);
+        this.triggerCredentialError(this.getUsernameField());
       }
       if(this.getPasswordField().value == "") {
-        this.triggerCredentialError(loginElements.passwField);
-        return;
+        this.triggerCredentialError(this.getPasswordField());
       }
       APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
         this.getUsernameField().value, this.getUsernameField().value), true);
