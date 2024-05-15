@@ -209,10 +209,8 @@ class AssetLoader {
       result = Array();
       for (let asset in targetAssets) {
         // TODO: simplyfy code and remove output
-        console.log(this.sourceFolder + targetAssets[asset]);
         let probe = await fetch(this.sourceFolder + targetAssets[asset]);
         result.push(probe);
-        console.log("tEST123");
       }
     } else if (targetAssets instanceof String) {
       result = await fetch(this.sourceFolder + targetAssets);

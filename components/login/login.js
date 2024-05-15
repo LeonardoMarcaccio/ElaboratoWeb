@@ -12,7 +12,6 @@ class LoginPage extends DynamicPage {
         this.cachedAsset = await loader.loadAsset("/login/login", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
         this.cachedAsset = new ElementHandler(await this.cachedAsset[0].text());
         this.cached = this.opts.cache;
-        console.log("test123");
       }
     }
     mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
