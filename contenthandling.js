@@ -126,7 +126,25 @@ class DynamicPage {
   /**
    * Orders the dynamic page to load.
    */
-  async load() {}
+  async load(path = "") {
+    if (path === "") {
+      
+    }
+
+    mainHandler.contentHandling.purgePageContent();
+    if (this.opts.cache && this.cached) {
+      mainHandler.contentHandling.purgePageContent();
+    } else {
+      let loader = new AssetLoader("/components/");
+      if (this.opts.cache && !this.cached
+        || !this.opts.cache) {
+        this.cachedAsset = await loader.loadAsset(path, {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
+        this.cachedAsset = new ElementHandler(await this.cachedAsset[0].text());
+        this.cached = this.opts.cache;
+      }
+    }
+    mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
+  }
   /**
    * Orders the dynamic page to reset it's content.
    */

@@ -1,176 +1,287 @@
-const registrationElements = {
-  form: document.getElementById("registration-form"),
-  essentialDataField: {
-    formDiv: document.getElementById("registration-essential"),
-    elements: {
-      username: document.getElementById("registration-username"),
-      usernameTakenError: document.getElementById("registration-username-taken-error"),
-      usernameSpecialCharError: document.getElementById("registration-username-specialchar-error"),
-      email: document.getElementById("registration-email"),
-      emailTakenError: document.getElementById("registration-email-taken-error"),
-      password: document.getElementById("registration-password"),
-      passwordError: document.getElementById("registration-password-error"),
-      passwordRetype: document.getElementById("registration-password-retype"),
-      passwordRetypeError: document.getElementById("registration-password-retype-error"),
-    }
-  },
-  nonEssentialDataField: {
-    formDiv: document.getElementById("registration-non-essential"),
-    elements: {
-      firstname: document.getElementById("registration-firstname"),
-      lastname: document.getElementById("registration-lastname"),
-      gender: document.getElementById("registration-gender"),
-      biography: document.getElementById("registration-biography"),
-      personalwebsite: document.getElementById("registration-personalwebsite"),
-      profilepicture: document.getElementById("registration-profilepicture"),
-      phonenumber: document.getElementById("registration-phonenumber"),
-    }
-  },
-  submitButton: document.getElementById("registration-send-data"),
-  addInfoButton: document.getElementById("registration-show-non-essential")
-}
+class RegistrationPage extends DynamicPage {
+  async load() {
+    super.load();
+    this.registrationForm = null;
+    this.registrationEssentialForm = null;
+    this.username = null;
+    this.usernameTakenError = null;
+    this.usernameSpecialCharError = null;
+    this.email = null;
+    this.emailTakenError = null;
+    this.password = null;
+    this.passwordError = null;
+    this.passwordRetype = null;
+    this.passwordRetypeError = null;
+    this.usernameTakenError = null;
+    this.registrationNonEssentialForm = null;
+    this.firstname = null;
+    this.lastname = null;
+    this.gender = null;
+    this.biography = null;
+    this.personalWebsite = null;
+    this.profilePicture = null;
+    this.phoneNumber = null;
+    this.submitButton = null;
+    this.addInfoButton = null;
 
-// Add more info button action
-registrationElements.addInfoButton.onclick = () => {
-  registrationElements.nonEssentialDataField.formDiv.style.display = 'flex';
-  registrationElements.addInfoButton.style.display = 'none';
-  registrationElements.submitButton.innerHTML = "Complete Registration"
-}
+    this.bindListeners();
+  }
 
-// Resets data inside the page
-function resetRegistrationPage() {
-  registrationElements.essentialDataField.formDiv.reset();
-  registrationElements.nonEssentialDataField.formDiv.reset();
-}
+  getRegistrationForm() {
+    return this.lazyNodeIdQuery("registration-form");
+  }
 
-// Checks for page ghange to clear sent/unused data
-document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE,
-  () => resetRegistrationPage());
+  getRegistrationEssentialForm() {
+    return this.lazyNodeIdQuery("registration-essential");
+  }
 
-// Submits data
-registrationElements.submitButton.onclick = async (evt) => {
-  resetEssentialErrors();
+  getUsername() {
+    return this.lazyNodeIdQuery("registration-username");
+  }
 
-  evt.preventDefault();
-  let formData = new FormData(registrationElements.form);
-  let username = formData.get("registration-username");
-  let email = formData.get("registration-email");
-  let password = formData.get("registration-password");
-  let passwordRetype = formData.get("registration-password-retype");
+  getUsernameTakenError() {
+    return this.lazyNodeIdQuery("registration-username-taken-error");
+  }
 
-  let firstname = formData.get("registration-firstname");
-  let lastname = formData.get("registration-lastname");
-  let gender = formData.get("registration-gender");
-  let biography = formData.get("registration-biography");
-  let personalwebsite = formData.get("registration-personalwebsite");
-  let profilePicture = formData.get("registration-profilepicture");
-  let phonenumber = formData.get("registration-phonenumber");
+  getUsernameSpecialCharError() {
+    return this.lazyNodeIdQuery("registration-username-specialchar-error");
+  }
+
+  getEmail() {
+    return this.lazyNodeIdQuery("registration-email");
+  }
+
+  getEmailTakenError() {
+    return this.lazyNodeIdQuery("registration-email-taken-error");
+  }
+
+  getPassword() {
+    return this.lazyNodeIdQuery("registration-password");
+  }
+
+  getPasswordError() {
+    return this.lazyNodeIdQuery("registration-password-error");
+  }
+
+  getPasswordRetype() {
+    return this.lazyNodeIdQuery("registration-password-retype");
+  }
+
+  getPasswordRetypeError() {
+    return this.lazyNodeIdQuery("registration-password-retype-error");
+  }
+
+  getEssentialElements() {
+    let essentialElements = new Array();
+    essentialElements.push(this.getUsername());
+    essentialElements.push(this.getUsernameTakenError());
+    essentialElements.push(this.getUsernameSpecialCharError());
+    essentialElements.push(this.getEmail());
+    essentialElements.push(this.getEmailTakenError());
+    essentialElements.push(this.getPassword());
+    essentialElements.push(this.getPasswordError());
+    essentialElements.push(this.getPasswordRetype());
+    essentialElements.push(this.getPasswordRetypeError());
+    return essentialElements;
+  }
+
+  getRegistrationNonEssentialForm() {
+    return this.lazyNodeIdQuery("registration-non-essential");
+  }
+
+  getFirstname() {
+    return this.lazyNodeIdQuery("registration-firstname");
+  }
+
+  getLastname() {
+    return this.lazyNodeIdQuery("registration-lastname");
+  }
+
+  getGender() {
+    return this.lazyNodeIdQuery("registration-gender");
+  }
+
+  getBiography() {
+    return this.lazyNodeIdQuery("registration-biography");
+  }
+
+  getPersonalWebsite() {
+    return this.lazyNodeIdQuery("registration-personalwebsite");
+  }
+
+  getProfilePicture() {
+    return this.lazyNodeIdQuery("registration-profilepicture");
+  }
+
+  getPhoneNumber() {
+    return this.lazyNodeIdQuery("registration-phonenumber");
+  }
+
+  getNonEssentialElements() {
+    let nonEssentialElements = new Array();
+    nonEssentialElements.push(this.getFirstname());
+    nonEssentialElements.push(this.getLastname());
+    nonEssentialElements.push(this.getGender());
+    nonEssentialElements.push(this.getBiography());
+    nonEssentialElements.push(this.getPersonalWebsite());
+    nonEssentialElements.push(this.getProfilePicture());
+    nonEssentialElements.push(this.getPhoneNumber());
+    return nonEssentialElements;
+  }
+
+  getSubmitButton() {
+    return this.lazyNodeIdQuery("registration-send-data");
+  }
+
+  getAddInfoButton() {
+    return this.lazyNodeIdQuery("registration-show-non-essential");
+  }
   
-  if (localEssentialFieldsCheck(username, email, password, passwordRetype)) {
-    return;
-  }
-
-  let pfp = null;
-  try {
-    pfp = await JSONUtils.registration.imgToJSON(profilePicture);
-  } catch (e) {
-    console.warn("Could not load Image! Reason:\n" + e);
-  }
-  console.log(JSONUtils.registration.buildRegistration(username, email,
-    password, firstname, lastname, gender, biography, personalwebsite,
-    pfp, phonenumber));
-
-  let response = await APICalls.postRequests.sendAuthentication(JSONUtils.mapJsonVals(JSONUtils.registration.buildRegistration(username, email,
-    password, firstname, lastname, gender, biography, personalwebsite,
-    pfp, phonenumber)));
-  
-  console.log(response);
-
-  switch (response.code) {
-    case 401:
-    if (response.hasOwnProperty("response")) {
-      checkEssentialCredendialEvaluation(response.response);
+  bindListeners() {
+    this.getAddInfoButton().onclick = () => {
+      this.getRegistrationNonEssentialForm().style.display = 'flex';
+      this.getAddInfoButton().style.display = 'none';
+      this.getSubmitButton().innerHTML = "Complete Registration";
     }
-    break;
-    case 409:
-      usernameTakenError();
-      emailTakenError();
-  }
-}
 
-function resetEssentialErrors() {
-  registrationElements.essentialDataField.elements.username.classList.remove("wrong");
-  registrationElements.essentialDataField.elements.email.classList.remove("wrong");
-  registrationElements.essentialDataField.elements.passwordRetype.classList.remove("wrong");
-  registrationElements.essentialDataField.elements.password.classList.remove("wrong");
-  registrationElements.essentialDataField.elements.passwordRetypeError.style.display = "none";
-  registrationElements.essentialDataField.elements.passwordError.style.display = "none";
-  registrationElements.essentialDataField.elements.emailTakenError.style.display = "none";
-  registrationElements.essentialDataField.elements.usernameSpecialCharError.style.display = "none";
-  registrationElements.essentialDataField.elements.usernameTakenError.style.display = "none";
-}
+    // Checks for page change to clear sent/unused data
+    document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE, () => resetRegistrationPage());
 
-function localEssentialFieldsCheck(username, email, password, passwordRetype) {
-  let checkError = false;
-  if (username == "") {
-    registrationElements.essentialDataField.elements.username.classList.add("wrong");
+    // Submits data
+    this.getSubmitButton.onclick = async (evt) => {
+      resetEssentialErrors();
+    
+      evt.preventDefault();
+      this.formData = new FormData(this.getRegistrationForm());
+      this.username = formData.get("registration-username");
+      this.email = formData.get("registration-email");
+      this.password = formData.get("registration-password");
+      this.passwordRetype = formData.get("registration-password-retype");
+    
+      this.firstname = formData.get("registration-firstname");
+      this.lastname = formData.get("registration-lastname");
+      this.gender = formData.get("registration-gender");
+      this.biography = formData.get("registration-biography");
+      this.personalwebsite = formData.get("registration-personalwebsite");
+      this.profilePicture = formData.get("registration-profilepicture");
+      this.phonenumber = formData.get("registration-phonenumber");
+      
+      if (localEssentialFieldsCheck(this.username, this.email, this.password, this.passwordRetype)) {
+        return;
+      }
+    
+      let pfp = null;
+      try {
+        pfp = await JSONUtils.registration.imgToJSON(profilePicture);
+      } catch (e) {
+        console.warn("Could not load Image! Reason:\n" + e);
+      }
+      console.log(JSONUtils.registration.buildRegistration(username, email,
+        password, firstname, lastname, gender, biography, personalwebsite,
+        pfp, phonenumber));
+    
+      let response = await APICalls.postRequests.sendAuthentication(JSONUtils.mapJsonVals(JSONUtils.registration.buildRegistration(username, email,
+        password, firstname, lastname, gender, biography, personalwebsite,
+        pfp, phonenumber)));
+      
+      console.log(response);
+    
+      switch (response.code) {
+        case 401:
+        if (response.hasOwnProperty("response")) {
+          checkEssentialCredendialEvaluation(response.response);
+        }
+        break;
+        case 409:
+          usernameTakenError();
+          emailTakenError();
+      }
+    }
   }
-  if (email == "") {
-    registrationElements.essentialDataField.elements.email.classList.add("wrong");
+  
+  // Resets data inside the page
+  resetRegistrationPage() {
+    this.getRegistrationEssentialForm().reset();
+    this.getNonEssentialElements().reset();
   }
-  if (password == "") {
-    registrationElements.essentialDataField.elements.password.classList.add("wrong");
-    checkError = true;
+  
+  
+  
+  resetEssentialErrors() {
+    this.getUsername().classList.remove("wrong");
+    this.getUsernameTakenError().classList.remove("wrong");
+    this.getUsernameSpecialCharError().classList.remove("wrong");
+    this.getEmail().classList.remove("wrong");
+    this.getEmailTakenError().classList.remove("wrong");
+    this.getPassword().classList.remove("wrong");
+    this.getPasswordError().classList.remove("wrong");
+    this.getPasswordRetype().classList.remove("wrong");
+    this.getPasswordRetypeError().classList.remove("wrong");
   }
-  if (passwordRetype == "") {
-    registrationElements.essentialDataField.elements.passwordRetype.classList.add("wrong");
-    checkError = true;
+  
+  localEssentialFieldsCheck(username, email, password, passwordRetype) {
+    let checkError = false;
+    if (username == "") {
+      this.getUsername().classList.add("wrong");
+    }
+    if (email == "") {
+      this.getEmail().classList.add("wrong");
+    }
+    if (password == "") {
+      this.getPassword().classList.add("wrong");
+      checkError = true;
+    }
+    if (passwordRetype == "") {
+      this.getPasswordRetype().classList.add("wrong");
+      checkError = true;
+    }
+    if (password != passwordRetype) {
+      this.getPassword().classList.add("wrong");
+      this.getPasswordRetype().classList.add("wrong");
+      this.getPasswordRetypeError().style.display = "block";
+      checkError = true;
+    }
+    return checkError;
   }
-  if (password != passwordRetype) {
-    registrationElements.essentialDataField.elements.passwordRetype.classList.add("wrong");
-    registrationElements.essentialDataField.elements.password.classList.add("wrong");
-    registrationElements.essentialDataField.elements.passwordRetypeError.style.display = "block";
-    checkError = true;
+  
+  checkEssentialCredendialEvaluation(evaluationJson) {
+    if (!evaluationJson.usernameValidityReport.allTestsPassed) {
+      this.usernameError();
+    }
+    if (!evaluationJson.emailValidityReport.allTestsPassed) {
+      this.emailError();
+    }
+    if (!evaluationJson.passwordValidityReport.allTestsPassed) {
+      this.passwordError();
+    }
   }
-  return checkError;
-}
+  
+  usernameError() {
+    this.getUsername().classList.add("wrong");
+    this.getUsernameSpecialCharError().style.display = "block";
+  }
+  
+  usernameSpecialCharsError() {
+    this.usernameError();
+    this.getUsernameSpecialCharError().style.display = "block";
+  }
 
-function checkEssentialCredendialEvaluation(evaluationJson) {
-  if (!evaluationJson.usernameValidityReport.allTestsPassed) {
-    usernameError();
+  usernameTakenError() {
+    this.usernameError();
+    this.getUsernameTakenError().style.display = "block";
   }
-  if (!evaluationJson.emailValidityReport.allTestsPassed) {
-    emailError();
+
+  emailError() {
+    this.getEmail().classList.add("wrong");
   }
-  if (!evaluationJson.passwordValidityReport.allTestsPassed) {
-    passwordError();
+  
+  emailTakenError() {
+    this.emailError();
+    this.getEmailTakenError().style.display = "block";
   }
-}
-
-function usernameError() {
-  registrationElements.essentialDataField.elements.username.classList.add("wrong");
-  registrationElements.essentialDataField.elements.usernameSpecialCharError.style.display = "block";
-}
-
-function usernameTakenError() {
-  usernameError();
-  registrationElements.essentialDataField.elements.usernameTakenError.style.display = "block";
-}
-function usernameSpecialCharsError() {
-  usernameError();
-  registrationElements.essentialDataField.elements.usernameSpecialCharError.style.display = "block";
-}
-
-function emailError() {
-  registrationElements.essentialDataField.elements.email.classList.add("wrong");
-}
-
-function emailTakenError() {
-  emailError();
-  registrationElements.essentialDataField.elements.emailTakenError.style.display = "block";
-}
-
-function passwordError() {
-  registrationElements.essentialDataField.elements.password.classList.add("wrong");
-  registrationElements.essentialDataField.elements.passwordError.style.display = "block";
+  
+  passwordError() {
+    this.getPassword().classList.add("wrong");
+    this.getPasswordError().style.display = "block";
+  }
 }
