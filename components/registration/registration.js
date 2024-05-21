@@ -148,10 +148,10 @@ class RegistrationPage extends DynamicPage {
     document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE, () => resetRegistrationPage());
 
     // Submits data
-    this.getSubmitButton.onclick = async (evt) => {
-      resetEssentialErrors();
-    
+    this.getRegistrationForm().onsubmit = async (evt) => {
       evt.preventDefault();
+      
+      resetEssentialErrors();
       this.formData = new FormData(this.getRegistrationForm());
       this.username = formData.get("registration-username");
       this.email = formData.get("registration-email");

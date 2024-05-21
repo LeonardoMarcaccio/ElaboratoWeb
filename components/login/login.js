@@ -24,6 +24,9 @@ class LoginPage extends DynamicPage {
   getRegisterButton() {
     return this.lazyNodeIdQuery("login-goto-register");
   }
+  getForm() {
+    return this.lazyNodeIdQuery("login-form");
+  }
 
   triggerCredentialError(element) {
     element.classList.add("wrong");
@@ -33,7 +36,8 @@ class LoginPage extends DynamicPage {
     this.getPasswordField().classList.remove("wrong");
   }
   bindListeners() {
-    this.getLoginButton().onclick = () => {
+    this.getForm().onsubmit = (event) => {
+      event.preventDefault();
       this.clearCredentialError();
       if (this.getUsernameField().value == "") {
         this.triggerCredentialError(this.getUsernameField());
