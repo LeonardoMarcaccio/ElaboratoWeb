@@ -1,6 +1,6 @@
 class RegistrationPage extends DynamicPage {
   async load() {
-    super.load();
+    await super.load("registration/registration");
     this.registrationForm = null;
     this.registrationEssentialForm = null;
     this.username = null;
@@ -285,3 +285,10 @@ class RegistrationPage extends DynamicPage {
     this.getPasswordError().style.display = "block";
   }
 }
+
+let registrationPage = new RegistrationPage();
+
+document.addEventListener(events.userSpecific.register, () => {
+  mainHandler.contentHandling.purgePageContent();
+  registrationPage.load();
+});

@@ -1,20 +1,6 @@
 class LoginPage extends DynamicPage {
   async load() {
-    super.load();
-    // NOTE: Need to rebuild this if condition
-    mainHandler.contentHandling.purgePageContent();
-    if (this.opts.cache && this.cached) {
-      mainHandler.contentHandling.purgePageContent();
-    } else {
-      let loader = new AssetLoader("/components/");
-      if (this.opts.cache && !this.cached
-        || !this.opts.cache) {
-        this.cachedAsset = await loader.loadAsset("/login/login", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
-        this.cachedAsset = new ElementHandler(await this.cachedAsset[0].text());
-        this.cached = this.opts.cache;
-      }
-    }
-    mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
+    await super.load("/login/login");
     this.usernameField = null;
     this.passwordField = null;
     this.loginButton = null;
