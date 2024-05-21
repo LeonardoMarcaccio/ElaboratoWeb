@@ -19,7 +19,7 @@
         throw getInternalError();
       }
 
-      const $noExpire = -1;
+      $noExpire = -1;
       setcookie('token', '', $noExpire, "/");
       exit(generateJSONResponse(200, "Ok"));
     } else {

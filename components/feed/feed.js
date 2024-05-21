@@ -9,6 +9,10 @@ class FeedPage extends DynamicPage {
         this.bindListeners();
     }
 
+    getNavFeed() {
+        return this.lazyNodeIdQuery("nav-feed");
+    }
+
     async loadPosts(page) {
         let newPage = await APICalls.getRequests.getPostsRequest("", page, 8);
         newPage = newPage.response;
@@ -28,7 +32,7 @@ class FeedPage extends DynamicPage {
             }
         });
 
-        document.getElementById("nav-feed").onclick = () => {
+        this.getNavFeed().onclick = () => {
             mainHandler.contentHandling.clearBodyContent();
             this.postLoader.reset();
             this.postLoader.loadMore();

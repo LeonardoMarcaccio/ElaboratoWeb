@@ -52,9 +52,9 @@
   }
 
   function checkNonEssValidity(UserData $userContainer) {
-    const $lengthName = 50;
-    const $lengthDesc = 500;
-    const $lengthPfp = 2083;
+    $lengthName = 50;
+    $lengthDesc = 500;
+    $lengthPfp = 2083;
     $firstNameCheck = standardStringValidity($userContainer->getFirstName(), $lengthName,
       '/[!@#$%^&*(),.?":{}|<>]/');
     $lastNameCheck = standardStringValidity($userContainer->getLastName(), $lengthName,
