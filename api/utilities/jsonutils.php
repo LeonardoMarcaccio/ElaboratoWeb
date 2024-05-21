@@ -28,7 +28,7 @@ use function PHPSTORM_META\type;
         attemptValExtraction($jsonObject, 'format')
       );
     } else {
-      throw getInvalidDataError();
+      return null;
     }
   }
 

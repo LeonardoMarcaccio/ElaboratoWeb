@@ -62,7 +62,11 @@
     $genderCheck = true;
     $biographyValid = standardStringValidity($userContainer->getBiography(), $lengthDesc);
     $personalWebsiteCheck = standardStringValidity($userContainer->getPersonalWebsite(), $lengthDesc);
-    $profilePicCheck = standardStringValidity($userContainer->getPfp(), $lengthPfp);
+    if ($userContainer->getPfp() == null) {
+      $profilePicCheck = true;
+    } else {
+      $profilePicCheck = standardStringValidity($userContainer->getPfp(), $lengthPfp);
+    }
     $phoneNumberCheck = true;     // TODO: Check for each number if it conforms with standards.
 
     return new NonEssValidity($firstNameCheck, $lastNameCheck,
