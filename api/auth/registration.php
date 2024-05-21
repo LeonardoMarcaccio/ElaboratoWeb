@@ -39,7 +39,6 @@
         if (!$registrationStatement->execute()) {
           throw getInternalError();
         }
-        echo $password = password_hash($password, PASSWORD_DEFAULT);
         $token = generateUniqueToken($database);
         $username = $usrObj->getUsername();
         setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");

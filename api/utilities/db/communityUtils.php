@@ -97,8 +97,6 @@
      * Sub a User to the specified Community
      */
     function subCommunity($username, $communityName, mysqli $database) {
-        var_dump($username);
-        var_dump($communityName);
         $statement = $database->prepare("INSERT INTO `join`(`Name`, `Username`) VALUES (?,?)");
         $statement->bind_param("ss", $communityName, $username);
         if (!$statement->execute()) {
