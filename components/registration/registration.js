@@ -1,6 +1,6 @@
 class RegistrationPage extends DynamicPage {
   async load() {
-    super.load();
+    await super.load("registration/registration");
     this.registrationForm = null;
     this.registrationEssentialForm = null;
     this.username = null;
@@ -148,10 +148,10 @@ class RegistrationPage extends DynamicPage {
     document.addEventListener(events.genericActions.MAINCONTENTPAGECHANGE, () => resetRegistrationPage());
 
     // Submits data
-    this.getSubmitButton.onclick = async (evt) => {
-      resetEssentialErrors();
-    
+    this.getRegistrationForm().onsubmit = async (evt) => {
       evt.preventDefault();
+      
+      resetEssentialErrors();
       this.formData = new FormData(this.getRegistrationForm());
       this.username = formData.get("registration-username");
       this.email = formData.get("registration-email");
@@ -285,3 +285,10 @@ class RegistrationPage extends DynamicPage {
     this.getPasswordError().style.display = "block";
   }
 }
+
+let registrationPage = new RegistrationPage();
+
+document.addEventListener(events.userSpecific.register, () => {
+  mainHandler.contentHandling.purgePageContent();
+  registrationPage.load();
+});

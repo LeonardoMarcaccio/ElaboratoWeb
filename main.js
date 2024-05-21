@@ -153,7 +153,7 @@ function fetchScriptComponents() {
     try {
       let scriptPaths = [
         baseFolder + "login/login.js",
-        //baseFolder + "registration/registration.js",
+        baseFolder + "registration/registration.js",
         //baseFolder + "chat/chat.js",
         //baseFolder + "search/search.js",
         //baseFolder + "profile/profile.js",
