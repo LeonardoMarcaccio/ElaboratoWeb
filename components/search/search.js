@@ -1,27 +1,38 @@
-/*
-let communityBuilder = new CommunityBuilder("search");
-let jsonCommunity = {
-    "name":"Sample Name",
-    "description":"This is a sample description for a sample community",
-    "image":null
-}
-*/
+class SearchPage extends DynamicPage {
+    async load() {
+        super.load();
 
-const communityBuilder = new CommunityBuilder("search");
+        this.searchBar = null;
+        this.searchButton = null;
 
-async function loadCommunities(page) {
-    let newPage = await APICalls.getRequests.getCommunitiesRequest(document.getElementById("search-keyword").value, page, 16);
-    newPage = newPage.response;
-    for (let i in newPage) {
-        let tmp = await communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
-        mainGlobalVariables.page.mainContentPage.addContent(tmp);
+        this.communityBuilder = new CommunityBuilder("search");
+        this.communityLoader = new ContentLoader((page) => this.loadCommunities(page));
+        this.bindListeners();
     }
-}
 
-let communityLoader = new ContentLoader((page) => loadCommunities(page));
+    getSearchBar() {
+        return this.lazyNodeIdQuery("search-keyword");
+    }
 
-document.getElementById("search-start").onclick = () => {
-    mainHandler.contentHandling.clearBodyContent();
-    communityLoader.reset();
-    communityLoader.loadMore();
+    getSearchButton() {
+        return this.lazyNodeIdQuery("search-start");
+    }
+
+    async loadCommunities(page) {
+        this.searchBar = this.searchBar == null ? this.getSearchBar() : this.searchBar;
+        let newPage = await APICalls.getRequests.getCommunitiesRequest(this.searchBar.value, page, 16);
+        newPage = newPage.response;
+        for (let i in newPage) {
+            let tmp = await communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
+            mainGlobalVariables.page.mainContentPage.addContent(tmp);
+        }
+    }
+
+    bindListeners() {
+        this.getSearchButton().onclick = () => {
+            mainHandler.contentHandling.clearBodyContent();
+            this.communityLoader.reset();
+            this.communityLoader.loadMore();
+        }
+    }
 }

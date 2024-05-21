@@ -982,11 +982,10 @@ const JSONBuilder = {
 }
 
 class ContentLoader {
-  currentPage = 0;
-  loadMethod = () => {};
-
   constructor (loadMethod) {
-      this.switchLoadMethod(loadMethod);
+    this.currentPage = 0;
+    this.loadMethod = () => {};
+    this.switchLoadMethod(loadMethod);
   }
 
   switchLoadMethod(loadMethod) {
@@ -994,10 +993,10 @@ class ContentLoader {
   }
 
   loadMore() {
-      this.loadMethod(this.currentPage++);
+    this.loadMethod(this.currentPage++);
   }
 
   reset() {
-      this.currentPage = 0;
+    this.currentPage = 0;
   }
 }
