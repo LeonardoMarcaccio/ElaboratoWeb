@@ -151,22 +151,22 @@ class RegistrationPage extends DynamicPage {
     this.getRegistrationForm().onsubmit = async (evt) => {
       evt.preventDefault();
       
-      resetEssentialErrors();
+      this.resetEssentialErrors();
       this.formData = new FormData(this.getRegistrationForm());
-      this.username = formData.get("registration-username");
-      this.email = formData.get("registration-email");
-      this.password = formData.get("registration-password");
-      this.passwordRetype = formData.get("registration-password-retype");
+      this.username = this.formData.get("registration-username");
+      this.email = this.formData.get("registration-email");
+      this.password = this.formData.get("registration-password");
+      this.passwordRetype = this.formData.get("registration-password-retype");
     
-      this.firstname = formData.get("registration-firstname");
-      this.lastname = formData.get("registration-lastname");
-      this.gender = formData.get("registration-gender");
-      this.biography = formData.get("registration-biography");
-      this.personalwebsite = formData.get("registration-personalwebsite");
-      this.profilePicture = formData.get("registration-profilepicture");
-      this.phonenumber = formData.get("registration-phonenumber");
+      this.firstname = this.formData.get("registration-firstname");
+      this.lastname = this.formData.get("registration-lastname");
+      this.gender = this.formData.get("registration-gender");
+      this.biography = this.formData.get("registration-biography");
+      this.personalwebsite = this.formData.get("registration-personalwebsite");
+      this.profilePicture = this.formData.get("registration-profilepicture");
+      this.phonenumber = this.formData.get("registration-phonenumber");
       
-      if (localEssentialFieldsCheck(this.username, this.email, this.password, this.passwordRetype)) {
+      if (this.localEssentialFieldsCheck(this.username, this.email, this.password, this.passwordRetype)) {
         return;
       }
     
@@ -176,13 +176,37 @@ class RegistrationPage extends DynamicPage {
       } catch (e) {
         console.warn("Could not load Image! Reason:\n" + e);
       }
-      console.log(JSONUtils.registration.buildRegistration(username, email,
-        password, firstname, lastname, gender, biography, personalwebsite,
-        pfp, phonenumber));
+      console.log(
+        JSONUtils.registration.buildRegistration(
+          this.username,
+          this.email,
+          this.password,
+          this.firstname,
+          this.lastname,
+          this.gender,
+          this.biography,
+          this.personalwebsite,
+          this.pfp,
+          this.phonenumber
+        )
+      );
     
-      let response = await APICalls.postRequests.sendAuthentication(JSONUtils.mapJsonVals(JSONUtils.registration.buildRegistration(username, email,
-        password, firstname, lastname, gender, biography, personalwebsite,
-        pfp, phonenumber)));
+      let response = await APICalls.postRequests.sendAuthentication(
+        JSONUtils.mapJsonVals(
+          JSONUtils.registration.buildRegistration(
+            this.username,
+            this.email,
+            this.password,
+            this.firstname,
+            this.lastname,
+            this.gender,
+            this.biography,
+            this.personalwebsite,
+            this.pfp,
+            this.phonenumber
+          )
+        )
+      );
       
       console.log(response);
     
@@ -204,7 +228,6 @@ class RegistrationPage extends DynamicPage {
     this.getRegistrationEssentialForm().reset();
     this.getNonEssentialElements().reset();
   }
-  
   
   
   resetEssentialErrors() {
