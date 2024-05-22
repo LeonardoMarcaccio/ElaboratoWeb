@@ -12,7 +12,7 @@ class PostPage extends DynamicPage {
         this.postTitle = null;
         this.postImage = null;
 
-        this.makeList();
+        await this.makeList();
     }
 
     getOptions() {
@@ -64,3 +64,8 @@ class PostPage extends DynamicPage {
 }
 
 let postClass = new PostPage();
+
+document.addEventListener(events.actionBar.post, () => {
+    mainHandler.contentHandling.purgePageContent();
+    postClass.load();
+});

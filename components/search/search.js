@@ -42,3 +42,8 @@ class SearchPage extends DynamicPage {
 }
 
 let searchClass = new SearchPage();
+
+document.addEventListener(events.actionBar.search, () => {
+    mainHandler.contentHandling.purgePageContent();
+    searchClass.load();
+});

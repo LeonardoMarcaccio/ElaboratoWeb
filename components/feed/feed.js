@@ -27,8 +27,7 @@ class FeedPage extends DynamicPage {
     }
 
     bindListeners() {
-        /*
-        mainGlobalVariables.page.mainContentPage.addEventListener('scroll', () => {
+        mainGlobalVariables.page.mainContentPage.getContent().addEventListener('scroll', () => {
             if (mainGlobalVariables.currentPageLoc == events.actionBar.home &&
                 mainGlobalVariables.page.mainContentPage.innerHeight +
                 mainGlobalVariables.page.mainContentPage.scrollY >=
@@ -36,7 +35,6 @@ class FeedPage extends DynamicPage {
                 this.postLoader.loadMore();
             }
         });
-        */
 
         this.getNavFeed().onclick = () => {
             mainHandler.contentHandling.clearBodyContent();

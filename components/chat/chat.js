@@ -73,3 +73,8 @@ class ChatPage extends DynamicPage {
 }
 
 let chatClass = new ChatPage();
+
+document.addEventListener(events.actionBar.chat, () => {
+  mainHandler.contentHandling.purgePageContent();
+  chatClass.load();
+});

@@ -154,12 +154,12 @@ function fetchScriptComponents() {
       let scriptPaths = [
         baseFolder + "login/login.js",
         baseFolder + "registration/registration.js",
-        //baseFolder + "chat/chat.js",
-        //baseFolder + "search/search.js",
+        baseFolder + "chat/chat.js",
+        baseFolder + "search/search.js",
         //baseFolder + "profile/profile.js",
-        //baseFolder + "post/post.js",
+        baseFolder + "post/post.js",
         baseFolder + "feed/feed.js",
-        //baseFolder + "post/cookiebanner.js",
+        //baseFolder + "cookiebanner/cookiebanner.js",
         baseFolder + "settings/settings.js"];
       let scriptPromises = Array();
       for (let scriptPathIndex in scriptPaths) {
