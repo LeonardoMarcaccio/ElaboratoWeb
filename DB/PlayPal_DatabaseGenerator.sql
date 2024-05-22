@@ -180,11 +180,9 @@ alter table Vote add constraint FKVot_Pos
      foreign key (PostID)
      references Post (PostID);
 
-alter table Notification add constraint FKNot_Use
+alter table Notification add constraint FKRecives
      foreign key (Username)
      references User (Username);
-
-alter table Notification add index(Username);
 
 
 -- Database Filling
