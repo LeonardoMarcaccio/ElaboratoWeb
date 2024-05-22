@@ -39,8 +39,8 @@ class PostPage extends DynamicPage {
 
     async makeList() {
         this.user = await APICalls.getRequests.getUserInfo();
-        this.user = this.user.response.Username;
-        let choices = await APICalls.getRequests.getSubbedCommunitiesRequest(this.user);
+        this.user = this.user.response;
+        let choices = await APICalls.getRequests.getSubbedCommunitiesRequest(this.user.username);
         choices = choices.response;
         let select = this.getOptions();
         for (let i in choices) {
