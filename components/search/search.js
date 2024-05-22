@@ -1,6 +1,10 @@
 class SearchPage extends DynamicPage {
     async load() {
-        super.load();
+        super.load("/search/search");
+        mainHandler.contentHandling.clearBodyContent();
+        if (this.opts.cache && this.cached) {
+            mainHandler.contentHandling.purgePageContent();
+        }
 
         this.searchBar = null;
         this.searchButton = null;
@@ -36,3 +40,5 @@ class SearchPage extends DynamicPage {
         }
     }
 }
+
+let searchClass = new SearchPage();

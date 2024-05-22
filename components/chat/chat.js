@@ -1,6 +1,6 @@
 class ChatPage extends DynamicPage {
   async load() {
-    super.load();
+    super.load("/chat/chat");
     mainHandler.contentHandling.clearBodyContent();
     if (this.opts.cache && this.cached) {
       mainHandler.contentHandling.purgePageContent();
@@ -71,3 +71,5 @@ class ChatPage extends DynamicPage {
     this.getNavChat().onclick = () => this.loadChatList();
   }
 }
+
+let chatClass = new ChatPage();
