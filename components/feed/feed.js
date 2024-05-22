@@ -1,6 +1,10 @@
 class FeedPage extends DynamicPage {
     async load() {
-        super.load();
+        await super.load("/feed/feed");
+        mainHandler.contentHandling.clearBodyContent();
+        if (this.opts.cache && this.cached) {
+            mainHandler.contentHandling.purgePageContent();
+        }
     
         this.postBuilder = new PostBuilder("feed");
         this.postLoader = new ContentLoader((page) => this.loadPosts(page));
@@ -17,12 +21,13 @@ class FeedPage extends DynamicPage {
         let newPage = await APICalls.getRequests.getPostsRequest("", page, 8);
         newPage = newPage.response;
         for (let i in newPage) {
-            let tmp = postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId);
+            let tmp = this.postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId);
             mainGlobalVariables.page.mainContentPage.addContent(tmp);
         }
     }
 
     bindListeners() {
+        /*
         mainGlobalVariables.page.mainContentPage.addEventListener('scroll', () => {
             if (mainGlobalVariables.currentPageLoc == events.actionBar.home &&
                 mainGlobalVariables.page.mainContentPage.innerHeight +
@@ -31,6 +36,7 @@ class FeedPage extends DynamicPage {
                 this.postLoader.loadMore();
             }
         });
+        */
 
         this.getNavFeed().onclick = () => {
             mainHandler.contentHandling.clearBodyContent();
@@ -39,3 +45,10 @@ class FeedPage extends DynamicPage {
         }
     }
 }
+
+let feedClass = new FeedPage();
+
+document.addEventListener(events.actionBar.home, () => {
+    mainHandler.contentHandling.purgePageContent();
+    feedClass.load();
+});
