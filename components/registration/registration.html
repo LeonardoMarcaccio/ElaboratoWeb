@@ -4,11 +4,11 @@
     <form id="registration-form" action="">
       <div id="registration-essential">
         <label for="registration-username">Username*</label>
-        <input id="registration-username" type="text" name="registration-username" placeholder="username" required="required">
+        <input id="registration-username" type="text" name="registration-username" placeholder="username" required autocomplete="on">
         <p class="essentialRegistrationError" id="registration-username-specialchar-error">Username must not contain special characters and must be less than 50 characters long</p>
         <p class="essentialRegistrationError" id="registration-username-taken-error">Username already taken</p>
         <label for="registration-email">Email*</label>
-        <input id="registration-email" type="email" name="registration-email" placeholder="email" required="required" autocomplete="on" autocompletetype=”email”>
+        <input id="registration-email" type="email" name="registration-email" placeholder="email" required autocomplete="on">
         <p class="essentialRegistrationError" id="registration-email-taken-error">Email already used</p>
         <label for="registration-password">Password*</label>
         <input id="registration-password" type="password" name="registration-password" placeholder="password" required="required">
