@@ -124,16 +124,22 @@ class DynamicPage {
     this.nodeMap = new Map();
   }
   /**
-   * Orders the dynamic page to load.
+   * Orders the dynamic page to load and stores it in cache.
+   * @param {path} path         location of the content in the server
+   * @param {editBody} editBody wether or not to automatically edit the contentshaper
    */
-  async load(path = "") {
+  async load(path = "", editBody = true) {
     if (path === "") {
       return;
     }
 
-    mainHandler.contentHandling.purgePageContent();
-    if (this.opts.cache && this.cached) {
+    if (editBody) {
       mainHandler.contentHandling.purgePageContent();
+    }
+    if (this.opts.cache && this.cached) {
+      if (editBody) {
+        mainHandler.contentHandling.purgePageContent();
+      }
     } else {
       let loader = new AssetLoader("/components/");
       if (this.opts.cache && !this.cached
@@ -143,7 +149,10 @@ class DynamicPage {
         this.cached = this.opts.cache;
       }
     }
-    mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
+    if (editBody) {
+      mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
+    }
+    return this.cachedAsset.getContent();
   }
   /**
    * Orders the dynamic page to reset it's content.

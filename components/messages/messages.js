@@ -36,7 +36,10 @@ class MessagePage extends DynamicPage {
             user.className = "user-title";
             user.id = "user-dm";
             prev.id = "message-bottom";
-            mainHandler.contentHandling.setHeadingContent(user);
+            /* FIXME: don't use contenthandling for anything other than
+                        contentshaper's formatting
+            */
+            //mainHandler.contentHandling.setHeadingContent(user);
             
             if (page == 1) {
                     chat.appendChild(prev);
@@ -51,8 +54,11 @@ class MessagePage extends DynamicPage {
                     chat.insertBefore(tmp, prev);
                     prev = tmp;
                 }
-                mainHandler.contentHandling.setBodyContent(chat);
-                mainHandler.contentHandling.setFootingContent(form);
+                /* FIXME: don't use contenthandling for anything other than
+                        contentshaper's formatting
+                */
+                //mainHandler.contentHandling.setBodyContent(chat);
+                //mainHandler.contentHandling.setFootingContent(form);
         });
     }
 }
@@ -60,6 +66,9 @@ class MessagePage extends DynamicPage {
 let messageClass = new MessagePage();
 
 document.addEventListener("message-page", () => {
-    mainHandler.contentHandling.purgePageContent();
+    /* FIXME: don't use contenthandling for anything other than
+                        contentshaper's formatting
+    */
+    //mainHandler.contentHandling.purgePageContent();
     messageClass.load();
 });
