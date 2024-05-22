@@ -213,7 +213,7 @@ class RegistrationPage extends DynamicPage {
       switch (response.code) {
         case 401:
         if (response.hasOwnProperty("response")) {
-          checkEssentialCredendialEvaluation(response.response);
+          this.checkEssentialCredendialEvaluation(response.response);
         }
         break;
         case 409:

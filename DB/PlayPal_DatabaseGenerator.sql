@@ -12,7 +12,7 @@
 -- Database Section
 -- ________________ 
 
-create database PlayPal;
+CREATE DATABASE IF NOT EXISTS PlayPal;
 use PlayPal;
 
 
@@ -97,6 +97,11 @@ create table Vote (
      Value int not null,
      constraint IDVote primary key (PostID, Username));
 
+create table Notification (
+     Username varchar(50) not null,
+     Link varchar(150) not null,
+     Text varchar(150) not null,
+     constraint IDNotification primary key (Username, Link));
 
 -- Constraints Section
 -- ___________________ 
@@ -147,11 +152,6 @@ alter table Message add constraint FKChat
      foreign key (Username, Fri_Username)
      references Friendship (Username, Fri_Username);
 
--- Not implemented
--- alter table Post add constraint IDPost_CHK
---     check(exists(select * from Tagged
---                  where Tagged.PostID = PostID)); 
-
 alter table Post add constraint FKIn
      foreign key (Name)
      references Community (Name);
@@ -179,6 +179,12 @@ alter table Vote add constraint FKVot_Use
 alter table Vote add constraint FKVot_Pos
      foreign key (PostID)
      references Post (PostID);
+
+alter table Notification add constraint FKNot_Use
+     foreign key (Username)
+     references User (Username);
+
+alter table Notification add index(Username);
 
 
 -- Database Filling

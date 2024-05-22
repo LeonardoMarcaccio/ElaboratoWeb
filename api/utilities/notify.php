@@ -40,32 +40,35 @@
         $statement = $database->prepare("SELECT Username FROM sessione WHERE Token = ?");
         $statement->bind_param("s", $token);
         if (!$statement->execute()) {
-            throw getInternalError();
+            throw new Exception('Internal error executing query.');
         }
-
-        $statement->bind_result($users);
-        $statement->fetch();
-        if (mysqli_num_rows($users) != 0) {
-            throw getInternalError();
+        
+        $result = $statement->get_result();
+        if ($result->num_rows == 0) {
+            throw new Exception('No user found for the provided token.');
         }
-
-        $user = mysqli_fetch_assoc($users);
+        
+        $row = $result->fetch_assoc();
+        $username = $row['Username'];
+        
+        $statement->close();
 
         $statement = $database->prepare("SELECT Email FROM user WHERE Username = ?");
-        $statement->bind_param("s", $token);
+        $statement->bind_param("s", $username);
         if (!$statement->execute()) {
-            throw getInternalError();
+            throw new Exception('Internal error executing query.');
         }
-
-        $statement->bind_result($userMails);
-        $statement->fetch();
-        if (mysqli_num_rows($users) != 0) {
-            throw getInternalError();
+    
+        $result = $statement->get_result();
+        if ($result->num_rows == 0) {
+            throw new Exception('No email found for the provided username.');
         }
-
-        $userMail = mysqli_fetch_assoc($userMails);
-
-        while($userMail !== null) {
-            mail($userMail, "New Post", "Welcome to PlayPal ".$user);
+    
+        while ($row = $result->fetch_assoc()) {
+            $userMail = $row['Email'];
+            mail($userMail, "New Post", "Welcome to PlayPal " . $username, "From: PlayPal@gmail.com");
         }
+        
+        $statement->close();
     }
+    

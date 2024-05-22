@@ -5,6 +5,7 @@
   require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/sessionUtils.php";          //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/generalUtils.php";          //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";                   //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/notify.php";                   //NOSONAR
 
   $database = null;
   try {
@@ -43,7 +44,7 @@
         $username = $usrObj->getUsername();
         setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");
         createSession($token, $username, $database);
-        //notifyRegistration($token, $database);
+        notifyRegistration($token, $database);
         exit(generateJSONResponse(200, "Ok"));
       }
       exit(generateJSONResponse(API_INVALID_USER_DATA_ERROR_CODE, "Invalid Information", $report));
