@@ -1,7 +1,7 @@
 class ChatPage extends DynamicPage {
   async load() {
-    super.load("/chat/chat");
-    
+    await super.load("/chat/chat");
+
     this.chatLoader = new ContentLoader(() => {});
     this.chatCache = null;
     this.messagePage = null;
@@ -10,6 +10,7 @@ class ChatPage extends DynamicPage {
     this.userList = null;
     this.elem = null;
     this.self = null;
+    await this.loadChatList();
 
     this.bindListeners();
   }
@@ -30,6 +31,11 @@ class ChatPage extends DynamicPage {
     this.friendCount = this.bois.length;
     this.userList = new Array();
     this.elem = this.elem == null ? this.getChatPage() : this.elem;
+    while (this.elem.hasChildNodes()) {
+      this.elem.removeChild(this.elem.lastChild);
+    }
+
+    mainGlobalVariables.page.mainContentPage.addContent(this.elem);
   
     for (let i=0; i<this.friendCount; i++) {
       let tmp = document.createElement("button");
@@ -64,7 +70,10 @@ class ChatPage extends DynamicPage {
   }
 
   bindListeners() {
-    this.getNavChat().onclick = () => this.loadChatList();
+    this.getNavChat().onclick = () => {
+      mainHandler.contentHandling.clearBodyContent();
+      this.loadChatList();
+    };
   }
 }
 
