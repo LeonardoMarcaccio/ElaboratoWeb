@@ -7,6 +7,7 @@ class LoginPage extends DynamicPage {
     this.registerButton = null;
 
     this.bindListeners();
+    history.pushState("login", null, null);
   }
   reset() {
     super.reset();
@@ -58,7 +59,7 @@ class LoginPage extends DynamicPage {
 
 let loginClass = new LoginPage();
 
-document.addEventListener(events.apiActions.unauthorizedEvt, () => {
+document.addEventListener(events.apiActions.authFailure, () => {
   mainHandler.contentHandling.purgePageContent();
   loginClass.load();
 });
