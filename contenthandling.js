@@ -128,7 +128,7 @@ class DynamicPage {
    */
   async load(path = "") {
     if (path === "") {
-      
+      return;
     }
 
     mainHandler.contentHandling.purgePageContent();
