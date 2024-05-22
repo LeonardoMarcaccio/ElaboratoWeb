@@ -213,8 +213,11 @@ function fillStructure() {
 function updateLoginStatus() {
   mainGlobalVariables.userData.userLoggedIn = !(cookieUtilities.readCookie("token") == "");
   if (!mainGlobalVariables.userData.userLoggedIn) {
-    let unauthorizedEvt = new CustomEvent(events.apiActions.unauthorizedEvt);
+    let unauthorizedEvt = new CustomEvent(events.apiActions.authFailure);
     document.dispatchEvent(unauthorizedEvt);
+  } else {
+    let autorizedEvt = new CustomEvent(events.apiActions.authFailure);
+    document.dispatchEvent(autorizedEvt);
   }
 }
 
