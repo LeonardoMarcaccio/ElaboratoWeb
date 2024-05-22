@@ -1,10 +1,6 @@
 class ChatPage extends DynamicPage {
   async load() {
     super.load("/chat/chat");
-    mainHandler.contentHandling.clearBodyContent();
-    if (this.opts.cache && this.cached) {
-      mainHandler.contentHandling.purgePageContent();
-    }
     
     this.chatLoader = new ContentLoader(() => {});
     this.chatCache = null;
@@ -26,24 +22,24 @@ class ChatPage extends DynamicPage {
     return this.lazyNodeIdQuery("nav-chat");
   }
 
-  loadChatList() {
-    this.self = APICalls.getRequests.getUserInfo();
-    this.self = this.self.response.username;
-    this.bois = APICalls.getRequests.getFriendList(this.self);
+  async loadChatList() {
+    this.self = await APICalls.getRequests.getUserInfo();
+    this.self = this.self.response;
+    this.bois = await APICalls.getRequests.getFriendList(this.self.username);
     this.bois = this.bois.response;
     this.friendCount = this.bois.length;
     this.userList = new Array();
     this.elem = this.elem == null ? this.getChatPage() : this.elem;
   
-    for (let i=0; i<friendCount; i++) {
+    for (let i=0; i<this.friendCount; i++) {
       let tmp = document.createElement("button");
-      tmp.textContent = bois[i].username;
+      tmp.textContent = this.bois[i].username;
       tmp.id = "user-" + (i+1).toString();
       this.elem.appendChild(tmp);
       this.userList.push(tmp);
       tmp.onclick = (btn) => {
-        chatCache = userList[i];
-        let evt = new CustomEvent(userList[i].id, {detail: btn.currentTarget});
+        this.chatCache = this.userList[i];
+        let evt = new CustomEvent(this.userList[i].id, {detail: btn.currentTarget});
         document.dispatchEvent(evt);
       }
       document.addEventListener(tmp.id, async (evt) => {
