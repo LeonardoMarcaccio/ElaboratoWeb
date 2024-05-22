@@ -50,3 +50,7 @@ document.addEventListener(events.actionBar.home, () => {
     mainHandler.contentHandling.purgePageContent();
     feedClass.load();
 });
+document.addEventListener(events.apiActions.authSuccess, () => {
+    mainHandler.contentHandling.purgePageContent();
+    feedClass.load();
+});
