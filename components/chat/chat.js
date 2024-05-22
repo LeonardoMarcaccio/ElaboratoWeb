@@ -1,8 +1,9 @@
+let sharedChatCache = null;
+
 class ChatPage extends DynamicPage {
   async load() {
     await super.load("/chat/chat");
 
-    this.chatLoader = new ContentLoader(() => {});
     this.chatCache = null;
     this.messagePage = null;
     this.bois = null;
@@ -11,8 +12,6 @@ class ChatPage extends DynamicPage {
     this.elem = null;
     this.self = null;
     await this.loadChatList();
-
-    this.bindListeners();
   }
 
   getChatPage() {
@@ -50,27 +49,12 @@ class ChatPage extends DynamicPage {
       }
       document.addEventListener(tmp.id, async (evt) => {
         mainHandler.contentHandling.clearBodyContent();
-        let lambdaOperation = null;
-        if (this.messagePage == null) {
-          lambdaOperation = async () => {
-            this.messagePage = await loader.loadAsset("messages/messages", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
-            this.messagePage = new ElementHandler(await this.messagePage[0].text()).getContent();
-            mainHandler.contentHandling.setBodyContent(this.messagePage);
-          }
-        } else {
-          lambdaOperation = async () => {
-            mainHandler.contentHandling.setBodyContent(this.messagePage);
-          }
-        }
         mainHandler.contentHandling.clearHeadingContent();
-          await lambdaOperation();
-          this.chatLoader.loadMore();
+        sharedChatCache = this.chatCache;
+        let event = new CustomEvent("message-page", {detail: tmp});
+        document.dispatchEvent(event);
       });
     }
-  }
-
-  bindListeners() {
-    
   }
 }
 

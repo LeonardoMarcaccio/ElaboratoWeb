@@ -11,11 +11,11 @@ class SearchPage extends DynamicPage {
     }
 
     getSearchBar() {
-        return this.lazyNodeIdQuery("search-keyword");
+        return this.lazyNodeIdQuery("search-keyword", true);
     }
 
     getSearchButton() {
-        return this.lazyNodeIdQuery("search-start");
+        return this.lazyNodeIdQuery("search-start", true);
     }
 
     async loadCommunities(page) {

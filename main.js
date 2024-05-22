@@ -156,6 +156,7 @@ function fetchScriptComponents() {
         baseFolder + "registration/registration.js",
         baseFolder + "chat/chat.js",
         baseFolder + "search/search.js",
+        baseFolder + "messages/messages.js",
         //baseFolder + "profile/profile.js",
         baseFolder + "post/post.js",
         baseFolder + "feed/feed.js",

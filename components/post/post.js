@@ -12,33 +12,33 @@ class PostPage extends DynamicPage {
     }
 
     getOptions() {
-        return this.lazyNodeIdQuery("communities-options");
+        return this.lazyNodeIdQuery("communities-options", true);
     }
 
     getPostButton() {
-        return this.lazyNodeIdQuery("post-post");
+        return this.lazyNodeIdQuery("post-post", true);
     }
 
     getPostContent() {
-        return this.lazyNodeIdQuery("post-content");
+        return this.lazyNodeIdQuery("post-content", true);
     }
 
     getPostTitle() {
-        return this.lazyNodeIdQuery("post-title");
+        return this.lazyNodeIdQuery("post-title", true);
     }
 
     getPostImage() {
-        return this.lazyNodeIdQuery("post-image");
+        return this.lazyNodeIdQuery("post-image", true);
     }
 
-    checkElements() {
-        this.postContent = this.postContent == null ? this.getPostContent() : this.postContent;
-        this.postTitle = this.postTitle == null ? this.getPostTitle() : this.postTitle;
-        this.postContent = this.postImage == null ? this.getPostImage() : this.postImage;
+    setElements() {
+        this.postContent = this.getPostContent();
+        this.postTitle = this.getPostTitle();
+        this.postContent = this.getPostImage();
     }
 
     async makeList() {
-        this.user = this.user == null ? await APICalls.getRequests.getUserInfo() : this.user;
+        this.user = await APICalls.getRequests.getUserInfo();
         this.user = this.user.response.Username;
         let choices = await APICalls.getRequests.getSubbedCommunitiesRequest(this.user);
         choices = choices.response;
@@ -49,11 +49,10 @@ class PostPage extends DynamicPage {
             select.appendChild(tmp);
         }
     
-        this.postButton = this.postButton == null ? this.getPostButton() : this.postButton;
-        this.postButton.onclick = async () => {
-            this.checkElements();
+        this.getPostButton().onclick = async () => {
+            this.setElements();
             await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "image", "name", "username"],
-            ["", "", this.postContent.innerText, 0, this.postTitle.innerText,this.postImage.innerText, select.value, user]),
+            ["", "", this.postContent.innerText, 0, this.postTitle.innerText, this.postImage.innerText, select.value, user]),
             select.innerText);
         }
     }
