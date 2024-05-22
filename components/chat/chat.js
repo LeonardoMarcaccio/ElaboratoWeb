@@ -49,31 +49,28 @@ class ChatPage extends DynamicPage {
         document.dispatchEvent(evt);
       }
       document.addEventListener(tmp.id, async (evt) => {
-      mainHandler.contentHandling.clearBodyContent();
-      let lambdaOperation = null;
-      if (this.messagePage == null) {
-        lambdaOperation = async () => {
-          this.messagePage = await loader.loadAsset("messages/messages", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
-          this.messagePage = new ElementHandler(await this.messagePage[0].text()).getContent();
-          mainHandler.contentHandling.setBodyContent(this.messagePage);
+        mainHandler.contentHandling.clearBodyContent();
+        let lambdaOperation = null;
+        if (this.messagePage == null) {
+          lambdaOperation = async () => {
+            this.messagePage = await loader.loadAsset("messages/messages", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
+            this.messagePage = new ElementHandler(await this.messagePage[0].text()).getContent();
+            mainHandler.contentHandling.setBodyContent(this.messagePage);
+          }
+        } else {
+          lambdaOperation = async () => {
+            mainHandler.contentHandling.setBodyContent(this.messagePage);
+          }
         }
-      } else {
-        lambdaOperation = async () => {
-        mainHandler.contentHandling.setBodyContent(this.messagePage);
-        }
-      }
-      mainHandler.contentHandling.clearHeadingContent();
-        await lambdaOperation();
-        this.chatLoader.loadMore();
+        mainHandler.contentHandling.clearHeadingContent();
+          await lambdaOperation();
+          this.chatLoader.loadMore();
       });
     }
   }
 
   bindListeners() {
-    this.getNavChat().onclick = () => {
-      mainHandler.contentHandling.clearBodyContent();
-      this.loadChatList();
-    };
+    
   }
 }
 

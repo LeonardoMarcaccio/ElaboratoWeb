@@ -29,6 +29,10 @@ class SearchPage extends DynamicPage {
 
     bindListeners() {
         this.getSearchButton().onclick = () => {
+            let content = mainGlobalVariables.page.mainContentPage.getContent();
+            while (content.children.length > 2) {
+                content.removeChild(content.lastChild);
+            }
             this.communityLoader.reset();
             this.communityLoader.loadMore();
         }
