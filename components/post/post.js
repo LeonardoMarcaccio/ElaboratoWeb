@@ -1,10 +1,6 @@
 class PostPage extends DynamicPage {
     async load() {
         super.load("/post/post");
-        mainHandler.contentHandling.clearBodyContent();
-        if (this.opts.cache && this.cached) {
-            mainHandler.contentHandling.purgePageContent();
-        }
 
         this.user = null;
         this.postButton = null;

@@ -1,10 +1,6 @@
 class SearchPage extends DynamicPage {
     async load() {
-        super.load("/search/search");
-        mainHandler.contentHandling.clearBodyContent();
-        if (this.opts.cache && this.cached) {
-            mainHandler.contentHandling.purgePageContent();
-        }
+        await super.load("/search/search");
 
         this.searchBar = null;
         this.searchButton = null;
@@ -23,18 +19,16 @@ class SearchPage extends DynamicPage {
     }
 
     async loadCommunities(page) {
-        this.searchBar = this.searchBar == null ? this.getSearchBar() : this.searchBar;
-        let newPage = await APICalls.getRequests.getCommunitiesRequest(this.searchBar.value, page, 16);
+        let newPage = await APICalls.getRequests.getCommunitiesRequest(this.getSearchBar().value, page, 16);
         newPage = newPage.response;
         for (let i in newPage) {
-            let tmp = await communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
+            let tmp = await this.communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
             mainGlobalVariables.page.mainContentPage.addContent(tmp);
         }
     }
 
     bindListeners() {
         this.getSearchButton().onclick = () => {
-            mainHandler.contentHandling.clearBodyContent();
             this.communityLoader.reset();
             this.communityLoader.loadMore();
         }

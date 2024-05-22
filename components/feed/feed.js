@@ -40,7 +40,7 @@ class FeedPage extends DynamicPage {
             mainHandler.contentHandling.clearBodyContent();
             this.postLoader.reset();
             this.postLoader.loadMore();
-        }
+        };
     }
 }
 
