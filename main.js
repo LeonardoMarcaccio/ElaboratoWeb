@@ -216,7 +216,7 @@ function updateLoginStatus() {
     let unauthorizedEvt = new CustomEvent(events.apiActions.authFailure);
     document.dispatchEvent(unauthorizedEvt);
   } else {
-    let autorizedEvt = new CustomEvent(events.apiActions.authFailure);
+    let autorizedEvt = new CustomEvent(events.apiActions.authSuccess);
     document.dispatchEvent(autorizedEvt);
   }
 }
