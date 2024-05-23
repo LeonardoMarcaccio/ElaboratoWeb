@@ -14,19 +14,19 @@ class LoginPage extends DynamicPage {
   }
   
   getUsernameField() {
-    return this.lazyNodeIdQuery("login-username");
+    return this.lazyNodeIdQuery("login-username", true);
   }
   getPasswordField() {
-    return this.lazyNodeIdQuery("login-passw");
+    return this.lazyNodeIdQuery("login-passw", true);
   }
   getLoginButton() {
-    return this.lazyNodeIdQuery("login-login");
+    return this.lazyNodeIdQuery("login-login", true);
   }
   getRegisterButton() {
-    return this.lazyNodeIdQuery("login-goto-register");
+    return this.lazyNodeIdQuery("login-goto-register", true);
   }
   getForm() {
-    return this.lazyNodeIdQuery("login-form");
+    return this.lazyNodeIdQuery("login-form", true);
   }
 
   triggerCredentialError(element) {
