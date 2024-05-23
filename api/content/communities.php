@@ -10,6 +10,9 @@
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
+    if (!isset($_COOKIE["token"])) {
+      throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
+    }
     $requestBody = file_get_contents("php://input");
     $result = null;
     switch($_SERVER['REQUEST_METHOD']) {
@@ -20,7 +23,7 @@
         $result = communityGetRequest($requestBody, $database);
       break;
       default:
-        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     exit(generateJSONResponse(200, "Ok", $result));
   } catch (ApiError $thrownError) {
