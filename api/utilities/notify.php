@@ -1,24 +1,23 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
-    function notifyMessage ($to, mysqli $database) {
-        $statement = $database->prepare("SELECT Email FROM user WHERE Username = ?");
-        $statement->bind_param("s", $to);
+    function notifyMessage($from, $to, $chatLink, mysqli $database) {
+        // Prepare the SQL statement with the correct number of placeholders
+        $statement = $database->prepare("INSERT INTO notification (recipient, chat_link, message) VALUES (?, ?, CONCAT('You received one new message from ', ?))");
+        $statement->bind_param("sss", $to, $chatLink, $from);
+    
+        // Execute the statement and check for errors
         if (!$statement->execute()) {
-            throw getInternalError();
+            throw new Exception("Database error: " . $statement->error);
         }
-
-        $statement->bind_result($mail);
-        $statement->fetch();
-        if (mysqli_num_rows($mail) == 0) {
-            throw getInternalError();
-        }
-
-        mail($mail, "New Message", "You received one new message");
+    
+        // Close the statement
+        $statement->close();
     }
+    
 
-    function notifyPost($community, mysqli $database) {
-        $statement = $database->prepare("SELECT Username FROM user WHERE Name = ?");
+    function notifyPost($community, $postLink, mysqli $database) {
+        $statement = $database->prepare("SELECT Username FROM `join` WHERE Name = ?");
         $statement->bind_param("s", $community);
         if (!$statement->execute()) {
             throw getInternalError();
@@ -30,9 +29,13 @@
             throw getInternalError();
         }
 
-        $userMail = mysqli_fetch_assoc($users);
-        while($userMail !== null) {
-            mail($userMail, "New Post", "A new post was published in ".$community);
+        $username = mysqli_fetch_assoc($users);
+        while($username !== null) {
+            $statement = $database->prepare("INSERT INTO notification VALUES(?, ?, A new post was published in ?");
+            $statement->bind_param("sss", $username, $postLink, $community);
+            if (!$statement->execute()) {
+                throw getInternalError();
+            }
         }
     }
 
