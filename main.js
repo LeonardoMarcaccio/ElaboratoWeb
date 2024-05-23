@@ -252,3 +252,11 @@ async function mainPageInit() {
 document.body.onload = () => {
   mainPageInit();
 }
+
+window.addEventListener("popstate", function(event) {
+  if (event.state === null) {
+    return;
+  }
+	let popEvent = new CustomEvent(event.state.location);
+  document.dispatchEvent(popEvent);
+});
