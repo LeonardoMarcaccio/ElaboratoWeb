@@ -191,35 +191,35 @@ alter table Notification add constraint FKRecives
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser1','TestUserEmail1@mail.com','$2y$10$o9N6nGki62r5Ht1xutxY6OKnT4wVJOWbY8t6Kw1IrJ2QH0/ND7Pqu',
-'Jhon','Smith','Male','Lorem ipsum','https://www.Fakesite1.com/',"http://localhost/media/users/placeholder.webp",'0000000001',0);
+'Jhon','Smith','Male','Lorem ipsum','https://www.Fakesite1.com/',"media/users/placeholder.webp",'0000000001',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser2','TestUserEmail2@mail.com','$2y$10$Tmm8baCvQKmp6dm1FWMa9.9BT6PMFuCC.fQoS1gXWlZD6O1YHAgQi',
-'Jane','Smith','Female','Lorem ipsum','https://www.Fakesite2.com/',"http://localhost/media/users/placeholder.webp",'0000000002',0);
+'Jane','Smith','Female','Lorem ipsum','https://www.Fakesite2.com/',"media/users/placeholder.webp",'0000000002',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser3','TestUserEmail3@mail.com','$2y$10$LxH8BVhSjfj7tlVttXY0EOq67YDZ62IMGmwejM6cvysB7IxWzRUNK',
-'Jhon','Doe','Male','Lorem ipsum','https://www.Fakesite3.com/',"http://localhost/media/users/placeholder.webp",'0000000003',0);
+'Jhon','Doe','Male','Lorem ipsum','https://www.Fakesite3.com/',"media/users/placeholder.webp",'0000000003',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser4','TestUserEmail4@mail.com','$2y$10$NBUYkkZMwoJRM4XZxV2O5eB3Lvyi5mLtnOaB/FbuB4sir9pOzuvbO',
-'Jane','Doe','Female','Lorem ipsum','https://www.Fakesite4.com/',"http://localhost/media/users/placeholder.webp",'0000000004',0);
+'Jane','Doe','Female','Lorem ipsum','https://www.Fakesite4.com/',"media/users/placeholder.webp",'0000000004',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser5','TestUserEmail5@mail.com','$$2y$10$.eZOT6xQyjcg35ayjSfv/.R25ORjSf07yXrimVvFw/8xwLC/L6BEa',
-'Linus','Torvald','Male','Lorem ipsum','https://www.Fakesite5.com/',"http://localhost/media/users/Linus.jpg",'0000000005',0);
+'Linus','Torvald','Male','Lorem ipsum','https://www.Fakesite5.com/',"media/users/Linus.jpg",'0000000005',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser6','TestUserEmail6@mail.com','$2y$10$DXbc2ZSfQ1QN6Ziky0uUHOotlxsxY/QtnIPrZ3lbXu7VnFDySwaD2',
-'Jhonny','Bravo','Male','Lorem ipsum','https://www.Fakesite6.com/',"http://localhost/media/users/Bravo.jpg",'0000000006',0);
+'Jhonny','Bravo','Male','Lorem ipsum','https://www.Fakesite6.com/',"media/users/Bravo.jpg",'0000000006',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser7','TestUserEmail7@mail.com','$2y$10$qK7.MYezykA2BcjuxVW/DOZ2k7XypStkKasW18BLVx/M3UKSPHY/e',
-'Jhon','Price','Male','Lorem ipsum','https://www.Fakesite7.com/',"http://localhost/media/users/Price.jpg",'0000000007',0);
+'Jhon','Price','Male','Lorem ipsum','https://www.Fakesite7.com/',"media/users/Price.jpg",'0000000007',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser8','TestUserEmail8@mail.com','$2y$10$d7Sk/6fVQ04lAPmBx9vXP.1rModffCO96nYWqoGKupVK6g/AFcZnK',
-'BT','7274','Robot','Lorem ipsum','https://www.Fakesite8.com/',"http://localhost/media/users/BT.jpg",'0000000008',0);
+'BT','7274','Robot','Lorem ipsum','https://www.Fakesite8.com/',"media/users/BT.jpg",'0000000008',0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser9','TestUserEmail9@mail.com','$$2y$10$YcVLPUtztn0oE6OOl60/..8f4Y5HdRAWTznSeUAFmR4oE6YmxA42G',
@@ -263,13 +263,13 @@ INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('
 
 -- Community Table
 
-INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('LinuxUsers',"http://localhost/media/users/LinuxUsers.jpg",'For Linux users from Linux users','TestUser5');
+INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('LinuxUsers',"media/users/LinuxUsers.jpg",'For Linux users from Linux users','TestUser5');
 
-INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('Cartoon Network Generation',"http://localhost/media/users/CartoonNetworkLogo.png",'A community for people who grewn up with Cartoon Network show','TestUser6');
+INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('Cartoon Network Generation',"media/users/CartoonNetworkLogo.png",'A community for people who grewn up with Cartoon Network show','TestUser6');
 
-INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('Call of Duty MLG',"http://localhost/media/users/CallOfDutyLogo.png",'A Call of Duty competitive community','TestUser7');
+INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('Call of Duty MLG',"media/users/CallOfDutyLogo.png",'A Call of Duty competitive community','TestUser7');
 
-INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('Titanfall 2',"http://localhost/media/users/Titanfall2Logo.png",'Get ready for Titanfall!','TestUser8');
+INSERT INTO `community`(`Name`, `Image`, `Description`, `Username`) VALUES ('Titanfall 2',"media/users/Titanfall2Logo.png",'Get ready for Titanfall!','TestUser8');
 
 -- Join Table
 
@@ -316,13 +316,13 @@ INSERT INTO `join`(`Name`, `Username`) VALUES ('Titanfall 2','TestUser4');
 -- Post Table
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
-VALUES (1,'2024-02-05','Just installed my new Ubuntu distro',0,'New Linux User', "http://localhost/media/users/Ubuntu.png",'LinuxUsers','TestUser1');
+VALUES (1,'2024-02-05','Just installed my new Ubuntu distro',0,'New Linux User', "media/users/Ubuntu.png",'LinuxUsers','TestUser1');
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
-VALUES (2,'2024-02-06','I really love linux it feels amazing',0,'First Impressions',"http://localhost/media/users/Ubuntu.png",'LinuxUsers','TestUser1');
+VALUES (2,'2024-02-06','I really love linux it feels amazing',0,'First Impressions',"media/users/Ubuntu.png",'LinuxUsers','TestUser1');
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
-VALUES (3,'2024-02-06','My favourite one is Jack Cooper',0,"What's your favourite character?","http://localhost/media/users/JackCooper.jpg",'Titanfall 2','TestUser2');
+VALUES (3,'2024-02-06','My favourite one is Jack Cooper',0,"What's your favourite character?","media/users/JackCooper.jpg",'Titanfall 2','TestUser2');
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
 VALUES (4,'2024-02-07',"I'm still downloading it",0,"Has anyone tried the new update?",null,'Call of Duty MLG','TestUser3');
