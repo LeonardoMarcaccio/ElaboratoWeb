@@ -2,6 +2,7 @@ class ProfilePage extends DynamicPage {
   async load() {
     if (this.cached) {
       mainHandler.contentHandling.setBodyContent(this.cachedAsset);
+      this.userData = await this.populateElement();
       return;
     }
     await super.load("profile/profile");
@@ -61,6 +62,9 @@ class ProfilePage extends DynamicPage {
       //this.userData = await this.retrieveUserData(targetUser);
     } else {
       this.userData = await this.retrieveUserData();
+    }
+    if (typeof this.userData === 'undefined') {
+      return;
     }
     this.getUsernameArea().innerHTML = genericUtilities.setIfNotNull(this.userData.username);
     this.getUserFirstNameArea().innerHTML = "<b>"+genericUtilities.setIfNotNull(this.userData.firstname)+"</b>";

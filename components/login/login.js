@@ -1,5 +1,9 @@
 class LoginPage extends DynamicPage {
   async load() {
+    if (this.cached) {
+      mainHandler.contentHandling.setBodyContent(this.cachedAsset);
+      return;
+    }
     await super.load("/login/login");
     this.usernameField = null;
     this.passwordField = null;
@@ -7,7 +11,8 @@ class LoginPage extends DynamicPage {
     this.registerButton = null;
 
     this.bindListeners();
-    history.pushState("login", null, null);
+    //history.pushState("login", null, null);
+    this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
   }
   reset() {
     super.reset();
