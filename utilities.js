@@ -220,9 +220,11 @@ const APICalls = {
    */
   evaluateResponseCodeAction: (jsonModule) => {
     switch (jsonModule.code) {
+      case 401:
       case "401":
         document.dispatchEvent(new CustomEvent(events.apiActions.authFailure));
       break;
+      case 409:
       case "409":
         document.dispatchEvent(new CustomEvent(APIEvents.conflictEvent));
       break;
@@ -342,7 +344,7 @@ const APICalls = {
         },
         body: getData != null ? JSON.stringify(getData) : getData
       });
-      let jsonContent = postMsg.json();
+      let jsonContent = await postMsg.json();
       APICalls.evaluateResponseCodeAction(jsonContent);
       return jsonContent;
     },
@@ -983,7 +985,7 @@ const JSONBuilder = {
 
 class ContentLoader {
   constructor (loadMethod) {
-    this.currentPage = 0;
+    this.currentPage = 1;
     this.loadMethod = () => {};
     this.switchLoadMethod(loadMethod);
   }
