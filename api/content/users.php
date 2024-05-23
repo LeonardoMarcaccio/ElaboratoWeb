@@ -5,23 +5,23 @@
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
-    if (!isset($_COOKIE["token"])
-      || !checkTokenValidity($_COOKIE["token"], $database)) {
+    if (tokenSecurityCheck($database)) {
+      $user = getUsernameByToken($_COOKIE["token"], $database);
+      $result = null;
+      switch($_SERVER['REQUEST_METHOD']) {
+        case 'POST':
+          $result = userPostRequest($database, $user);
+        break;
+        case 'GET':
+          $result = userGetRequest($database, $user);
+          break;
+          default:
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
+        }
+        exit(generateJSONResponse(200, "Ok", $result));
+    } else {
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
-    $user = getUsernameByToken($_COOKIE["token"], $database);
-    $result = null;
-    switch($_SERVER['REQUEST_METHOD']) {
-      case 'POST':
-        $result = userPostRequest($database, $user);
-      break;
-      case 'GET':
-        $result = userGetRequest($database, $user);
-      break;
-      default:
-        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
-    }
-    exit(generateJSONResponse(200, "Ok", $result));
   } catch (ApiError $thrownError) {
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));

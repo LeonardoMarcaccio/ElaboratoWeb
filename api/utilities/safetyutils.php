@@ -37,3 +37,6 @@
       return new UserData($username, $email, null, $firstname,
         $lastname, $gender, $biography, $personalwebsite, $pfp, $phonenumbers);
   }
+  function tokenSecurityCheck(mysqli $database) {
+   return isset($_COOKIE["token"]) && checkTokenValidity($_COOKIE["token"], $database);
+  }

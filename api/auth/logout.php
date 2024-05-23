@@ -7,18 +7,12 @@
   try {
     assertRequestMatch('GET');
     $database = new mysqli("localhost", "root", "", "playpal");         //NOSONAR
-    if (isset($_COOKIE["token"])) {
-        
-      if (!isValueInColumn("sessione", "Token", $_COOKIE["token"], $database)) {
-        throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
-      }
-
+    if (tokenSecurityCheck($database)) {
       $query = $database->prepare("DELETE FROM sessione WHERE token = ?");
       $query->bind_param("s", $_COOKIE["token"]);
       if (!$query->execute()) {
         throw getInternalError();
       }
-
       $noExpire = -1;
       setcookie('token', '', $noExpire, "/");
       exit(generateJSONResponse(200, "Ok"));

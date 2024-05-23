@@ -11,7 +11,7 @@
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
-    if (!isset($_COOKIE["token"])) {
+    if (!tokenSecurityCheck($database)) {
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
     $requestBody = file_get_contents("php://input");

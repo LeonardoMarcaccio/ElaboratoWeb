@@ -12,8 +12,7 @@
     $password = $usrObj->getPassword();
     $queriedUser = getLoggedUser($usrObj->getUsername(), $password, $database);
     if (is_a($queriedUser, 'UserData')) {
-      if (isset($_COOKIE["token"])
-        && checkTokenValidity($_COOKIE["token"], $database)) {
+      if (tokenSecurityCheck($database)) {
         exit(generateJSONResponse(200, "Ok"));
       }
       $token = generateUniqueToken($database);
