@@ -1,13 +1,14 @@
 class ProfilePage extends DynamicPage {
   async load() {
     if (this.cached) {
-      mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
+      mainHandler.contentHandling.setBodyContent(this.cachedAsset);
       return;
     }
     await super.load("profile/profile");
     await this.populateElement();
     this.bindListeners();
     this.userData = null;
+    this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
   }
 
   async retrieveUserData() {

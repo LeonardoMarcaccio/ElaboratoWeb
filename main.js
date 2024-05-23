@@ -78,6 +78,15 @@ let mainGlobalVariables = {
 
 const mainHandler = {
   contentHandling: {
+    getFootingContent: () => {
+      return mainGlobalVariables.page.mainContentFooting;
+    },
+    getHeadingContent: () => {
+      return mainGlobalVariables.page.mainContentHeading;
+    },
+    getBodyContent: () => {
+      return mainGlobalVariables.page.mainContentPage;
+    },
     setHeadingContent: (content) => {
       mainHandler.contentHandling.clearHeadingContent();
       mainGlobalVariables.page.mainContentHeading.addContent(content);
