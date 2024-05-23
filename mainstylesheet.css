@@ -16,6 +16,22 @@ body {
   flex-flow: column;
 }
 
+.generic-pane {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: black;
+  background-color: #E0DFD5;
+  flex-grow: 1;
+  max-width: 500px;
+  max-height: 500px;
+  margin-top: 8vh;
+  -webkit-box-shadow: 0px 0px 14px 30px #E0DFD5;
+  box-shadow: 0px 0px 14px 30px #E0DFD5;
+  margin: 10%;
+  height: 100%;
+}
+
 #content-shaper {
   height: 100%;
   display: flex;

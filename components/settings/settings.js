@@ -3,3 +3,5 @@ class SettingsPage extends DynamicPage {
     await super.load("/settings/settings");
   }
 }
+
+let settingsClass = new SettingsPage();
