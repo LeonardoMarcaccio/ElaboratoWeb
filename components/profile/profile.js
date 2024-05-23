@@ -1,5 +1,9 @@
 class ProfilePage extends DynamicPage {
   async load() {
+    if (this.cached) {
+      mainHandler.contentHandling.setBodyContent(this.cachedAsset.getContent());
+      return;
+    }
     await super.load("profile/profile");
     await this.populateElement();
     this.bindListeners();
@@ -84,7 +88,8 @@ class ProfilePage extends DynamicPage {
       this.getPhoneNumberTitle().style.display = "none";
       this.getPhoneNumberText().style.display = "none";
     }
-    this.getUserImage().src = genericUtilities.setIfNotNull(this.userData.pfp, window.location.href+"media/users/placeholder.webp");
+    this.getUserImage().src = genericUtilities.setIfNotNull(window.location.href + this.userData.pfp,
+      window.location.href + "media/users/placeholder.webp");
   }
 }
 
