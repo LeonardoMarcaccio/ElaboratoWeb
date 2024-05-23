@@ -209,8 +209,8 @@ const APICalls = {
   },
   addUrlPageSelection: (url, page, maxPerPage) => {
     if (page != null && maxPerPage != null) {
-      url.searchParams.append("page", page);
-      url.searchParams.append("maxPerPage", maxPerPage);
+      url.searchParams.append("pageIndex", page);
+      url.searchParams.append("pageSize", maxPerPage);
     }
   },
   /**
@@ -385,6 +385,13 @@ const APICalls = {
       subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
       subCommentUrl.searchParams.append("target", targetCommentId);
       APICalls.addUrlPageSelection(subCommentUrl, page, maxPerPage);
+      let subCommentRequest = await APICalls.getRequests.getDataToApi(null, subCommentUrl);
+      return subCommentRequest;
+    },
+    getSubcommentsAmount: async (targetCommentId) => {
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      subCommentUrl.searchParams.append("type", APIConstants.communityActions.types.subcomment);
+      subCommentUrl.searchParams.append("target", targetCommentId);
       let subCommentRequest = await APICalls.getRequests.getDataToApi(null, subCommentUrl);
       return subCommentRequest;
     },
@@ -687,7 +694,8 @@ class PostBuilder {
   IDPrefix = "";
 
   constructor (IDPrefix) {
-      this.IDPrefix = IDPrefix;
+    this.commentsCount = 0;
+    this.IDPrefix = IDPrefix;
   }
 
   makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
@@ -742,8 +750,10 @@ class PostBuilder {
             send.value = "Send";
             bar.appendChild(input);
             bar.appendChild(send);
-            send.onclick = () => {
-              APICalls.postRequests.sendCommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.innerText, APICalls.getRequests.getUser(), 0]));
+            send.onclick = async () => {
+              let username = await APICalls.getRequests.getUserInfo();
+              username = username.response;
+              await APICalls.postRequests.sendCommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.value, username.username, 0]), postId);
             }
           }
           container.appendChild(bar);
@@ -755,11 +765,23 @@ class PostBuilder {
 
       userImage.onclick = () => openUserPage(userString);
 
-      post.onclick = () => {
-        let comments = APICalls.getRequests.getCommentsRequest(postId, 0, 10);
-        let builder = new CommentBuilder(titleString);
-        for (let i in comments) {
-          container.appendChild(builder.makeComment(comments[i].name, comments[i].content, null, comments[i].date, comments[i].id));
+      paragraph.onclick = async () => {
+        if (this.commentsCount == 0) {
+          let comments = await APICalls.getRequests.getCommentsRequest(postId, 1, 10);
+          comments = comments.response;
+          let builder = new CommentBuilder(titleString);
+          for (let i in comments) {
+            let numSubComments = await APICalls.getRequests.getSubcommentsAmount(comments[i].id);
+            numSubComments = numSubComments.response;
+            let tmp = builder.makeComment(comments[i].username, comments[i].content, comments[i].date, comments[i].id, numSubComments[0].count);
+            container.appendChild(tmp);
+            this.commentsCount++;
+          }
+        } else {
+          while (this.commentsCount > 0) {
+            container.removeChild(container.lastChild);
+            this.commentsCount--;
+          }
         }
       }
 
@@ -864,7 +886,7 @@ class CommentBuilder {
       this.IDPrefix = IDPrefix;
   }
 
-  makeComment(userString, contentString, userPfp, dateString, id, numSubComments = "", isSub = false) {
+  makeComment(userString, contentString, dateString, id, numSubComments, isSub = false) {
     let container = document.createElement("div");
     let comment = document.createElement("article");
     let head = document.createElement("div");
@@ -875,6 +897,7 @@ class CommentBuilder {
     let buttons = document.createElement("nav");
     let like = document.createElement("button");
     let dislike = document.createElement("button");
+    let userPfp = null;
     
     comment.id = this.IDPrefix + "-comment-" + this.count++;
     comment.className = "comment";
@@ -908,50 +931,54 @@ class CommentBuilder {
     dislike.onclick = () => {};
     user.onclick = () => openUserPage(userString);
 
-    if (!isSub) {
-      let reply = document.createElement("button");
-      reply.innerText = "Reply";
-      const bar = document.createElement("form");
-      let flag = true;
-      reply.onclick = () => {
-        if (reply.innerText == "Reply") {
-          reply.innerText = "Undo";
-          if (flag) {
-            flag = false;
-            let input = document.createElement("textarea");
-            let send = document.createElement("input");
-            
-            bar.style.display = "flex";
-            input.placeholder = "Reply";
-            input.style.resize = "none";
-            input.style.width = "300px";
-            send.type = "button";
-            send.value = "Send";
-            bar.appendChild(input);
-            bar.appendChild(send);
-            send.onclick = () => {
-              APICalls.postRequests.sendSubcommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.innerText, APICalls.getRequests.getUser(), 0]));
-            }
+    let reply = document.createElement("button");
+    reply.innerText = "Reply";
+    const bar = document.createElement("form");
+    let flag = true;
+    reply.onclick = () => {
+      if (reply.innerText == "Reply") {
+        reply.innerText = "Undo";
+        if (flag) {
+          flag = false;
+          let input = document.createElement("textarea");
+          let send = document.createElement("input");
+          
+          bar.style.display = "flex";
+          input.placeholder = "Reply";
+          input.style.resize = "none";
+          input.style.width = "300px";
+          send.type = "button";
+          send.value = "Send";
+          bar.appendChild(input);
+          bar.appendChild(send);
+          send.onclick = async () => {
+            let username = await APICalls.getRequests.getUserInfo();
+            username = username.response;
+            await APICalls.postRequests.sendSubcommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.value, username.username, 0]), id);
           }
-          container.appendChild(bar);
-        } else {
-          reply.innerText = "Reply";
-          container.removeChild(bar);
         }
-      };
-      buttons.appendChild(reply);
-    }
-    if (numSubComments !== 0) {
+        container.appendChild(bar);
+      } else {
+        reply.innerText = "Reply";
+        container.removeChild(bar);
+      }
+    };
+    buttons.appendChild(reply);
+
+    if (numSubComments != 0) {
       let thread = document.createElement("button");
       thread.innerText = "See " + numSubComments + " replies";
       buttons.appendChild(thread);
-      thread.onclick = () => {
-        buttons.removeChild(thread);
-        let replies = APICalls.getRequests.getSubcommentsRequest(id, 0, numSubComments);
+      thread.onclick = async() => {
+        let replies = await APICalls.getRequests.getSubcommentsRequest(id, 1, numSubComments);
+        replies = replies.response;
         for (let i in replies) {
-          tmp = replies[i];
-          container.appendChild(this.makeComment(tmp.username, tmp.content, null, tmp.date, 0, tmp.id, true));
+          let tmp = replies[i];
+          let moreSubComments = await APICalls.getRequests.getSubcommentsAmount(tmp.CommentID);
+          moreSubComments = moreSubComments.response;
+          container.appendChild(this.makeComment(tmp.Username, tmp.Content, tmp.Date, tmp.CommentID, moreSubComments[0].count, true));
         }
+        buttons.removeChild(thread);
       };
     }
 

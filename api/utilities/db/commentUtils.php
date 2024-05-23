@@ -129,7 +129,7 @@
         $n = $pages*$maxPerPage;
         $statement = $database->prepare(
             "SELECT * FROM comment WHERE CommentID IN (
-                SELECT CommentID FROM subcomment WHERE CommentID=?
+                SELECT Sub_CommentID FROM subcomment WHERE CommentID=?
             ) ORDER BY date DESC LIMIT ?"
         );
         $statement->bind_param("ii", $targetCommentID, $n);
@@ -144,6 +144,33 @@
 
         $result = array();
         while($tmp = mysqli_fetch_assoc($comments)) {
+            array_push($result, $tmp);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns the number of Subcomments in a specified Comment given the Comment ID.
+     * 
+     */
+    function getSubCommentAmount($targetCommentID, mysqli $database) {
+        $statement = $database->prepare(
+            "SELECT COUNT(*) AS count FROM subcomment WHERE CommentID = ?"
+        );
+        $statement->bind_param("i", $targetCommentID);
+        if (!$statement->execute()) {
+            throw getInternalError();
+        }
+
+        $amount = $statement->get_result();
+
+        if (mysqli_num_rows($amount) === 0) {
+            throw getInternalError();
+        }
+
+        $result = array();
+        while($tmp = mysqli_fetch_assoc($amount)) {
             array_push($result, $tmp);
         }
 

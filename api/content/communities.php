@@ -4,6 +4,7 @@
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/jsonutils.php";        //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/communityUtils.php";        //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/messageUtils.php";     //NOSONAR 
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/commentUtils.php";     //NOSONAR
 
   define("DEFAULT_PAGE_SIZE", 5);
   define("DEFAULT_PAGE_INDEX", 1);
@@ -156,13 +157,13 @@
         //comment getting function
         if ($targetSelected) {
           //comment from post
-          $commentList = getPostComment($target, $requestBody, $pageIndex, $pageSize, $database);
+          $commentList = getPostComment($target, $pageIndex, $pageSize, $database);
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
         $result = array();
         foreach ($commentList as $singleComment) {
-          array_push($singlePost, new Comment($singleComment['Date'],
+          array_push($result, new Comment($singleComment['Date'],
             $singleComment['Content'], $singleComment['Username'],
             $singleComment['CommentID']));
         }
@@ -170,16 +171,15 @@
       case "subcomment":
         //comment getting function
         if ($targetSelected) {
-          //subcomment from comment
-          $commentList = getSubComment($target, $pageIndex, $pageSize, $database);
+          if (!$dividerProvided) {
+            //subcomment amount below target comment
+            $result = getSubCommentAmount($target, $database);
+          } else {
+            //subcomment from comment
+            $result = getSubComment($target, $pageIndex, $pageSize, $database);
+          }
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
-        }
-        $result = array();
-        foreach ($commentList as $singleComment) {
-          array_push($singlePost, new Comment($singleComment['Date'],
-            $singleComment['Content'], $singleComment['Username'],
-            $singleComment['CommentID']));
         }
       break;
       case "checkSub":

@@ -21,7 +21,7 @@ class FeedPage extends DynamicPage {
         let newPage = await APICalls.getRequests.getPostsRequest("", page, 8);
         newPage = newPage.response;
         for (let i in newPage) {
-            let tmp = this.postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].postId);
+            let tmp = this.postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].id);
             mainGlobalVariables.page.mainContentPage.addContent(tmp);
         }
     }
