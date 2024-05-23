@@ -11,7 +11,10 @@ class LoginPage extends DynamicPage {
     this.registerButton = null;
 
     this.bindListeners();
-    //history.pushState("login", null, null);
+    if (mainGlobalVariables.buttonData.lastSelection != "search") {
+      mainGlobalVariables.buttonData.lastSelection = "search";
+      history.pushState({location: events.userSpecific.login}, null, "login");
+    }
     this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
   }
   reset() {

@@ -25,6 +25,10 @@ class RegistrationPage extends DynamicPage {
     this.addInfoButton = null;
 
     this.bindListeners();
+    if (mainGlobalVariables.buttonData.lastSelection != "register") {
+      mainGlobalVariables.buttonData.lastSelection = "register";
+      history.pushState({location: events.userSpecific.register}, null, "register");
+    }
   }
 
   getRegistrationForm() {

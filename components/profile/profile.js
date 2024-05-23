@@ -10,6 +10,10 @@ class ProfilePage extends DynamicPage {
     this.bindListeners();
     this.userData = null;
     this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
+    if (mainGlobalVariables.buttonData.lastSelection != "profile") {
+      mainGlobalVariables.buttonData.lastSelection = "profile";
+      history.pushState({location: events.actionBar.profile}, null, "profile");
+    }
   }
 
   async retrieveUserData() {

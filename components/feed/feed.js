@@ -11,6 +11,10 @@ class FeedPage extends DynamicPage {
         this.postLoader.loadMore();
 
         this.bindListeners();
+        if (mainGlobalVariables.buttonData.lastSelection != "home") {
+            mainGlobalVariables.buttonData.lastSelection = "home";
+            history.pushState({location: events.actionBar.home}, null, "home");
+        }
     }
 
     getNavFeed() {

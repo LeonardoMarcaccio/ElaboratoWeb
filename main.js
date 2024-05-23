@@ -25,7 +25,11 @@ const events = {
     /**
      * When the login form is triggered.
      */
-    login: "login-page"
+    login: "login-page",
+    /**
+     * When the settings page is triggered.
+     */
+    settings: "settings-page"
   },
   /**
    * Generic events.

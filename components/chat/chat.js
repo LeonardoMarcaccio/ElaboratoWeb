@@ -12,6 +12,10 @@ class ChatPage extends DynamicPage {
     this.elem = null;
     this.self = null;
     await this.loadChatList();
+    if (mainGlobalVariables.buttonData.lastSelection != "chat") {
+      mainGlobalVariables.buttonData.lastSelection = "chat";
+      history.pushState({location: events.actionBar.chat}, null, "chat");
+    }
   }
 
   getChatPage() {
