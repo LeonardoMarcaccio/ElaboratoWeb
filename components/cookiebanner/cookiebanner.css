@@ -5,13 +5,20 @@
   top: 25vh;
   transform: translate(-50%, 0);
   z-index: 100;
-  background-color: gray;
+  background-color: black;
   min-width: 424px;
-  max-width: 424px;
-  min-height: 268px;
-  max-height: 268px;
+  max-width: 470px;
+  min-height: 310px;
+  max-height: 310px;
   text-align: left;
   border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0px 0px 83px orange;
+}
+
+.cookie-banner > h1 {
+  margin: 0px;
+  text-align: center;
 }
 
 #cookie-banner-consent-btn {

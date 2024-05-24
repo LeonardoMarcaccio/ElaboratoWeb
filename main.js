@@ -173,7 +173,7 @@ function fetchScriptComponents() {
         baseFolder + "profile/profile.js",
         baseFolder + "post/post.js",
         baseFolder + "feed/feed.js",
-        //baseFolder + "cookiebanner/cookiebanner.js",
+        baseFolder + "cookiebanner/cookiebanner.js",
         baseFolder + "settings/settings.js"];
       let scriptPromises = Array();
       for (let scriptPathIndex in scriptPaths) {
