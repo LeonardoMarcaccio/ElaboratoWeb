@@ -73,6 +73,8 @@ body {
 #main-content-page {
   overflow: auto;
   flex-grow: 1;
+  display: flex;
+  justify-content: center;
 }
 #main-content-footing {
   flex-grow: 0;
