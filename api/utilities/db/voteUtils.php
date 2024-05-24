@@ -56,10 +56,6 @@
         if (mysqli_num_rows($oldValue) == 0) {
             return null;
         } else {
-            /*
-            $tmp = array();
-            array_push($tmp, mysqli_fetch_assoc($oldValue)["Value"]);
-            */
             return mysqli_fetch_assoc($oldValue)["Value"];
         }
     }
