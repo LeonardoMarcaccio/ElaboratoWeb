@@ -7,10 +7,14 @@
     max-height: 5.5vh;
 }
 
+#search-div {
+    justify-content: start;
+    max-height: 70px;
+}
+
 .search-form-container {
     display: flex;
     justify-content: center; /* Centra orizzontalmente */
-    margin-top: 50px;
     max-height: 50px;
 }
 

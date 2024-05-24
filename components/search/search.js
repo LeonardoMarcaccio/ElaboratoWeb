@@ -8,10 +8,15 @@ class SearchPage extends DynamicPage {
 
         this.searchBar = null;
         this.searchButton = null;
+        this.searchDiv = null;
 
         this.communityBuilder = new CommunityBuilder("search");
         this.communityLoader = new ContentLoader((page) => this.loadCommunities(page));
         this.bindListeners();
+    }
+
+    getSearchDiv() {
+        return this.lazyNodeIdQuery("search-div", true);
     }
 
     getSearchBar() {
@@ -23,19 +28,21 @@ class SearchPage extends DynamicPage {
     }
 
     async loadCommunities(page) {
+        this.searchDiv = this.getSearchDiv();
         let newPage = await APICalls.getRequests.getCommunitiesRequest(this.getSearchBar().value, page, 16);
         newPage = newPage.response;
         for (let i in newPage) {
             let tmp = await this.communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
-            mainGlobalVariables.page.mainContentPage.addContent(tmp);
+            this.searchDiv.appendChild(tmp);
         }
+        this.searchDiv.style.maxHeight = 70 + newPage.length * 80 + "px";
     }
 
     bindListeners() {
         this.getSearchButton().onclick = () => {
-            let content = mainGlobalVariables.page.mainContentPage.getContent();
-            while (content.children.length > 2) {
-                content.removeChild(content.lastChild);
+            this.searchDiv = this.getSearchDiv();
+            while (this.searchDiv.children.length > 1) {
+                this.searchDiv.removeChild(this.searchDiv.lastChild);
             }
             this.communityLoader.reset();
             this.communityLoader.loadMore();
