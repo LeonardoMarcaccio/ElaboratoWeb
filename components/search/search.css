@@ -30,7 +30,7 @@
     outline: none;
 }
 
-.search-form input[type="button"] {
+.search-form button {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #007bff;
@@ -40,7 +40,7 @@
     cursor: pointer;
 }
 
-.search-form input[type="button"]:hover {
+.search-form button:hover {
     background-color: #0056b3;
 }
 

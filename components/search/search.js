@@ -27,6 +27,10 @@ class SearchPage extends DynamicPage {
         return this.lazyNodeIdQuery("search-start", true);
     }
 
+    getSearchForm() {
+        return this.lazyNodeIdQuery("search-form", true);
+    }
+
     async loadCommunities(page) {
         this.searchDiv = this.getSearchDiv();
         let newPage = await APICalls.getRequests.getCommunitiesRequest(this.getSearchBar().value, page, 16);
@@ -39,7 +43,8 @@ class SearchPage extends DynamicPage {
     }
 
     bindListeners() {
-        this.getSearchButton().onclick = () => {
+        this.getSearchForm().onsubmit = (event) => {
+            event.preventDefault();
             this.searchDiv = this.getSearchDiv();
             while (this.searchDiv.children.length > 1) {
                 this.searchDiv.removeChild(this.searchDiv.lastChild);
