@@ -104,7 +104,7 @@
     refractoring it will require a major rework of this module.
     I tried to define better some values to make the code more readable.
   */
-  function communityGetRequest($requestBody, $database) {             //NOSONAR
+  function communityGetRequest($requestBody = null, $database) {             //NOSONAR
     if(!isset($_GET['type'])) {
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }

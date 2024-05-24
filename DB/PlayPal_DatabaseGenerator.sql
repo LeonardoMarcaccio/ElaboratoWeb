@@ -99,9 +99,9 @@ create table Vote (
 
 create table Notification (
      Username varchar(50) not null,
-     Link varchar(150) not null,
+     Code varchar(50) not null,
      Text varchar(150) not null,
-     constraint IDNotification primary key (Username, Link));
+     constraint IDNotification primary key (Username, Code));
 
 -- Constraints Section
 -- ___________________ 

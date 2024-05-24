@@ -1,10 +1,10 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
-    function notifyMessage($from, $to, $chatLink, mysqli $database) {
+    function notifyMessage($from, $to, $code, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
-        $statement = $database->prepare("INSERT INTO notification (recipient, chat_link, message) VALUES (?, ?, CONCAT('You received one new message from ', ?))");
-        $statement->bind_param("sss", $to, $chatLink, $from);
+        $statement = $database->prepare("INSERT INTO notification (Username, code, message) VALUES (?, ?, CONCAT('You received one new message from ', ?))");
+        $statement->bind_param("sss", $to, $code, $from);
     
         // Execute the statement and check for errors
         if (!$statement->execute()) {
@@ -16,7 +16,7 @@
     }
     
 
-    function notifyPost($community, $postLink, mysqli $database) {
+    function notifyPost($community, $code, mysqli $database) {
         $statement = $database->prepare("SELECT Username FROM `join` WHERE Name = ?");
         $statement->bind_param("s", $community);
         if (!$statement->execute()) {
@@ -32,46 +32,50 @@
         $username = mysqli_fetch_assoc($users);
         while($username !== null) {
             $statement = $database->prepare("INSERT INTO notification VALUES(?, ?, A new post was published in ?");
-            $statement->bind_param("sss", $username, $postLink, $community);
+            $statement->bind_param("sss", $username, $code, $community);
             if (!$statement->execute()) {
                 throw getInternalError();
             }
         }
     }
 
-    function notifyRegistration($token, mysqli $database) {
-        $statement = $database->prepare("SELECT Username FROM sessione WHERE Token = ?");
-        $statement->bind_param("s", $token);
+    function destroyNotification($username, $code, mysqli $database) {
+        // Prepare the SQL statement with the correct number of placeholders
+        $statement = $database->prepare("DELETE FROM notification WHERE Username = ? AND Code = ?)");
+        $statement->bind_param("ss", $username, $code);
+    
+        // Execute the statement and check for errors
         if (!$statement->execute()) {
-            throw new Exception('Internal error executing query.');
+            throw new Exception("Database error: " . $statement->error);
         }
-        
-        $result = $statement->get_result();
-        if ($result->num_rows == 0) {
-            throw new Exception('No user found for the provided token.');
-        }
-        
-        $row = $result->fetch_assoc();
-        $username = $row['Username'];
-        
+    
+        // Close the statement
         $statement->close();
+    }
 
-        $statement = $database->prepare("SELECT Email FROM user WHERE Username = ?");
+    function getUserNotification($username, mysqli $database) {
+        // Prepare the SQL statement with the correct number of placeholders
+        $statement = $database->prepare("SELECT notification WHERE Username = ?)");
         $statement->bind_param("s", $username);
+    
+        // Execute the statement and check for errors
         if (!$statement->execute()) {
-            throw new Exception('Internal error executing query.');
+            throw new Exception("Database error: " . $statement->error);
         }
-    
-        $result = $statement->get_result();
-        if ($result->num_rows == 0) {
-            throw new Exception('No email found for the provided username.');
+
+        $posts = $statement->get_result();
+        if (mysqli_num_rows($posts) === 0) {
+            throw getInternalError();
         }
-    
-        while ($row = $result->fetch_assoc()) {
-            $userMail = $row['Email'];
-            mail($userMail, "New Post", "Welcome to PlayPal " . $username, "From: PlayPal@gmail.com");
+
+        // Close the statement
+        $statement->close();
+        
+        $result = array();
+        while($tmp = mysqli_fetch_assoc($posts)) {
+            array_push($result, $tmp);
         }
         
-        $statement->close();
+        return $result;
     }
     
