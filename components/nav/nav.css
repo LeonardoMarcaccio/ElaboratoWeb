@@ -27,6 +27,7 @@ nav > div > button,#nav-post {
   border: none;
   background: rgb(240,157,81);
   background: radial-gradient(circle, rgba(240,157,81,1) 50%, rgba(255,255,255,0) 100%); 
+  max-height: none;
 }
 nav > div > button:hover,#nav-post:hover {
   border-radius: 10px;

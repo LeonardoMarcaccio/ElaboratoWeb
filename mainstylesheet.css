@@ -15,6 +15,24 @@ body {
   display: flex;
   flex-flow: column;
 }
+button:hover {
+  background-color: #F09D51;
+  transition: none;
+}
+
+button {
+  min-height: 30px;
+  min-width: 55px;
+  font-size: 1rem;
+  margin: 2px 6px;
+  height: 5vh;
+  background-color: transparent;
+  border: none;
+  transition: none;
+  border: 1px solid black;
+  border-radius: 10px;
+  max-height: 15px;
+}
 
 .generic-pane {
   display: flex;
