@@ -6,10 +6,7 @@
   transform: translate(-50%, 0);
   z-index: 100;
   background-color: black;
-  min-width: 424px;
-  max-width: 470px;
-  min-height: 310px;
-  max-height: 310px;
+  max-height: 345px;
   text-align: left;
   border-radius: 10px;
   padding: 10px;
@@ -19,6 +16,13 @@
 .cookie-banner > h1 {
   margin: 0px;
   text-align: center;
+}
+
+@media only screen and (max-width: 700px) {
+  .cookie-banner {
+    max-width: 100%;
+    width: 100%;
+  }
 }
 
 #cookie-banner-consent-btn {
