@@ -20,6 +20,9 @@ class ProfilePage extends DynamicPage {
     this.userData = await APICalls.getRequests.getUserInfo();
   }
 
+  getSettingsButton() {
+    return this.lazyNodeIdQuery("profile-user-settings", true);
+  }
   getUserImage() {
     return this.lazyNodeIdQuery("profile-user-image", true);
   }
@@ -52,7 +55,10 @@ class ProfilePage extends DynamicPage {
   }
 
   bindListeners() {
-
+    this.getSettingsButton().onclick = () => {
+      let settingsEvt = new CustomEvent(events.userSpecific.settings);
+      document.dispatchEvent(settingsEvt);
+    }
   }
   
   async retrieveUserData() {

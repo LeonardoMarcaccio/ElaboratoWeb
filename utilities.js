@@ -185,6 +185,7 @@ const APIEvents = {
 const APIConstants = {
   apiPages: {
     login: "api/auth/login.php",
+    logout: "api/auth/logout.php",
     registration: "api/auth/registration.php",
     communities: "api/content/communities.php",
     users: "api/content/users.php",
@@ -272,6 +273,11 @@ const APICalls = {
         document.dispatchEvent(customEvt);
       }
       return authRequest;
+    },
+    sendLogout: async () => {
+      let logoutUrl = APICalls.createApiUrl(APIConstants.apiPages.logout);
+      let logoutRequest = await APICalls.postRequests.postDataToApi(logoutUrl);
+      return logoutRequest;
     },
     sendCommunityRequest: async (communityData, target = null) => {
       let communityUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
