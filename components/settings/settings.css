@@ -1,3 +1,18 @@
+.danger-zone {
+  border-top: 1px inset #ff0000;
+  border-left: 2px inset rgb(255, 0, 0);
+  padding: 5px;
+}
+
+#settings-section-account-edit {
+  flex-grow: 1;
+  padding-bottom: 20px;
+}
+
+#settings-section-account {
+  height: 100%;
+}
+
 #page-settings {
     display: flex;
     flex-direction: column;
@@ -13,4 +28,12 @@
     flex-grow: 2;
     border: none;
     background-color: transparent;
+}
+
+#page-settings > div {
+  border-top: 1px inset rgb(240, 157, 81);
+  border-left: 2px inset rgb(240, 157, 81);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
 }

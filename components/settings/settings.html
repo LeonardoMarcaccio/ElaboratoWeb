@@ -1,6 +1,17 @@
 <link rel="stylesheet" href="/components/settings/settings.css">
 <div class="generic-pane" id="page-settings">
-    <button id="settings-account">Account</button><br>
-    <button id="settings-privacy">Privacy</button><br>
-    <button id="settings-avatar">Avatar</button><br>
+  <div id="settings-section-account">
+    <div id="settings-section-account-edit">
+      <h1>Account Settings</h1>
+      <form>
+        <button id="settings-input-delete-account" class="createAccount" type="submit">Logout</button>
+      </form>
+    </div>
+    <div class="danger-zone" id="settings-section-account-danger">
+      <h2>Danger Zone</h2>
+      <form id="settings-danger-zone-form">
+        <button id="settings-input-delete-account" class="createAccount" type="submit">DELETE ACCOUNT</button>
+      </form>
+    </div>
+  </div>
 </div>
