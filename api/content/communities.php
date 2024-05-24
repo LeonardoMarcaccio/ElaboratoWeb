@@ -5,6 +5,7 @@
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/communityUtils.php";        //NOSONAR
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/messageUtils.php";     //NOSONAR 
   include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/commentUtils.php";     //NOSONAR
+  include_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/voteUtils.php";     //NOSONAR
 
   define("DEFAULT_PAGE_SIZE", 5);
   define("DEFAULT_PAGE_INDEX", 1);
@@ -194,6 +195,9 @@
       break;
       case "message":
         $result = getChat($_GET['target'], $pageIndex, $pageSize, $database);
+      break;
+      case "vote":
+        $result = getVote(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $database);
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);

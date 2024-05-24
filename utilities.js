@@ -326,6 +326,14 @@ const APICalls = {
       let unsubResponse = await APICalls.postRequests.postDataToApi(subCommentUrl);
       return unsubResponse;
     },
+    vote: async (post, value) => {
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      subCommentUrl.searchParams.append("type", "vote");
+      subCommentUrl.searchParams.append("target", post);
+      subCommentUrl.searchParams.append("vote", value);
+      let unsubResponse = await APICalls.postRequests.postDataToApi(subCommentUrl);
+      return unsubResponse;
+    },
     sendMessageRequest: async (target, text) => {
       let commentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       commentUrl.searchParams.append("type", "message");
@@ -415,6 +423,13 @@ const APICalls = {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
       userUrl.searchParams.append("type", "checkSub");
       userUrl.searchParams.append("target", community);
+      let communityFollow = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return communityFollow;
+    },
+    getSingleVote: async (post) => {
+      let userUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
+      userUrl.searchParams.append("type", "vote");
+      userUrl.searchParams.append("target", post);
       let communityFollow = await APICalls.getRequests.getDataToApi(null, userUrl);
       return communityFollow;
     },
@@ -694,11 +709,12 @@ class PostBuilder {
   IDPrefix = "";
 
   constructor (IDPrefix) {
-    this.commentsCount = 0;
     this.IDPrefix = IDPrefix;
+    this.defaultColor = "rgb(255, 255, 255)";
+    this.clickedColor = "#5DADE2";
   }
 
-  makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
+  async makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
       let container = document.createElement("div");
       let post = document.createElement("article");
       let head = document.createElement("div");
@@ -728,12 +744,31 @@ class PostBuilder {
       srcCommunity.style.fontSize = "80%";
       paragraph.innerText = paragraphString;
       paragraph.style.textAlign = "left";
+      paragraph.className = 0;
       like.innerText = "Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
+      like.style.background = this.defaultColor;
+      dislike.style.background = this.defaultColor;
 
-      like.onclick = () => {};
-      dislike.onclick = () => {};
+      let currentVote = await APICalls.getRequests.getSingleVote(postId);
+      currentVote = currentVote.response;
+      if (currentVote === 0) {
+        dislike.style.background = this.clickedColor;
+      } else if (currentVote === 1) {
+        like.style.background = this.clickedColor;
+      }
+
+      like.onclick = async () => {
+        await APICalls.postRequests.vote(postId, 1);
+        like.style.background = like.style.background == this.defaultColor ? this.clickedColor : this.defaultColor;
+        dislike.style.background = this.defaultColor;
+      };
+      dislike.onclick = async () => {
+        await APICalls.postRequests.vote(postId, 0);
+        dislike.style.background = dislike.style.background == this.defaultColor ? this.clickedColor : this.defaultColor;
+        like.style.background = this.defaultColor;
+      };
       comment.onclick = () => {
         if (comment.innerText == "Comment") {
           comment.innerText = "Undo";
@@ -766,7 +801,7 @@ class PostBuilder {
       userImage.onclick = () => openUserPage(userString);
 
       paragraph.onclick = async () => {
-        if (this.commentsCount == 0) {
+        if (paragraph.className == 0) {
           let comments = await APICalls.getRequests.getCommentsRequest(postId, 1, 10);
           comments = comments.response;
           let builder = new CommentBuilder(titleString);
@@ -775,12 +810,12 @@ class PostBuilder {
             numSubComments = numSubComments.response;
             let tmp = builder.makeComment(comments[i].username, comments[i].content, comments[i].date, comments[i].id, numSubComments[0].count);
             container.appendChild(tmp);
-            this.commentsCount++;
+            paragraph.className++;
           }
         } else {
-          while (this.commentsCount > 0) {
+          while (paragraph.className > 0) {
             container.removeChild(container.lastChild);
-            this.commentsCount--;
+            paragraph.className--;
           }
         }
       }
@@ -814,7 +849,7 @@ class CommunityBuilder {
       this.IDPrefix = IDPrefix;
   }
   
-  async makeCommunity(titleString, descString, commImg) {
+  makeCommunity(titleString, descString, commImg) {
       let community = document.createElement("article");
       let head = document.createElement("div");
       let image = document.createElement("img");
@@ -872,7 +907,6 @@ class CommunityBuilder {
         }
       };
 
-      
       return community;
   }
 }
@@ -895,10 +929,8 @@ class CommentBuilder {
     let content = document.createElement("p");
     let pfp = document.createElement("img");
     let buttons = document.createElement("nav");
-    let like = document.createElement("button");
-    let dislike = document.createElement("button");
     let userPfp = null;
-    
+
     comment.id = this.IDPrefix + "-comment-" + this.count++;
     comment.className = "comment";
     comment.style.margin = "10px";
@@ -914,8 +946,6 @@ class CommentBuilder {
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
     pfp.style.aspectRatio = "1/1";
     pfp.style.maxWidth = "2%";
-    like.innerText = "Like";
-    dislike.innerText = "Dislike";
     
     container.appendChild(comment);
     comment.appendChild(head);
@@ -924,11 +954,7 @@ class CommentBuilder {
     head.appendChild(date);
     comment.appendChild(content);
     comment.appendChild(buttons);
-    buttons.appendChild(like);
-    buttons.appendChild(dislike);
     
-    like.onclick = () => {};
-    dislike.onclick = () => {};
     user.onclick = () => openUserPage(userString);
 
     let reply = document.createElement("button");

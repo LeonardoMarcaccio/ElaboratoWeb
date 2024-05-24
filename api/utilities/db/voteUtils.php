@@ -13,7 +13,6 @@
             newVote($username, $postID, $value, $database);
         } else {
             $tmp = mysqli_fetch_assoc($oldValue)["Value"];
-            print_r($tmp);
             if ($tmp !== $value) {
                 updateVote($username, $postID, $value, $database);
             } else {
@@ -43,6 +42,25 @@
         $statement->bind_param("is", $postID, $username);
         if (!$statement->execute()) {
             throw getInternalError();
+        }
+    }
+
+    function getVote($username, $postID, mysqli $database) {
+        $statement = $database->prepare("SELECT Value FROM vote WHERE PostID=? and Username=?");
+        $statement->bind_param("is", $postID, $username);
+        if (!$statement->execute()) {
+            throw getInternalError();
+        }
+
+        $oldValue = $statement->get_result();
+        if (mysqli_num_rows($oldValue) == 0) {
+            return null;
+        } else {
+            /*
+            $tmp = array();
+            array_push($tmp, mysqli_fetch_assoc($oldValue)["Value"]);
+            */
+            return mysqli_fetch_assoc($oldValue)["Value"];
         }
     }
 
