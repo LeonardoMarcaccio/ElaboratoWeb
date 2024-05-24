@@ -1,6 +1,6 @@
 .danger-zone {
-  border-top: 1px inset #ff0000;
-  border-left: 2px inset rgb(255, 0, 0);
+  border-top: 2px inset #ff0000;
+  border-left: 3px inset rgb(255, 0, 0);
   padding: 5px;
 }
 
@@ -18,7 +18,6 @@
     flex-direction: column;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    background-color: rgb(200, 200, 200);
 }
 
 #page-settings > button {
@@ -31,8 +30,8 @@
 }
 
 #page-settings > div {
-  border-top: 1px inset rgb(240, 157, 81);
-  border-left: 2px inset rgb(240, 157, 81);
+  border-top: 3px inset rgb(240, 157, 81);
+  border-left: 3px inset rgb(240, 157, 81);
   padding: 10px;
   display: flex;
   flex-direction: column;
