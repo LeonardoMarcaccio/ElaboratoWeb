@@ -1,5 +1,9 @@
 class SearchPage extends DynamicPage {
     async load() {
+        if (mainGlobalVariables.buttonData.lastSelection != "search") {
+            mainGlobalVariables.buttonData.lastSelection = "search";
+            history.pushState({location: events.actionBar.search}, null, "search");
+        }
         await super.load("/search/search");
 
         this.searchBar = null;
@@ -8,10 +12,6 @@ class SearchPage extends DynamicPage {
         this.communityBuilder = new CommunityBuilder("search");
         this.communityLoader = new ContentLoader((page) => this.loadCommunities(page));
         this.bindListeners();
-        if (mainGlobalVariables.buttonData.lastSelection != "search") {
-            mainGlobalVariables.buttonData.lastSelection = "search";
-            history.pushState({location: events.actionBar.search}, null, "search");
-        }
     }
 
     getSearchBar() {

@@ -1,5 +1,9 @@
 class ProfilePage extends DynamicPage {
   async load() {
+    if (mainGlobalVariables.buttonData.lastSelection != "profile") {
+      mainGlobalVariables.buttonData.lastSelection = "profile";
+      history.pushState({location: events.actionBar.profile}, null, "profile");
+    }
     if (this.cached) {
       mainHandler.contentHandling.setBodyContent(this.cachedAsset);
       this.userData = await this.populateElement();
@@ -10,10 +14,6 @@ class ProfilePage extends DynamicPage {
     this.bindListeners();
     this.userData = null;
     this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
-    if (mainGlobalVariables.buttonData.lastSelection != "profile") {
-      mainGlobalVariables.buttonData.lastSelection = "profile";
-      history.pushState({location: events.actionBar.profile}, null, "profile");
-    }
   }
 
   async retrieveUserData() {

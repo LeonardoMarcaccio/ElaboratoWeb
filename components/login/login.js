@@ -1,5 +1,9 @@
 class LoginPage extends DynamicPage {
   async load() {
+    if (mainGlobalVariables.buttonData.lastSelection != "search") {
+      mainGlobalVariables.buttonData.lastSelection = "search";
+      history.pushState({location: events.userSpecific.login}, null, "login");
+    }
     if (this.cached) {
       mainHandler.contentHandling.setBodyContent(this.cachedAsset);
       return;
@@ -11,10 +15,6 @@ class LoginPage extends DynamicPage {
     this.registerButton = null;
 
     this.bindListeners();
-    if (mainGlobalVariables.buttonData.lastSelection != "search") {
-      mainGlobalVariables.buttonData.lastSelection = "search";
-      history.pushState({location: events.userSpecific.login}, null, "login");
-    }
     this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
   }
   reset() {

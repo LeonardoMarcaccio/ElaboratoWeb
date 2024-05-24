@@ -2,6 +2,10 @@ let sharedChatCache = null;
 
 class ChatPage extends DynamicPage {
   async load() {
+    if (mainGlobalVariables.buttonData.lastSelection != "chat") {
+      mainGlobalVariables.buttonData.lastSelection = "chat";
+      history.pushState({location: events.actionBar.chat}, null, "chat");
+    }
     await super.load("/chat/chat");
 
     this.chatCache = null;
@@ -12,10 +16,6 @@ class ChatPage extends DynamicPage {
     this.elem = null;
     this.self = null;
     await this.loadChatList();
-    if (mainGlobalVariables.buttonData.lastSelection != "chat") {
-      mainGlobalVariables.buttonData.lastSelection = "chat";
-      history.pushState({location: events.actionBar.chat}, null, "chat");
-    }
   }
 
   getChatPage() {

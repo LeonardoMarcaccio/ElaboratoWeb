@@ -1,5 +1,9 @@
 class FeedPage extends DynamicPage {
     async load() {
+        if (mainGlobalVariables.buttonData.lastSelection != "home") {
+            mainGlobalVariables.buttonData.lastSelection = "home";
+            history.pushState({location: events.actionBar.home}, null, "home");
+        }
         await super.load("/feed/feed");
         mainHandler.contentHandling.clearBodyContent();
         if (this.opts.cache && this.cached) {
@@ -11,10 +15,6 @@ class FeedPage extends DynamicPage {
         this.postLoader.loadMore();
 
         this.bindListeners();
-        if (mainGlobalVariables.buttonData.lastSelection != "home") {
-            mainGlobalVariables.buttonData.lastSelection = "home";
-            history.pushState({location: events.actionBar.home}, null, "home");
-        }
     }
 
     getNavFeed() {

@@ -1,5 +1,9 @@
 class RegistrationPage extends DynamicPage {
   async load() {
+    if (mainGlobalVariables.buttonData.lastSelection != "register") {
+      mainGlobalVariables.buttonData.lastSelection = "register";
+      history.pushState({location: events.userSpecific.register}, null, "register");
+    }
     await super.load("registration/registration");
     this.registrationForm = null;
     this.registrationEssentialForm = null;
@@ -25,10 +29,6 @@ class RegistrationPage extends DynamicPage {
     this.addInfoButton = null;
 
     this.bindListeners();
-    if (mainGlobalVariables.buttonData.lastSelection != "register") {
-      mainGlobalVariables.buttonData.lastSelection = "register";
-      history.pushState({location: events.userSpecific.register}, null, "register");
-    }
   }
 
   getRegistrationForm() {
