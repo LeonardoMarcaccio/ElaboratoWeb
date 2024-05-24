@@ -1,4 +1,8 @@
 class LoginPage extends DynamicPage {
+  constructor() {
+    super();
+    this.ready = false;
+  }
   async load() {
     if (mainGlobalVariables.buttonData.lastSelection != "search") {
       mainGlobalVariables.buttonData.lastSelection = "search";
@@ -16,6 +20,7 @@ class LoginPage extends DynamicPage {
 
     this.bindListeners();
     this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
+    this.ready = true;
   }
   reset() {
     super.reset();
@@ -35,6 +40,12 @@ class LoginPage extends DynamicPage {
   }
   getForm() {
     return this.lazyNodeIdQuery("login-form", true);
+  }
+  clearCredentials() {
+    this.getForm().reset();
+  }
+  isReady() {
+    return this.ready;
   }
 
   triggerCredentialError(element) {
@@ -73,5 +84,8 @@ document.addEventListener(events.apiActions.authFailure, () => {
 });
 
 document.addEventListener(events.apiActions.authSuccess, () => {
+  if (loginClass.isReady()) {
+    loginClass.clearCredentials();
+  }
   mainHandler.contentHandling.purgePageContent();
 });
