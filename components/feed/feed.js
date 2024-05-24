@@ -10,11 +10,21 @@ class FeedPage extends DynamicPage {
             mainHandler.contentHandling.purgePageContent();
         }
     
+        this.feedDiv = null;
+        this.setFeedDiv();
         this.postBuilder = new PostBuilder("feed");
         this.postLoader = new ContentLoader((page) => this.loadPosts(page));
         this.postLoader.loadMore();
 
         this.bindListeners();
+    }
+
+    setFeedDiv() {
+        this.feedDiv = document.createElement("div");
+        this.feedDiv.className = "generic-pane";
+        this.feedDiv.style.maxHeight = "100%";
+        this.feedDiv.style.justifyContent = "start";
+        mainGlobalVariables.page.mainContentPage.addContent(this.feedDiv);
     }
 
     getNavFeed() {
@@ -26,7 +36,7 @@ class FeedPage extends DynamicPage {
         newPage = newPage.response;
         for (let i in newPage) {
             let tmp = await this.postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].image, newPage[i].id);
-            mainGlobalVariables.page.mainContentPage.addContent(tmp);
+            this.feedDiv.appendChild(tmp);
         }
     }
 
@@ -54,6 +64,7 @@ document.addEventListener(events.actionBar.home, () => {
     mainHandler.contentHandling.purgePageContent();
     feedClass.load();
 });
+
 document.addEventListener(events.apiActions.authSuccess, () => {
     mainHandler.contentHandling.purgePageContent();
     feedClass.load();
