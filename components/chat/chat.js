@@ -19,7 +19,7 @@ class ChatPage extends DynamicPage {
   }
 
   getChatPage() {
-    return this.lazyNodeIdQuery("page-chat");
+    return this.lazyNodeIdQuery("page-chat", true);
   }
 
   getNavChat() {
@@ -59,6 +59,8 @@ class ChatPage extends DynamicPage {
         document.dispatchEvent(event);
       });
     }
+
+    this.elem.style.maxHeight = (this.friendCount * 50) + 20 + "px";
   }
 }
 

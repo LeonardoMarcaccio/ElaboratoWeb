@@ -49,12 +49,6 @@ class FeedPage extends DynamicPage {
                 this.postLoader.loadMore();
             }
         });
-
-        this.getNavFeed().onclick = () => {
-            mainHandler.contentHandling.clearBodyContent();
-            this.postLoader.reset();
-            this.postLoader.loadMore();
-        };
     }
 }
 

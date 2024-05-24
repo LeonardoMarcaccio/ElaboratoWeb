@@ -750,10 +750,10 @@ class PostBuilder {
       comment.innerText = "Comment";
       like.style.background = this.defaultColor;
       dislike.style.background = this.defaultColor;
-
+      
       let currentVote = await APICalls.getRequests.getSingleVote(postId);
       currentVote = currentVote.response;
-      if (currentVote === 0) {
+      if (currentVote === -1) {
         dislike.style.background = this.clickedColor;
       } else if (currentVote === 1) {
         like.style.background = this.clickedColor;

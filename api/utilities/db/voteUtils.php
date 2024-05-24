@@ -13,7 +13,7 @@
             newVote($username, $postID, $value, $database);
         } else {
             $tmp = mysqli_fetch_assoc($oldValue)["Value"];
-            if ($tmp !== $value) {
+            if ($tmp != $value) {
                 updateVote($username, $postID, $value, $database);
             } else {
                 deleteVote($username, $postID, $database);
@@ -56,7 +56,7 @@
         if (mysqli_num_rows($oldValue) == 0) {
             return null;
         } else {
-            return mysqli_fetch_assoc($oldValue)["Value"];
+            return mysqli_fetch_assoc($oldValue)["Value"] == 0 ? -1 : 1;
         }
     }
 
