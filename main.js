@@ -150,9 +150,11 @@ function fetchMainPageComponents() {
     let loader = new AssetLoader("/components/");
     try {
       let nav = await loader.loadAsset("/nav/nav", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
+      let header = await loader.loadAsset("/header/header", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
       let footer = await loader.loadAsset("/footer/footer", {literalElement: false, loadHtml: true, loadCss: false, loadJs: false});
       mainGlobalVariables.page.nav = new ElementHandler(await nav[0].text());
       mainGlobalVariables.page.footer = new ElementHandler(await footer[0].text());
+      mainGlobalVariables.page.header = new ElementHandler(await header[0].text());
       success();
     } catch (error) {
       failure(error);
@@ -209,6 +211,7 @@ function loadpageStructure() {
   // Main content shaper generation
   mainGlobalVariables.page.contentShaper = new ElementHandler(document.createElement("div"));
   mainGlobalVariables.page.contentShaper.getContent().id = "content-shaper";
+  mainGlobalVariables.page.body.addContent(mainGlobalVariables.page.header.getContent());
 
   // Attaching components to main content holder
   mainGlobalVariables.page.contentHolder.addContent([mainGlobalVariables.page.mainContentHeading.getContent(),
@@ -237,8 +240,8 @@ function updateLoginStatus() {
 async function mainPageInit() {
   let mainPageFetchPromise = fetchMainPageComponents();
   let scriptFetchPromise = fetchScriptComponents();
-  loadpageStructure();
   let mainPagePromiseResult = await mainPageFetchPromise;
+  loadpageStructure();
   let scriptPromiseResult = await scriptFetchPromise;
   if (mainPagePromiseResult instanceof Error) {
     console.error(mainPagePromiseResult);

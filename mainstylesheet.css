@@ -2,6 +2,27 @@
   font-family: "Eurostyle";
   src: url("/fonts/eurostile.woff");
 }
+* {
+  --sb-track-color: #232e33;
+  --sb-thumb-color: #f06543;
+  --sb-size: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--sb-thumb-color)  var(--sb-track-color);
+}
+*::-webkit-scrollbar {
+  scrollbar-width: 8px;
+}
+*::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+*::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 3px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 3px;
+}
 
 html, body {
   margin: 0;
@@ -18,6 +39,15 @@ body {
 button:hover {
   background-color: #F09D51;
   transition: none;
+}
+
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color)
+      var(--sb-track-color);
+    scrollbar-width: thin;
+  }
 }
 
 button {
@@ -81,7 +111,6 @@ button {
   width: 100%;
   height: 100%;
   overflow-y: auto;
-  scrollbar-width: thin;
   background-color: transparent;
   display: flex;
   flex-direction: column;
