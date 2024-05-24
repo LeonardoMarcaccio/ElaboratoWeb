@@ -38,6 +38,10 @@
   align-self: center;
 }
 
+#forms-container > form > div > input:focus {
+  border-radius: 0;
+}
+
 #forms-container > form > div > input,textarea {
   width: 80%;
   margin: 3px 0px;

@@ -39,6 +39,10 @@
   transition: 500ms;
 }
 
+.formpane > form > input:focus {
+  border-radius: 0;
+}
+
 .formpane > form > button {
   width: 80%;
   margin: 4px 0px;
