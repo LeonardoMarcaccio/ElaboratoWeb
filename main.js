@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 let assetPrototypes = new Map();
 
 /**
@@ -55,31 +58,84 @@ const events = {
   }
 }
 
-
+/**
+ * Global variables that represent certain states or elements of the page.
+ */
 let mainGlobalVariables = {
+  /**
+   * Global variables containing crucial page elements.
+   * Almost all classes contain a ElementHandler
+   */
   page: {
+    /**
+     * HTML <body> tag contained inside a ElementHandler
+     */
     body: null,
+     /**
+     * HTML <head> tag contained inside a ElementHandler,
+     * to not mistake with the <header> tag.
+     */
     header: null,
+    /**
+     * The main content page inside a ElementHandler.
+     */
     mainContentPage: null,
+    /**
+     * The main content heading inside a ElementHandler.
+     */
     mainContentHeading: null,
+    /**
+     * The main content footing inside a ElementHandler.
+     */
     mainContentFooting: null,
+    /**
+     * The navigation bar.
+     */
     nav: null,
+    /**
+     * HTML <footer> tag contained inside a ElementHandler
+    */
     footer: null,
+    /**
+     * The contentShaper inside a ElementHandler.
+     */
     contentShaper: null,
+    /**
+     * The contentHolder inside a ElementHandler.
+     */
     contentHolder: null,
+    /**
+     * The current page location.
+     * @see {@link events.actionBar}
+     * @see {@link events.userSpecific}
+    */
     currentPageLoc: null
   },
   dynamicElements: {
+    /**
+     * The loading banner seen at the site's startup
+     */
     loadingBanner: null
   },
   buttonData: {
+    /**
+     * @deprecated
+     */
     lastSelection: null
   },
   userData: {
+    /**
+     * Flag used to determine if the user is logged in,
+     * this flag is updated everytime an interaction with
+     * the api happens.
+     */
     userLoggedIn: false
   }
 }
 
+/**
+ * Suite of functions to handle page structure for content.
+ */
 const mainHandler = {
   contentHandling: {
     getFootingContent: () => {
@@ -137,6 +193,10 @@ const mainHandler = {
   }
 }
 
+/**
+ * Toggles the main loading banner.
+ * @param {boolean} enable true to show, false to hide
+ */
 function enableMainLoadingBanner(enable) {
   if (enable) {
     mainGlobalVariables.dynamicElements.loadingBanner.style.display = "flex";
@@ -145,6 +205,9 @@ function enableMainLoadingBanner(enable) {
   }
 }
 
+/**
+ * Gets page content from the web server.
+ */
 function fetchMainPageComponents() {
   return new Promise(async (success, failure) => {
     let loader = new AssetLoader("/components/");
@@ -162,6 +225,9 @@ function fetchMainPageComponents() {
   });
 }
 
+/**
+ * Gets page logic from the web server.
+ */
 function fetchScriptComponents() {
   return new Promise(async (success, failure) => {
     let baseFolder = "/components/";
@@ -191,6 +257,10 @@ function fetchScriptComponents() {
   });
 }
 
+/**
+ * Builds the page, populating the global variables.
+ * @see {@link mainGlobalVariables}
+ */
 function loadpageStructure() {
   // Essential base elements assignment
   mainGlobalVariables.dynamicElements.loadingBanner = document.getElementById("loading-banner");
@@ -222,10 +292,16 @@ function loadpageStructure() {
   mainGlobalVariables.page.body.addContent(mainGlobalVariables.page.contentShaper.getContent());
 }
 
+/**
+ * Builds basic page structure inside the content shaper.
+ */
 function fillStructure() {
   mainGlobalVariables.page.contentShaper.addContent(mainGlobalVariables.page.nav.getContent());
 }
 
+/**
+ * Checks if the browser contains a token, assuming that is's valid
+ */
 function updateLoginStatus() {
   mainGlobalVariables.userData.userLoggedIn = !(cookieUtilities.readCookie("token") == "");
   if (!mainGlobalVariables.userData.userLoggedIn) {
@@ -237,6 +313,9 @@ function updateLoginStatus() {
   }
 }
 
+/**
+ * Initializes main page, calls every initialization function.
+ */
 async function mainPageInit() {
   let mainPageFetchPromise = fetchMainPageComponents();
   let scriptFetchPromise = fetchScriptComponents();
