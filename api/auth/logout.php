@@ -3,9 +3,10 @@
   require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/generalUtils.php";          //NOSONAR
   require_once $_SERVER["DOCUMENT_ROOT"] . "/api/utilities/jsonutils.php";   //NOSONAR
   require_once $_SERVER["DOCUMENT_ROOT"] . "/api/classes/ApiError.php";   //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/safetyutils.php";   //NOSONAR
 
   try {
-    assertRequestMatch('GET');
+    assertRequestMatch('POST');
     $database = new mysqli("localhost", "root", "", "playpal");         //NOSONAR
     if (tokenSecurityCheck($database)) {
       $query = $database->prepare("DELETE FROM sessione WHERE token = ?");
