@@ -1,5 +1,8 @@
 class ProfilePage extends DynamicPage {
   async load() {
+    if (!mainGlobalVariables.userData.userLoggedIn) {
+      return;
+    }
     if (mainGlobalVariables.buttonData.lastSelection != "profile") {
       mainGlobalVariables.buttonData.lastSelection = "profile";
       history.pushState({location: events.actionBar.profile}, null, "profile");

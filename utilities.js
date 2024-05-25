@@ -223,11 +223,17 @@ const APICalls = {
     switch (jsonModule.code) {
       case 401:
       case "401":
+        mainGlobalVariables.userData.userLoggedIn = false;
         document.dispatchEvent(new CustomEvent(events.apiActions.authFailure));
       break;
       case 409:
       case "409":
+        mainGlobalVariables.userData.userLoggedIn = false;
         document.dispatchEvent(new CustomEvent(APIEvents.conflictEvent));
+      break;
+      case 200:
+      case "200":
+        mainGlobalVariables.userData.userLoggedIn = true;
       break;
       default:
         return;
@@ -271,6 +277,8 @@ const APICalls = {
       if (authRequest.code == "200") {
         let customEvt = new CustomEvent(events.apiActions.authSuccess);
         document.dispatchEvent(customEvt);
+      } else {
+        APICalls.evaluateResponseCodeAction(authRequest);
       }
       return authRequest;
     },
