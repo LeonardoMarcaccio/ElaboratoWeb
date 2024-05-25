@@ -14,14 +14,21 @@ class SettingsPage extends DynamicPage {
   getLogoutButton() {
     return this.lazyNodeIdQuery("settings-input-delete-account", true);
   }
+  getSettingsForm() {
+    return this.lazyNodeIdQuery("settings-form", true);
+  }
+  getDangerZoneSettingsForm() {
+    return this.lazyNodeIdQuery("settings-section-account-danger", true);
+  }
   
   bindEventListeners() {
-    this.getDeleteAccountButton().onclick = () => {
-
-    };
-    this.getLogoutButton().onclick = async () => {
+    this.getSettingsForm().onsubmit = async (event) => {
+      event.preventDefault();
       await APICalls.postRequests.sendLogout();
       updateLoginStatus();
+    };
+    this.getDangerZoneSettingsForm().onclick = async (event) => {
+      event.preventDefault();
     };
   }
 }
