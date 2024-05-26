@@ -118,12 +118,46 @@
       'Phonenumbers' => $userObj->getPhoneNumbers()];
 
     $target = getUsernameByToken($_COOKIE['token'], $database);
+    $queryString = "UPDATE user SET  WHERE Username = ?";
+    
     foreach ($dbNames as $dbEntry => $dbValue) {
-      $preparedQuery = $database->prepare("UPDATE user SET $dbEntry = ? WHERE Username = ?");
-      $preparedQuery->bind_param("ss", $dbValue, $target);
-      if (!$preparedQuery->execute()) {
-        throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
-      }
+      $queryString .= " ".$dbEntry." = ?";
+    }
+
+    $preparedQuery = $database->prepare($queryString." WHERE Username = ?");
+    
+    foreach ($dbNames as $dbEntry => $dbValue) {
+      $preparedQuery->bind_param("s", $dbValue);
+    }
+    
+    $preparedQuery->bind_param("s", $target);
+    
+    if (!$preparedQuery->execute()) {
+      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
+    }
+  }
+
+  function updateUserOneQuery($requestBody, mysqli $database) {
+    $userObj = jsonToRegistration($requestBody);
+    $target = getUsernameByToken($_COOKIE['token'], $database);
+
+    $preparedQuery = $database->prepare(
+      "UPDATE user SET Email = ?, Password = ?, FirstName = ?, LastName = ?, Gender = ?, Biography = ?, PersonalWebsite = ?, Pfp = ?,  PhoneNumbers = ? WHERE Username = ?");
+    $preparedQuery->bind_param(
+      "ssssssssss",
+      $userObj->getEmail(),
+      $userObj->getPassword(),
+      $userObj->getFirstName(),
+      $userObj->getLastName(),
+      $userObj->getGender(),
+      $userObj->getBiography(),
+      $userObj->getPersonalWebsite(),
+      $userObj->getPfp(),
+      $userObj->getPhoneNumbers(),
+      $target
+    );
+    if (!$preparedQuery->execute()) {
+      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
     }
   }
 

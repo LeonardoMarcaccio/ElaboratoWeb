@@ -223,11 +223,11 @@ VALUES ('TestUser8','TestUserEmail8@mail.com','$2y$10$d7Sk/6fVQ04lAPmBx9vXP.1rMo
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser9','TestUserEmail9@mail.com','$$2y$10$YcVLPUtztn0oE6OOl60/..8f4Y5HdRAWTznSeUAFmR4oE6YmxA42G',
-null,null,null,null,null,null,null,'0');
+null,null,null,null,null,null,null,0);
 
 INSERT INTO `user`(`Username`, `Email`, `Password`, `FirstName`, `LastName`, `Gender`, `Biography`, `PersonalWebsite`, `Pfp`, `Phonenumbers`, `Tries`)
 VALUES ('TestUser10','TestUserEmail10@mail.com','$2y$10$EeSTxtuQouu1WHvmVedi0uADACnQhAMbEczxKsWFCw15wpIs68GDO',
-null,null,null,null,null,null,null,'0');
+null,null,null,null,null,null,null,0);
 
 -- Friendship Table
 

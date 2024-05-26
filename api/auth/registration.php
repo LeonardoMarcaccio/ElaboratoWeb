@@ -44,7 +44,6 @@
         $username = $usrObj->getUsername();
         setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");
         createSession($token, $username, $database);
-        notifyRegistration($token, $database);
         exit(generateJSONResponse(200, "Ok"));
       }
       exit(generateJSONResponse(API_INVALID_USER_DATA_ERROR_CODE, "Invalid Information", $report));
