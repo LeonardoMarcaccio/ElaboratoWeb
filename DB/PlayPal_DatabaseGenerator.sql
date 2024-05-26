@@ -86,6 +86,12 @@ create table User (
      Tries int default 0 not null,
      constraint IDUser primary key (Username));
 
+create table UserAccessTrials (
+     Date varchar(50) not null,
+     Tries int default 0 not null,
+     Username varchar(50) not null,
+     constraint IDTrial primary key (Username));
+
 create table SubComment (
      Sub_CommentID int not null,
      CommentID int not null,
@@ -171,6 +177,10 @@ alter table SubComment add constraint FKOrigin
 alter table SubComment add constraint FKSub_FK
      foreign key (Sub_CommentID)
      references Comment (CommentID);
+
+alter table UserAccessTrials add constraint FKAssociated
+     foreign key (Username)
+     references User (Username);
 
 alter table Vote add constraint FKVot_Use
      foreign key (Username)
