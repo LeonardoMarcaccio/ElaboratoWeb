@@ -32,7 +32,8 @@
       && !isset($_GET['target'])) {
       throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
-    $usrObj = jsonToLogin(file_get_contents("php://input"));
+    // Not needed anymore
+    //$usrObj = jsonToLogin(file_get_contents("php://input"));
     switch($_GET['type']) {
       case "friend":
         addFriend($user, $_GET["target"], $database);
@@ -41,7 +42,7 @@
         removeFriend($user, $_GET["target"], $database);
       break;
       case "edit":
-        updateUser($usrObj, $database);
+        updateUser(file_get_contents("php://input"), $database);
       break;
       default:
         throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);

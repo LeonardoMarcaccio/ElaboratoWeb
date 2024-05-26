@@ -14,7 +14,7 @@ use function PHPSTORM_META\type;
   define("USER_FRIEND", 0);
   define("USER_FRIEND_PENDING", 0);
   define("USER_STRANGER", 0);
-  define("USER_CONTENT_FOLDER", "/media/users/");
+  define("USER_CONTENT_FOLDER", __DIR__ . "/../../media/users/");
   define("SUPPORTED_IMAGE_FORMATS", array("jpg", "png", "gif", "webp"));
 
   function getInvalidDataError() {
