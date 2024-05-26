@@ -33,7 +33,7 @@
         $personalWebsite = $usrObj->getPersonalWebsite();
         $pfp = $usrObj->getPfp();
         $phoneNumbers = $usrObj->getPhoneNumbers();
-        $registrationStatement->bind_param("sssssissss",
+        $registrationStatement->bind_param("ssssssssss",
         $username, $email, $password, $firstname, $lastname,
         $gender, $biography, $personalWebsite, $pfp, $phoneNumbers);
 
