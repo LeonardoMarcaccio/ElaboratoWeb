@@ -1,15 +1,32 @@
 <link rel="stylesheet" href="/components/settings/settings.css">
 <div class="generic-pane" id="page-settings">
+  <form class="generic-form" id="settings-accountactions-form">
+    <fieldset>
+      <legend>Edit Account</legend>
+      <button name="settings-accountactions-logout" type="submit">Log out</button>
+    </fieldset>
+  </form>
   <form class="generic-form" id="settings-editprofile-form">
     <fieldset>
       <legend>Edit Account</legend>
       <label for="settings-editprofile-bio">What would you like people to know about you?</label>
-      <textarea id="settings-editprofile-bio" name="settings-editprofile-bio"></textarea>
+      <textarea id="settings-editprofile-bio" name="settings-editprofile-bio" placeholder="Tell us more about yourself"></textarea>
       <label for="settings-editprofile-pfp">Avatar</label>
       <div class="avatar-box">
         <img id="settings-editprofile-pfp-current" src="/media/users/placeholder.webp">
       </div>
       <input type="file" name="settings-editprofile-pfp">
+      <label for="settings-editprofile-firstname">Change first name</label>
+      <input type="text" name="settings-editprofile-firstname" placeholder="New first name">
+      <label for="settings-editprofile-lastname">Change last name</label>
+      <input type="text" name="settings-editprofile-lastname" placeholder="New last name">
+      <label for="settings-editprofile-personalwebsite">Edit personal website URL</label>
+      <input type="text" name="settings-editprofile-personalwebsite" placeholder="New website's URL">
+      <label for="settings-editprofie-gender">Edit gender</label>
+      <input type="text" name="settings-editprofile-gender" placeholder="Write your gender here">
+      <label for="settings-editprofie-phonenumber">Change phone number</label>
+      <input type="tel" name="settings-editprofile-phonenumber" placeholder="New phone number">
+      <button name="settings-editprofile-submit-changes" type="submit">Submit changes</button>
     </fieldset>
   </form>
   <form class="generic-form" id="settings-dangerzone-form">

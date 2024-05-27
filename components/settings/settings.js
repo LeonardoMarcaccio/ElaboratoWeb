@@ -8,26 +8,61 @@ class SettingsPage extends DynamicPage {
     this.bindEventListeners();
   }
 
-  getDeleteAccountButton() {
-    return this.lazyNodeIdQuery("settings-input-logout-account", true);
+  getAccountActionsForm() {
+    return this.lazyNodeIdQuery("settings-accountactions-form", true);
   }
-  getLogoutButton() {
-    return this.lazyNodeIdQuery("settings-input-delete-account", true);
+  getEditProfileForm() {
+    return this.lazyNodeIdQuery("settings-editprofile-form", true);
   }
-  getSettingsForm() {
-    return this.lazyNodeIdQuery("settings-form", true);
-  }
-  getDangerZoneSettingsForm() {
-    return this.lazyNodeIdQuery("settings-section-account-danger", true);
+  getDangerZoneForm() {
+    return this.lazyNodeIdQuery("settings-dangerzone-form", true);
   }
   
   bindEventListeners() {
-    this.getSettingsForm().onsubmit = async (event) => {
+    this.getAccountActionsForm().onsubmit = async (event) => {
       event.preventDefault();
       await APICalls.postRequests.sendLogout();
       updateLoginStatus();
     };
-    this.getDangerZoneSettingsForm().onclick = async (event) => {
+    this.getEditProfileForm().onsubmit = async (event) => {
+      event.preventDefault();
+      let editProfileForm = new FormData(this.getEditProfileForm());
+      let pfp = null;
+      try {
+        pfp = await JSONUtils.registration.imgToJSON(profilePicture);
+      } catch (e) {
+        console.warn("Could not load Image! Reason:\n" + e);
+      }
+      let tmpData = await APICalls.getRequests.getUserInfo();
+      tmpData = await tmpData.response;
+      console.log(editProfileForm);
+      let usrUpdate = JSONUtils.registration.buildRegistration(
+        tmpData.username,
+        tmpData.email,
+        tmpData.password,
+        genericUtilities.setIfNotEmpty(
+          genericUtilities.setIfNotNull(
+            editProfileForm.get("settings-editprofile-firstname"), null), tmpData.biography),
+        genericUtilities.setIfNotEmpty(
+          genericUtilities.setIfNotNull(
+            editProfileForm.get("settings-editprofile-lastname"), null) , tmpData.lastname),
+        genericUtilities.setIfNotEmpty(
+          genericUtilities.setIfNotNull(
+            editProfileForm.get("settings-editprofile-gender"), null), tmpData.gender),
+        genericUtilities.setIfNotEmpty(
+          genericUtilities.setIfNotNull(
+            editProfileForm.get("settings-editprofile-bio"), null), tmpData.bio),
+        genericUtilities.setIfNotEmpty(
+          genericUtilities.setIfNotNull(
+            editProfileForm.get("settings-editprofile-personalwebsite"), null), tmpData.personalwebsite),
+        pfp,
+        genericUtilities.setIfNotEmpty(
+          genericUtilities.setIfNotNull(
+            editProfileForm.get("settings-editprofile-phonenumber"), null), tmpData.phonenumber)
+      );
+      await APICalls.postRequests.editUserRequest(usrUpdate);
+    };
+    this.getDangerZoneForm().onsubmit = async (event) => {
       event.preventDefault();
     };
   }

@@ -5,7 +5,10 @@
 }
 
 #settings-editprofile-form > fieldset > .avatar-box > img {
-  max-width: 100px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 0;
+  max-width: 150px;
 }
 
 #settings-section-account-edit {
@@ -32,10 +35,27 @@
     background-color: transparent;
 }
 
-#page-settings > div {
+.generic-form > fieldset {
   border-top: 3px inset rgb(240, 157, 81);
   border-left: 3px inset rgb(240, 157, 81);
+  border-right: 0;
+  border-bottom: 0;
   padding: 10px;
   display: flex;
   flex-direction: column;
+}
+
+#settings-dangerzone-form  > fieldset {
+  border-top: 3px inset rgb(255, 0, 0);
+  border-left: 3px inset rgb(255, 0, 0);
+  border-right: 0;
+  border-bottom: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+#settings-dangerzone-form > fieldset > legend {
+  color: rgb(196, 0, 0);
+  font-weight: bold;
 }

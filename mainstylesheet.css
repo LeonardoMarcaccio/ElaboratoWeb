@@ -99,6 +99,11 @@ button {
 .generic-form > fieldset > textarea {
   resize: none;
 }
+.avatar-box {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+}
 .avatar-box > img {
   max-width: 100%;
   max-height: 100%;

@@ -29,6 +29,13 @@ const genericUtilities = {
     } else {
       return returnIfNull;
     }
+  },
+  setIfNotEmpty: (value, returnIfNull = "") => {
+    if (value != "") {
+      return value;
+    } else {
+      return returnIfNull;
+    }
   }
 }
 
