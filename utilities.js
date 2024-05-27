@@ -323,8 +323,12 @@ const APICalls = {
       let subCommentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl, subcommentData);
       return subCommentRequest;
     },
-    editCommunityRequest: async (communityData, target = null) => {
-
+    editUserRequest: async (updateData) => {
+      let authRequest = await APICalls.postRequests.postDataToApi(
+        APICalls.createApiUrl(APIConstants.apiPages.users),
+        updateData);
+        APICalls.evaluateResponseCodeAction(authRequest);
+      return authRequest;
     },
     sub: async (community) => {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
