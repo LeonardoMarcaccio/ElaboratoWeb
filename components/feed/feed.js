@@ -25,7 +25,8 @@ class FeedPage extends DynamicPage {
     setFeedDiv() {
         this.feedDiv = document.createElement("div");
         this.feedDiv.className = "generic-pane";
-        this.feedDiv.style.maxHeight = "100%";
+        /** NO! DO NOT EDIT STANDARD STYLE WITH JS */
+        //this.feedDiv.style.maxHeight = "100%";
         this.feedDiv.style.justifyContent = "start";
         mainGlobalVariables.page.mainContentPage.addContent(this.feedDiv);
     }
