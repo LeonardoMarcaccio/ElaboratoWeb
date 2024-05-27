@@ -120,7 +120,7 @@
     $queryString = "UPDATE user SET ";
     
     foreach ($dbNames as $dbEntry => $dbValue) {
-      $queryString .= " ".$dbEntry." = ?";
+      $queryString .= " ".$dbEntry." = ?, ";
     }
 
     $preparedQuery = $database->prepare($queryString." WHERE Username = ?");
