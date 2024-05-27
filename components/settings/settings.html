@@ -1,17 +1,26 @@
 <link rel="stylesheet" href="/components/settings/settings.css">
 <div class="generic-pane" id="page-settings">
-  <div id="settings-section-account">
-    <div id="settings-section-account-edit">
-      <h1>Account Settings</h1>
-      <form id="settings-form">
-        <button id="settings-input-logout-account" class="createAccount" type="submit">Logout</button>
-      </form>
-    </div>
-    <div class="danger-zone" id="settings-section-account-danger">
-      <h2>Danger Zone</h2>
-      <form id="settings-danger-zone-form">
-        <button id="settings-input-delete-account" class="createAccount" type="submit">DELETE ACCOUNT</button>
-      </form>
-    </div>
-  </div>
+  <form class="generic-form" id="settings-editprofile-form">
+    <fieldset>
+      <legend>Edit Account</legend>
+      <label for="settings-editprofile-bio">What would you like people to know about you?</label>
+      <textarea id="settings-editprofile-bio" name="settings-editprofile-bio"></textarea>
+      <label for="settings-editprofile-pfp">Avatar</label>
+      <div class="avatar-box">
+        <img id="settings-editprofile-pfp-current" src="/media/users/placeholder.webp">
+      </div>
+      <input type="file" name="settings-editprofile-pfp">
+    </fieldset>
+  </form>
+  <form class="generic-form" id="settings-dangerzone-form">
+    <fieldset>
+      <legend>Danger Zone</legend>
+      <label for="settings-dangerzone-password">Edit Password</label>
+      <input type="password" name="settings-dangerzone-old-password" placeholder="Insert old password">
+      <label for="settings-dangerzone-password">New password</label>
+      <input type="password" name="settings-dangerzone-password" placeholder="Insert new password">
+      <input type="password" name="settings-dangerzone-password-repeat" placeholder="Repeat new password">
+      <button name="settings-dangerzone-submit-password" type="submit">Confirm action</button>
+    </fieldset>
+  </form>
 </div>

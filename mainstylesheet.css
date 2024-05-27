@@ -72,15 +72,37 @@ button {
   background-color: #E0DFD5;
   flex-grow: 1;
   max-width: 500px;
-  max-height: 500px;
   margin-top: 8vh;
   -webkit-box-shadow: 0px 0px 14px 30px #E0DFD5;
   box-shadow: 0px 0px 14px 30px #E0DFD5;
   margin: 10%;
   height: fit-content;
+  min-height: 450px;
+  max-height: none;
 }
 .generic-pane > * {
   margin: 10px;
+}
+.generic-form {
+  display: flex;
+  flex-flow: column;
+  row-gap: 10px;
+}
+.generic-form > fieldset {
+  display: flex;
+  flex-flow: column;
+  row-gap: 10px;
+}
+.generic-form > * {
+
+}
+.generic-form > fieldset > textarea {
+  resize: none;
+}
+.avatar-box > img {
+  max-width: 100%;
+  max-height: 100%;
+  aspect-ratio: 1/1;
 }
 
 #content-shaper {
@@ -121,7 +143,7 @@ button {
   flex-grow: 0;
 }
 #main-content-page {
-  /*overflow: auto;*/
+  overflow-y: auto;
   flex-grow: 1;
   display: flex;
   justify-content: center;

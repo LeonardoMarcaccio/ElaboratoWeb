@@ -4,6 +4,10 @@
   padding: 5px;
 }
 
+#settings-editprofile-form > fieldset > .avatar-box > img {
+  max-width: 100px;
+}
+
 #settings-section-account-edit {
   flex-grow: 1;
   padding-bottom: 20px;
@@ -16,7 +20,6 @@
 #page-settings {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
     justify-content: space-evenly;
 }
 
