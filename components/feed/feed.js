@@ -1,5 +1,8 @@
 class FeedPage extends DynamicPage {
     async load() {
+        if (!mainGlobalVariables.userData.userLoggedIn) {
+            return;
+        }
         if (mainGlobalVariables.buttonData.lastSelection != "home") {
             mainGlobalVariables.buttonData.lastSelection = "home";
             history.pushState({location: events.actionBar.home}, null, "home");
@@ -55,11 +58,9 @@ class FeedPage extends DynamicPage {
 let feedClass = new FeedPage();
 
 document.addEventListener(events.actionBar.home, () => {
-    mainHandler.contentHandling.purgePageContent();
     feedClass.load();
 });
 
 document.addEventListener(events.apiActions.authSuccess, () => {
-    mainHandler.contentHandling.purgePageContent();
     feedClass.load();
 });

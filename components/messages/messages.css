@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    background-color: rgb(200, 200, 200);
 }
 
 form {
@@ -33,4 +32,45 @@ form > input {
 
 .message-received {
     text-align: left;
+}
+
+
+
+
+#main-content-footing {
+    display: flex;
+    justify-content: center; /* Centra orizzontalmente */
+    max-height: 50px;
+}
+
+.messages-form {
+    display: flex;
+}
+
+.messages-form input[type="text"] {
+    max-height: 40px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.messages-form button {
+    min-height: 40px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.messages-form button:hover {
+    background-color: #0056b3;
+}
+
+.messages-form input[type="text"]:focus {
+    border-color:#007bff;
 }

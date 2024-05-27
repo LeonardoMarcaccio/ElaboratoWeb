@@ -2,13 +2,15 @@ let sharedChatCache = null;
 
 class ChatPage extends DynamicPage {
   async load() {
+    if (!mainGlobalVariables.userData.userLoggedIn) {
+      return;
+    }
     if (mainGlobalVariables.buttonData.lastSelection != "chat") {
       mainGlobalVariables.buttonData.lastSelection = "chat";
       history.pushState({location: events.actionBar.chat}, null, "chat");
     }
     await super.load("/chat/chat");
 
-    this.chatCache = null;
     this.messagePage = null;
     this.bois = null;
     this.friendCount = 0;
@@ -24,6 +26,13 @@ class ChatPage extends DynamicPage {
 
   getNavChat() {
     return this.lazyNodeIdQuery("nav-chat");
+  }
+
+  async triggerMessageContent() {
+    mainHandler.contentHandling.clearBodyContent();
+    mainHandler.contentHandling.clearHeadingContent();
+    let event = new CustomEvent("message-page");
+    document.dispatchEvent(event);
   }
 
   async loadChatList() {
@@ -47,17 +56,12 @@ class ChatPage extends DynamicPage {
       this.elem.appendChild(tmp);
       this.userList.push(tmp);
       tmp.onclick = (btn) => {
-        this.chatCache = this.userList[i];
+        sharedChatCache = this.userList[i];
         let evt = new CustomEvent(this.userList[i].id, {detail: btn.currentTarget});
         document.dispatchEvent(evt);
       }
-      document.addEventListener(tmp.id, async (evt) => {
-        mainHandler.contentHandling.clearBodyContent();
-        mainHandler.contentHandling.clearHeadingContent();
-        sharedChatCache = this.chatCache;
-        let event = new CustomEvent("message-page", {detail: tmp});
-        document.dispatchEvent(event);
-      });
+      
+      document.addEventListener(tmp.id, this.triggerMessageContent);
     }
 
     this.elem.style.maxHeight = (this.friendCount * 50) + 20 + "px";
@@ -67,6 +71,5 @@ class ChatPage extends DynamicPage {
 let chatClass = new ChatPage();
 
 document.addEventListener(events.actionBar.chat, () => {
-  mainHandler.contentHandling.purgePageContent();
   chatClass.load();
 });

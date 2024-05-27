@@ -1,5 +1,8 @@
 class PostPage extends DynamicPage {
     async load() {
+        if (!mainGlobalVariables.userData.userLoggedIn) {
+            return;
+        }
         super.load("/post/post");
 
         this.user = null;
@@ -61,6 +64,5 @@ class PostPage extends DynamicPage {
 let postClass = new PostPage();
 
 document.addEventListener(events.actionBar.post, () => {
-    mainHandler.contentHandling.purgePageContent();
     postClass.load();
 });

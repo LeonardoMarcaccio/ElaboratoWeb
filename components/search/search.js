@@ -1,5 +1,8 @@
 class SearchPage extends DynamicPage {
     async load() {
+        if (!mainGlobalVariables.userData.userLoggedIn) {
+            return;
+        }
         if (mainGlobalVariables.buttonData.lastSelection != "search") {
             mainGlobalVariables.buttonData.lastSelection = "search";
             history.pushState({location: events.actionBar.search}, null, "search");
@@ -58,6 +61,5 @@ class SearchPage extends DynamicPage {
 let searchClass = new SearchPage();
 
 document.addEventListener(events.actionBar.search, () => {
-    mainHandler.contentHandling.purgePageContent();
     searchClass.load();
 });
