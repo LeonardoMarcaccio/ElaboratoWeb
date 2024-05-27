@@ -118,7 +118,7 @@
       'Phonenumbers' => $userObj->getPhoneNumbers()];
 
     $target = getUsernameByToken($_COOKIE['token'], $database);
-    $queryString = "UPDATE user SET ";
+    $queryString = "UPDATE user SET  WHERE Username = ?";
     
     foreach ($dbNames as $dbEntry => $dbValue) {
       $queryString .= " ".$dbEntry." = ?";
