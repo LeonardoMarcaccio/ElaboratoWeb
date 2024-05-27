@@ -107,33 +107,39 @@
 
   function updateUser($requestBody, mysqli $database) {
     $userObj = jsonToRegistration($requestBody);
-    $dbNames = ['Email' => $userObj->getEmail(),
-      'FirstName' => $userObj->getFirstName(),
-      'LastName' => $userObj->getLastName(),
-      'Gender' => $userObj->getGender(),
-      'Biography' => $userObj->getBiography(),
-      'PersonalWebsite' => $userObj->getPersonalWebsite(),
-      'Pfp' => $userObj->getPfp(),
-      'Phonenumbers' => $userObj->getPhoneNumbers()];
+    $dbNames = [
+        'Email' => $userObj->getEmail(),
+        'FirstName' => $userObj->getFirstName(),
+        'LastName' => $userObj->getLastName(),
+        'Gender' => $userObj->getGender(),
+        'Biography' => $userObj->getBiography(),
+        'PersonalWebsite' => $userObj->getPersonalWebsite(),
+        'Pfp' => $userObj->getPfp(),
+        'Phonenumbers' => $userObj->getPhoneNumbers(),
+    ];
 
     $target = getUsernameByToken($_COOKIE['token'], $database);
     $queryString = "UPDATE user SET ";
-    
+
     foreach ($dbNames as $dbEntry => $dbValue) {
-      $queryString .= " ".$dbEntry." = ?,";
+        $queryString .= " ".$dbEntry." = ?,";
     }
     $queryString = rtrim($queryString, ',');
-    var_dump($queryString);
+
     $preparedQuery = $database->prepare($queryString." WHERE Username = ?");
-    
-    foreach ($dbNames as $dbEntry => $dbValue) {
-      $preparedQuery->bind_param("s", $dbValue);
+    if ($preparedQuery === false) {
+        throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
     }
-    
-    $preparedQuery->bind_param("s", $target);
-    
+
+    $dbValues = array_values($dbNames);
+    $dbValues[] = $target;
+
+    $types = str_repeat('s', count($dbValues));
+
+    $preparedQuery->bind_param($types, ...$dbValues);
+
     if (!$preparedQuery->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
+        throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
     }
   }
 
