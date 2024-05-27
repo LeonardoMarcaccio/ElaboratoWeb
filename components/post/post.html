@@ -1,5 +1,5 @@
 <link rel='stylesheet' type='text/css' media='screen' href='components/post/post.css'>
-<div class="formpane">
+<div class="formpane" id="create-post">
   <form>
     <label for="community">In which community?</label>
     <select id="communities-options">
@@ -11,5 +11,17 @@
     <label for="post-image">Picture:</label>
     <input id="post-image" type="file" name="postImage" placeholder="Optional">
     <button id="post-post" class="postPost" type="button">Post</button>
+  </form>
+</div>
+
+<div class="formpane" id="create-community">
+  <form>
+    <label for="communityTitle">Name your community:</label>
+    <input id="community-title" type="text" id="communityTitle" name="communityTitle" value="">
+    <label for="communityDesc">Description:</label>
+    <input id="community-desc" type="text" id="communityDesc" name="communityDesc" value="">
+    <label for="community-image">Picture:</label>
+    <input id="community-image" type="file" name="communityImage" placeholder="Optional">
+    <button id="community-create" class="communityCreate" type="button">Create community</button>
   </form>
 </div>

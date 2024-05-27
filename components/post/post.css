@@ -34,3 +34,7 @@ form > button {
     transition: 500ms;
     border-radius: 10px;
 }
+
+#create-community {
+    display: none;
+}

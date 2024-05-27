@@ -698,9 +698,6 @@ function printUserInfo(userInfo) {
 }
 
 function openUserPage(username) {
-  headPageLoader.flushPage();
-  mainPageLoader.flushPage();
-  footPageLoader.flushPage();
   let userInfo = APICalls.getRequests.getUserInfo(username);
   let head = document.createElement("p");
   head.innerText = username;
@@ -737,6 +734,21 @@ class PostBuilder {
     this.IDPrefix = IDPrefix;
     this.defaultColor = "rgb(255, 255, 255)";
     this.clickedColor = "#5DADE2";
+    this.postList = new Array();
+  }
+
+  hideOtherPosts(generatedId) {
+    for (let i in this.postList) {
+      if (this.postList[i].id != generatedId) {
+        this.postList[i].style.display = "none";
+      }
+    }
+  }
+
+  showAllPosts() {
+    for (let i in this.postList) {
+      this.postList[i].style.display = "block";
+    }
   }
 
   async makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
@@ -823,10 +835,11 @@ class PostBuilder {
         }
       };
 
-      userImage.onclick = () => openUserPage(userString);
+      //userImage.onclick = () => openUserPage(userString);
 
       paragraph.onclick = async () => {
         if (paragraph.className == 0) {
+          this.hideOtherPosts(post.id);
           let comments = await APICalls.getRequests.getCommentsRequest(postId, 1, 10);
           comments = comments.response;
           let builder = new CommentBuilder(titleString);
@@ -842,6 +855,7 @@ class PostBuilder {
             container.removeChild(container.lastChild);
             paragraph.className--;
           }
+          this.showAllPosts();
         }
       }
 
@@ -861,6 +875,7 @@ class PostBuilder {
       buttons.appendChild(dislike);
       buttons.appendChild(comment);
       
+      this.postList.push(post);
       return container;
   }
 }
