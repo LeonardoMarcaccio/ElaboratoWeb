@@ -331,11 +331,13 @@ const APICalls = {
       return subCommentRequest;
     },
     editUserRequest: async (updateData) => {
-      let authRequest = await APICalls.postRequests.postDataToApi(
-        APICalls.createApiUrl(APIConstants.apiPages.users),
+      let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      subCommentUrl.searchParams.append("type", "edit");
+      let editUsrResponse = await APICalls.postRequests.postDataToApi(
+        APICalls.createApiUrl(subCommentUrl),
         updateData);
-        APICalls.evaluateResponseCodeAction(authRequest);
-      return authRequest;
+      APICalls.evaluateResponseCodeAction(editUsrResponse);
+      return editUsrResponse;
     },
     sub: async (community) => {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.communities);
