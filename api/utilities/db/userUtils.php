@@ -174,7 +174,7 @@
     $password = mysqli_fetch_assoc($query->get_result());
     if (password_verify($oldPassword, $password)) {
       $query = $database->prepare("UPDATE user SET Password=? WHERE Username=?");
-      $query->bind_param("ss", $newPassword, $username);
+      $query->bind_param("ss", password_hash($newPassword, PASSWORD_DEFAULT), $username);
       if (!$query->execute()) {
         throw getInternalError();
       }
