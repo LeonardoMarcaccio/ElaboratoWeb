@@ -108,7 +108,6 @@
   function updateUser($requestBody, mysqli $database) {
     $userObj = jsonToRegistration($requestBody);
     $dbNames = ['Email' => $userObj->getEmail(),
-      'Password' => $userObj->getPassword(),
       'FirstName' => $userObj->getFirstName(),
       'LastName' => $userObj->getLastName(),
       'Gender' => $userObj->getGender(),
@@ -118,7 +117,7 @@
       'Phonenumbers' => $userObj->getPhoneNumbers()];
 
     $target = getUsernameByToken($_COOKIE['token'], $database);
-    $queryString = "UPDATE user SET  WHERE Username = ?";
+    $queryString = "UPDATE user SET ";
     
     foreach ($dbNames as $dbEntry => $dbValue) {
       $queryString .= " ".$dbEntry." = ?";
@@ -132,30 +131,6 @@
     
     $preparedQuery->bind_param("s", $target);
     
-    if (!$preparedQuery->execute()) {
-      throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
-    }
-  }
-
-  function updateUserOneQuery($requestBody, mysqli $database) {
-    $userObj = jsonToRegistration($requestBody);
-    $target = getUsernameByToken($_COOKIE['token'], $database);
-
-    $preparedQuery = $database->prepare(
-      "UPDATE user SET Email = ?, Password = ?, FirstName = ?, LastName = ?, Gender = ?, Biography = ?, PersonalWebsite = ?, Pfp = ?,  PhoneNumbers = ? WHERE Username = ?");
-    $preparedQuery->bind_param(
-      "ssssssssss",
-      $userObj->getEmail(),
-      $userObj->getPassword(),
-      $userObj->getFirstName(),
-      $userObj->getLastName(),
-      $userObj->getGender(),
-      $userObj->getBiography(),
-      $userObj->getPersonalWebsite(),
-      $userObj->getPfp(),
-      $userObj->getPhoneNumbers(),
-      $target
-    );
     if (!$preparedQuery->execute()) {
       throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
     }
@@ -183,6 +158,26 @@
         $resultingUser['PersonalWebsite'],
         $resultingUser['Pfp'],
         $resultingUser['Phonenumbers']);
+    } else {
+      throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
+    }
+  }
+
+  function passwordUpdate($oldPassword, $newPassword, mysqli $database) {
+    $username = getUsernameByToken($_COOKIE, $database);
+    $query = $database->prepare("SELECT Password FROM user WHERE Username=?");
+    $query->bind_param("s", $username);
+    if (!$query->execute()) {
+      throw getInternalError();
+    }
+
+    $password = mysqli_fetch_assoc($query->get_result());
+    if (password_verify($oldPassword, $password)) {
+      $query = $database->prepare("UPDATE user SET Password=? WHERE Username=?");
+      $query->bind_param("ss", $newPassword, $username);
+      if (!$query->execute()) {
+        throw getInternalError();
+      }
     } else {
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
