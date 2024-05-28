@@ -909,7 +909,7 @@ class CommunityBuilder {
       this.IDPrefix = IDPrefix;
   }
   
-  makeCommunity(titleString, descString, commImg) {
+  async makeCommunity(titleString, descString, commImg) {
       let community = document.createElement("article");
       let head = document.createElement("div");
       let image = document.createElement("img");
@@ -929,9 +929,9 @@ class CommunityBuilder {
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
-      //  Need to test this with login
-      //follow.innerText = (await APICalls.getRequests.isFollowing(titleString)).response[0] ? "Unfollow" : "Follow";
-      follow.innerText = "Follow";
+      let isFollow = await APICalls.getRequests.isFollowing(titleString);
+      isFollow = isFollow.response[0];
+      follow.innerText = isFollow ? "Unfollow" : "Follow";
       desc.innerText = descString;
       desc.style.textAlign = "left";
       
@@ -943,13 +943,13 @@ class CommunityBuilder {
 
       desc.onclick = async () => {
         if (countPosts == 0) {
-          let posts = await APICalls.getRequests.getPostsRequest(titleString, 0, 10);
+          let posts = await APICalls.getRequests.getPostsRequest(titleString, 1, 10);
           posts = posts.response;
           let builder = new PostBuilder("search");
           for (let i in posts) {
             posts[i];
-            community.appendChild(
-              builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].image, posts[i].postId));
+            let tmp = await builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].image, posts[i].id);
+            community.appendChild(tmp);
           countPosts++;
           }
         } else {
@@ -962,8 +962,10 @@ class CommunityBuilder {
       follow.onclick = async () => {
         if (follow.innerText == "Follow") {
           await APICalls.postRequests.sub(titleString);
+          follow.innerText = "Unfollow";
         } else {
           await APICalls.postRequests.unsub(titleString);
+          follow.innerText = "Follow";
         }
       };
 
