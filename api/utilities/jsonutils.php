@@ -15,6 +15,7 @@ use function PHPSTORM_META\type;
   define("USER_FRIEND_PENDING", 0);
   define("USER_STRANGER", 0);
   define("USER_CONTENT_FOLDER", __DIR__ . "/../../media/users/");
+  define("RELATIVE_USER_CONTENT_FOLDER", "/media/users/");
   define("SUPPORTED_IMAGE_FORMATS", array("jpg", "png", "gif", "webp"));
 
   function getInvalidDataError() {
@@ -171,7 +172,7 @@ use function PHPSTORM_META\type;
         $fullFilePath = USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension();
       } while (file_exists($fullFilePath));
       file_put_contents($fullFilePath, $decodedImage);
-      return $fullFilePath;
+      return RELATIVE_USER_CONTENT_FOLDER . $fileId . "." . $image->getExtension();
     }
     return null;
   }
