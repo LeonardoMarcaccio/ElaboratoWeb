@@ -2,7 +2,7 @@
 <div class="generic-pane" id="page-settings">
   <form class="generic-form" id="settings-accountactions-form">
     <fieldset>
-      <legend>Edit Account</legend>
+      <legend>Quick Actions</legend>
       <button name="settings-accountactions-logout" type="submit">Log out</button>
     </fieldset>
   </form>
@@ -33,11 +33,13 @@
     <fieldset>
       <legend>Danger Zone</legend>
       <label for="settings-dangerzone-password">Edit Password</label>
-      <input type="password" name="settings-dangerzone-old-password" placeholder="Insert old password">
+      <input type="password" id="settings-dangerzone-old-password" name="settings-dangerzone-old-password" placeholder="Insert old password">
       <label for="settings-dangerzone-password">New password</label>
-      <input type="password" name="settings-dangerzone-password" placeholder="Insert new password">
-      <input type="password" name="settings-dangerzone-password-repeat" placeholder="Repeat new password">
+      <input type="password" id="settings-dangerzone-password" name="settings-dangerzone-password" placeholder="Insert new password">
+      <input type="password" id="settings-dangerzone-password-repeat" name="settings-dangerzone-password-repeat" placeholder="Repeat new password">
       <button name="settings-dangerzone-submit-password" type="submit">Confirm action</button>
+      <div class="generic-warningbox-inactive" id="settings-dangerzone-warningbox">
+      </div>
     </fieldset>
   </form>
 </div>
