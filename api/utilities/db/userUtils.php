@@ -1,4 +1,7 @@
 <?php
+  define("PASSWORD_UPDATE_ERROR_CODE", 401);
+  define("PASSWORD_UPDATE_ERROR", "An error as occured during password update");
+
   require_once "generalUtils.php";                                    //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
 
@@ -170,7 +173,10 @@
     }
   }
 
-  function passwordUpdate($oldPassword, $newPassword, mysqli $database) {
+  function passwordUpdate($requestBody, mysqli $database) {
+    $data = json_decode($requestBody);
+    $oldPassword = $data["oldPassword"];
+    $newPassword = $data["newPassword"];
     $username = getUsernameByToken($_COOKIE, $database);
     $query = $database->prepare("SELECT Password FROM user WHERE Username=?");
     $query->bind_param("s", $username);
@@ -186,6 +192,6 @@
         throw getInternalError();
       }
     } else {
-      throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
+      throw new ApiError(PASSWORD_UPDATE_ERROR, PASSWORD_UPDATE_ERROR_CODE);
     }
   }
