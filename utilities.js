@@ -727,12 +727,16 @@ function printUserInfo(userInfo) {
   return all;
 }
 
-function openUserPage(username) {
-  let userInfo = APICalls.getRequests.getUserInfo(username);
+async function openUserPage(username) {
+  mainGlobalVariables.page.mainContentHeading.clearContent();
+  mainGlobalVariables.page.mainContentPage.clearContent();
+  mainGlobalVariables.page.mainContentFooting.clearContent();
+  let userInfo = await APICalls.getRequests.getUserInfo(username);
+  userInfo = userInfo.response;
   let head = document.createElement("p");
   head.innerText = username;
-  mainGlobalVariables.page.mainContentHeading.appendChild(head);
-  mainGlobalVariables.page.mainContentPage.appendChild(printUserInfo(userInfo));
+  mainGlobalVariables.page.mainContentHeading.addContent(head);
+  mainGlobalVariables.page.mainContentPage.addContent(printUserInfo(userInfo));
   
   if (userInfo.friendship != "self") {
     let foot = document.createElement("div");
@@ -751,7 +755,7 @@ function openUserPage(username) {
       footButton.innerText = "Friend request sent";
     }
     foot.appendChild(footButton);
-    mainGlobalVariables.page.mainContentFooting.appendChild(foot);
+    mainGlobalVariables.page.mainContentFooting.addContent(foot);
   }
 }
 
@@ -865,7 +869,7 @@ class PostBuilder {
         }
       };
 
-      //userImage.onclick = () => openUserPage(userString);
+      userImage.onclick = async () => openUserPage(userString);
 
       paragraph.onclick = async () => {
         if (paragraph.className == 0) {
