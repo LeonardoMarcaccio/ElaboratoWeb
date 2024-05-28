@@ -1,6 +1,7 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/db/userUtils.php";  //NOSONAR
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/notify.php";  //NOSONAR
 
     /**
      * Send a message to the specified User
@@ -13,6 +14,7 @@
         if (!$statement->execute()) {
             throw getInternalError();
         }
+        notifyMessage($username, $friendUsername, com_create_guid(), $database);
     }
 
     /**

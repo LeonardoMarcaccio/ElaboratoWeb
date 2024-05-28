@@ -10,9 +10,6 @@
         if (!$statement->execute()) {
             throw new Exception("Database error: " . $statement->error);
         }
-    
-        // Close the statement
-        $statement->close();
     }
     
 
