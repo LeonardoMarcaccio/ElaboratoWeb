@@ -106,8 +106,9 @@ class ProfilePage extends DynamicPage {
       this.getPhoneNumberTitle().style.display = "none";
       this.getPhoneNumberText().style.display = "none";
     }
-    this.getUserImage().src = genericUtilities.setIfNotNull(window.location.protocol + "//" + window.location.hostname + "/" + this.userData.pfp,
-      window.location.protocol + "//" + window.location.hostname + "/media/users/placeholder.webp");
+    this.getUserImage().src = window.location.protocol
+      + "//" + window.location.hostname
+      + genericUtilities.setIfNotNull(this.userData.pfp, "/media/users/placeholder.webp");
   }
 }
 
