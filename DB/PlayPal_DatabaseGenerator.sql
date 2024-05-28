@@ -255,21 +255,21 @@ INSERT INTO `friendship`(`Fri_Username`, `Username`) VALUES ('TestUser4','TestUs
 
 -- Message Table
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser1','TestUser2','2024-2-5 15:00:00','Lorem Ipsum');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser1','TestUser2','2024-02-05 15:00:00','Lorem Ipsum');
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser2','TestUser1','2024-2-5 15:01:00','Ipsum Lorem');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser2','TestUser1','2024-02-05 15:01:00','Ipsum Lorem');
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser1','TestUser2','2024-2-6 15:10:00','Just bought a new game!');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser1','TestUser2','2024-02-06 15:10:00','Just bought a new game!');
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser1','TestUser2','2024-2-6 15:11:00','Want to play?');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser1','TestUser2','2024-02-06 15:11:00','Want to play?');
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser2','TestUser1','2024-2-6 15:15:00','Sure!');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser2','TestUser1','2024-02-06 15:15:00','Sure!');
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser2','TestUser4','2024-2-6 22:20:15',"I'm playing with Jhon wanna join?");
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser2','TestUser4','2024-02-06 22:20:15',"I'm playing with Jhon wanna join?");
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser4','TestUser2','2024-2-6 22:30:47','Sure!');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser4','TestUser2','2024-02-06 22:30:47','Sure!');
 
-INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser3','TestUser4','2024-2-6 23:30:00','Heyo!');
+INSERT INTO `message`(`Username`, `Fri_Username`, `Timestamp`, `Text`) VALUES ('TestUser3','TestUser4','2024-02-06 23:30:00','Heyo!');
 
 -- Community Table
 
