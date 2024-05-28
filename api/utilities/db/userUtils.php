@@ -1,6 +1,8 @@
 <?php
   define("PASSWORD_UPDATE_ERROR_CODE", 401);
   define("PASSWORD_UPDATE_ERROR", "An error as occured during password update");
+  define("PASSWORD_CHECK_ERROR_CODE", 401);
+  define("PASSWORD_CHECK_ERROR", "Wrong password was sent");
 
   require_once "generalUtils.php";                                    //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
@@ -170,6 +172,22 @@
         $resultingUser['Phonenumbers']);
     } else {
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
+    }
+  }
+
+  function testPassword($requestBody, mysqli $database) {
+    $data = json_decode($requestBody);
+    $toCheck = $data["password"];
+    $username = getUsernameByToken($_COOKIE, $database);
+    
+    $query = $database->prepare("SELECT Password FROM user WHERE Username=?");
+    $query->bind_param("s", $username);
+    if (!$query->execute()) {
+      throw getInternalError();
+    }
+    $password = mysqli_fetch_assoc($query->get_result());
+    if (!password_verify($toCheck, $password)) {
+      throw new ApiError(PASSWORD_CHECK_ERROR, PASSWORD_CHECK_ERROR_CODE);
     }
   }
 

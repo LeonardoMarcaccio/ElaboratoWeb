@@ -16,7 +16,7 @@
           $result = userGetRequest($database, $user);
           break;
           default:
-          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
         }
         exit(generateJSONResponse(200, "Ok", $result));
     } else {
@@ -44,8 +44,14 @@
       case "edit":
         updateUser(file_get_contents("php://input"), $database);
       break;
+      case "testPassword":
+        testPassword(file_get_contents("php://input"), $database);
+      break;
+      case "editPassword":
+        passwordUpdate(file_get_contents("php://input"), $database);
+      break;
       default:
-        throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
     }
     return null;
   }
