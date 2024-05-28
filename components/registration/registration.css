@@ -1,14 +1,11 @@
 #registration-pane {
-  display: flex;
-  /*flex-direction: column;*/
-  justify-content: space-evenly;
-  color: black;
-  width: 100%;
-  height: 85%;
+  max-width: 350px;
 }
+#registration-pane > #forms-container {
+  width: 100%;
+}
+
 #forms-container {
-  box-shadow: 0px 0px 14px 30px #E0DFD5;
-  background-color: #E0DFD5;
   max-width: 350px;
   margin-top: 8vh;
   flex-grow: 1;
@@ -16,7 +13,6 @@
 
 #forms-container {
   display: flex;
-  overflow-y: auto;
   flex-direction: column;
   justify-content: space-evenly;
 }
@@ -36,10 +32,6 @@
   margin: 3px 0px;
   transition: 500ms;
   align-self: center;
-}
-
-#forms-container > form > div > input:focus {
-  border-radius: 0;
 }
 
 #forms-container > form > div > input,textarea {

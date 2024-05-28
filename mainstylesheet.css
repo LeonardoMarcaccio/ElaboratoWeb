@@ -24,6 +24,18 @@
   border-radius: 3px;
 }
 
+input,textarea {
+  margin: 3px 0px;
+  border-radius: 10px;
+  background-color: #E8E9EB;
+  min-height: 20px;
+  border: 1px solid black;
+  transition: 500ms;
+}
+input:focus {
+  border-radius: 0;
+}
+
 html, body {
   margin: 0;
   height: 100%;
@@ -67,7 +79,7 @@ button {
 .generic-pane {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: stretch;
   color: black;
   background-color: #E0DFD5;
   flex-grow: 1;
@@ -124,7 +136,6 @@ button {
 }
 
 #content-shaper {
-  /*height: 100%;*/
   display: flex;
   flex-flow: row-reverse;
   justify-content: space-evenly;
