@@ -14,7 +14,7 @@
         if (!$statement->execute()) {
             throw getInternalError();
         }
-        notifyMessage($username, $friendUsername, com_create_guid(), $database);
+        notifyMessage($username, $friendUsername, uniqid(), $database);
     }
 
     /**

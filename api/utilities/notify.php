@@ -3,12 +3,13 @@
 
     function notifyMessage($from, $to, $code, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
-        $statement = $database->prepare("INSERT INTO notification (Username, code, message) VALUES (?, ?, CONCAT('You received one new message from ', ?))");
-        $statement->bind_param("sss", $to, $code, $from);
+        $statement = $database->prepare("INSERT INTO notification (Username, Code, Text) VALUES (?, ?, ?)");
+        $message = "You received one new message from ".$from;
+        $statement->bind_param("sss", $to, $code, $message);
     
         // Execute the statement and check for errors
         if (!$statement->execute()) {
-            throw new Exception("Database error: " . $statement->error);
+            throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
         }
     }
     
@@ -20,16 +21,15 @@
             throw getInternalError();
         }
 
-        $statement->bind_result($users);
-        $statement->fetch();
+        $users = $statement->get_result();
         if (mysqli_num_rows($users) == 0) {
             throw getInternalError();
         }
 
-        $username = mysqli_fetch_assoc($users);
-        while($username !== null) {
-            $statement = $database->prepare("INSERT INTO notification VALUES(?, ?, A new post was published in ?");
-            $statement->bind_param("sss", $username, $code, $community);
+        while($username = mysqli_fetch_assoc($users)) {
+            $statement = $database->prepare("INSERT INTO notification (Username, Code, Text) VALUES(?, ?, ?)");
+            $message = "A new post was published in ".$community;
+            $statement->bind_param("sss", $username["Username"], $code, $message);
             if (!$statement->execute()) {
                 throw getInternalError();
             }

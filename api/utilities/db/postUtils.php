@@ -1,5 +1,6 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/utilities/notify.php";   //NOSONAR
 
     /**
      * Create a new Post in the targeted Community
@@ -16,6 +17,7 @@
         if (!$statement->execute()) {
             throw getInternalError();
         }
+        notifyPost($targetCommunity, uniqid(), $database);
     }
 
     /**

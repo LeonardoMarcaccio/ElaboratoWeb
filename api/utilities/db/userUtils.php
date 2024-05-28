@@ -60,7 +60,7 @@
     }
     return $friendsArray;
     */
-    return mysqli_fetch_assoc($query->get_result());;
+    return mysqli_fetch_assoc($query->get_result());
   }
 
   function areFriends($queryingUser, $queriedUser, mysqli $database) {
