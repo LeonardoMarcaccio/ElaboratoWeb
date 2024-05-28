@@ -1,4 +1,9 @@
 class SettingsPage extends DynamicPage {
+  constructor() {
+    super();
+    this.passwordMatchError = false;
+    this.oldPasswordMatchError = false;
+  }
   async load() {
     if (mainGlobalVariables.buttonData.lastSelection != "settings") {
       mainGlobalVariables.buttonData.lastSelection = "settings";
@@ -16,6 +21,18 @@ class SettingsPage extends DynamicPage {
   }
   getDangerZoneForm() {
     return this.lazyNodeIdQuery("settings-dangerzone-form", true);
+  }
+  getDangerZoneWarningBox() {
+    return this.lazyNodeIdQuery("settings-dangerzone-warningbox", true);
+  }
+  getDangerZoneOldPasswordField() {
+    return this.lazyNodeIdQuery("settings-dangerzone-old-password", true);
+  }
+  getDangerZoneNewPasswordField() {
+    return this.lazyNodeIdQuery("settings-dangerzone-password", true);
+  }
+  getDangerZoneNewPasswordRepeatField() {
+    return this.lazyNodeIdQuery("settings-dangerzone-password-repeat", true);
   }
   
   bindEventListeners() {
@@ -64,6 +81,60 @@ class SettingsPage extends DynamicPage {
     };
     this.getDangerZoneForm().onsubmit = async (event) => {
       event.preventDefault();
+      let passwordChangeData = new FormData(this.getDangerZoneForm());
+      let oldPassword = passwordChangeData.get("settings-dangerzone-old-password");
+      let newPassword = passwordChangeData.get("settings-dangerzone-password");
+      let newPasswordRepeat = passwordChangeData.get("settings-dangerzone-password-repeat");
+      let preventFurtherExec = false;
+      if (oldPassword == "") {
+        this.getDangerZoneOldPasswordField().classList.add("wrong");
+        preventFurtherExec = true;
+      } else {
+        this.getDangerZoneOldPasswordField().classList.remove("wrong");
+      }
+      if (newPassword == "") {
+        this.getDangerZoneNewPasswordField().classList.add("wrong");
+        preventFurtherExec = true;
+      } else {
+        this.getDangerZoneNewPasswordField().classList.remove("wrong");
+      }
+      if (newPasswordRepeat == "") {
+        this.getDangerZoneNewPasswordRepeatField().classList.add("wrong");
+        preventFurtherExec = true;
+      } else {
+        this.getDangerZoneNewPasswordRepeatField().classList.remove("wrong");
+      }
+      if (preventFurtherExec) {
+        return;
+      }
+      if ((newPassword != newPasswordRepeat) && !this.passwordMatchError) {
+        this.passwordMatchError = true;
+        this.passwordMatchErrorParagraph = document.createElement("p");
+        this.passwordMatchErrorParagraph.innerHTML = "Passwords do now match!"
+        this.getDangerZoneWarningBox().appendChild(this.passwordMatchErrorParagraph);
+        this.getDangerZoneWarningBox().classList.add("generic-warningbox");
+        this.getDangerZoneWarningBox().classList.remove("generic-warningbox-inactive");
+      } else if ((newPassword == newPasswordRepeat) && this.passwordMatchError) {
+        this.passwordMatchError = false;
+        this.getDangerZoneWarningBox().removeChild(this.passwordMatchErrorParagraph);
+      }
+      let passwordTestResult = await APICalls.postRequests.sendTestPassword(oldPassword)
+      if (!passwordTestResult && !this.oldPasswordMatchError) {
+        this.oldPasswordMatchError = true;
+        this.oldPasswordErrorParagraph = document.createElement("p");
+        this.oldPasswordErrorParagraph.innerHTML = "Old password is incorrect!"
+        this.getDangerZoneWarningBox().appendChild(this.oldPasswordErrorParagraph);
+        this.getDangerZoneWarningBox().classList.add("generic-warningbox");
+        this.getDangerZoneWarningBox().classList.remove("generic-warningbox-inactive");
+      } else if (passwordTestResult && this.oldPasswordMatchError) {
+        this.oldPasswordMatchError = false;
+        this.getDangerZoneWarningBox().removeChild(this.oldPasswordErrorParagraph);
+      }
+      if (this.getDangerZoneWarningBox().childNodes.length == 0) {
+        this.getDangerZoneWarningBox().style.visibility = "hidden";
+        this.getDangerZoneWarningBox().classList.remove("generic-warningbox");
+        this.getDangerZoneWarningBox().classList.add("generic-warningbox-inactive");
+      }
     };
   }
 }
