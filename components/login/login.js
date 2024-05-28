@@ -1,6 +1,7 @@
 class LoginPage extends DynamicPage {
   constructor() {
     super();
+    this.pageId = events.userSpecific.login;
     this.ready = false;
   }
   async load() {
@@ -21,6 +22,7 @@ class LoginPage extends DynamicPage {
     this.bindListeners();
     this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
     this.ready = true;
+    mainGlobalVariables.page.currentPageLoc = this.pageId;
   }
   reset() {
     super.reset();
@@ -80,6 +82,9 @@ let loginClass = new LoginPage();
 
 document.addEventListener(events.apiActions.authFailure, () => {
   mainHandler.contentHandling.purgePageContent();
+  if (mainGlobalVariables.page.currentPageLoc == events.userSpecific.register) {
+    return;
+  }
   loginClass.load();
 });
 

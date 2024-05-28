@@ -1,4 +1,8 @@
 class RegistrationPage extends DynamicPage {
+  constructor() {
+    super();
+    this.pageId = events.userSpecific.register;
+  }
   async load() {
     if (mainGlobalVariables.buttonData.lastSelection != "register") {
       mainGlobalVariables.buttonData.lastSelection = "register";
@@ -29,6 +33,7 @@ class RegistrationPage extends DynamicPage {
     this.addInfoButton = null;
 
     this.bindListeners();
+    mainGlobalVariables.page.currentPageLoc = this.pageId;
   }
 
   getRegistrationForm() {
@@ -180,20 +185,6 @@ class RegistrationPage extends DynamicPage {
       } catch (e) {
         console.warn("Could not load Image! Reason:\n" + e);
       }
-      console.log(
-        JSONUtils.registration.buildRegistration(
-          this.username,
-          this.email,
-          this.password,
-          this.firstname,
-          this.lastname,
-          this.gender,
-          this.biography,
-          this.personalwebsite,
-          pfp,
-          this.phonenumber
-        )
-      );
     
       let response = await APICalls.postRequests.sendAuthentication(
         JSONUtils.mapJsonVals(
@@ -211,8 +202,6 @@ class RegistrationPage extends DynamicPage {
           )
         )
       );
-      
-      console.log(response);
     
       switch (response.code) {
         case 401:
