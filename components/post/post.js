@@ -6,10 +6,12 @@ class PostPage extends DynamicPage {
         super.load("/post/post");
 
         this.user = null;
-        this.postButton = null;
         this.postContent = null;
         this.postTitle = null;
         this.postImage = null;
+        this.communityTitle = null;
+        this.communityDesc = null;
+        this.communityImage = null;
         this.toggleButtons = null;
         this.togglePost = null;
         this.toggleCommunity = null;
@@ -22,8 +24,8 @@ class PostPage extends DynamicPage {
         return this.lazyNodeIdQuery("communities-options", true);
     }
 
-    getPostButton() {
-        return this.lazyNodeIdQuery("post-post", true);
+    getPostDiv() {
+        return this.lazyNodeIdQuery("create-post", true);
     }
 
     getPostContent() {
@@ -38,8 +40,8 @@ class PostPage extends DynamicPage {
         return this.lazyNodeIdQuery("post-image", true);
     }
 
-    getCommunityButton() {
-        return this.lazyNodeIdQuery("community-create", true);
+    getCommunityDiv() {
+        return this.lazyNodeIdQuery("create-community", true);
     }
 
     getCommunityTitle() {
@@ -55,11 +57,11 @@ class PostPage extends DynamicPage {
     }
 
     getPostForm() {
-        return this.lazyNodeIdQuery("create-post", true);
+        return this.lazyNodeIdQuery("post-form", true);
     }
 
     getCommunityForm() {
-        return this.lazyNodeIdQuery("create-community", true);
+        return this.lazyNodeIdQuery("community-form", true);
     }
 
     setToggleButtons() {
@@ -90,10 +92,32 @@ class PostPage extends DynamicPage {
         this.communityImage = this.getCommunityImage();
     }
 
+    async imgToJSON(imageFile) {
+        let reader = new FileReader();
+        let rfile = new Promise((accepted, rejected) => {
+          reader.onload = () => {
+            accepted(reader.result);
+          }
+          reader.onerror = () => {
+            rejected(new Error("Could not read file!"));
+          }
+        });
+        reader.readAsBinaryString(imageFile);
+        let readFile = await rfile;
+  
+        let encodedProfilePicture = btoa(readFile);
+        let profilePictureExtension = imageFile.name.split(".")[1];
+  
+        return {
+            "image":encodedProfilePicture != "" ? encodedProfilePicture : null,
+            "format":encodedProfilePicture != "" ? profilePictureExtension : null
+        };
+    }
+
     async bindListeners() {
         this.user = await APICalls.getRequests.getUserInfo();
-        this.user = this.user.response;
-        let choices = await APICalls.getRequests.getSubbedCommunitiesRequest(this.user.username);
+        this.user = this.user.response.username;
+        let choices = await APICalls.getRequests.getSubbedCommunitiesRequest(this.user);
         choices = choices.response;
         let select = this.getOptions();
         for (let i in choices) {
@@ -102,31 +126,35 @@ class PostPage extends DynamicPage {
             select.appendChild(tmp);
         }
     
-        this.getPostButton().onclick = async () => {
+        this.getPostForm().onsubmit = async (event) => {
+            event.preventDefault();
             this.setPostElements();
-            await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "image", "name", "username"],
-            ["", "", this.postContent.innerText, 0, this.postTitle.innerText, this.postImage.innerText, select.value, user]),
-            select.innerText);
+            let picture = await this.imgToJSON(this.postImage.files[0]);
+            await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "postImage", "name", "username"],
+            ["", "", this.postContent.value, 0, this.postTitle.value, picture, select.value, this.user]),
+            select.value);
         }
 
-        this.getCommunityButton().onclick = async () => {
+        this.getCommunityForm().onsubmit = async (event) => {
+            event.preventDefault();
             this.setCommunityElements();
-            await APICalls.postRequests.sendCommunityRequest(JSONBuilder.build(["Name", "Image", "Description", "Username"],
-            [this.communityTitle.innerText, this.communityImage.innerText, this.communityDesc.innerText, user]));
+            let picture = await this.imgToJSON(this.communityImage.files[0]);
+            await APICalls.postRequests.sendCommunityRequest(JSONBuilder.build(["name", "communityImage", "description"],
+            [this.communityTitle.value, picture, this.communityDesc.value]));
         }
 
         this.togglePost.onclick = () => {
             this.togglePost.disabled = true;
             this.toggleCommunity.disabled = false;
-            this.getCommunityForm().style.display = "none";
-            this.getPostForm().style.display = "flex";
+            this.getCommunityDiv().style.display = "none";
+            this.getPostDiv().style.display = "flex";
         }
 
         this.toggleCommunity.onclick = () => {
             this.togglePost.disabled = false;
             this.toggleCommunity.disabled = true;
-            this.getPostForm().style.display = "none";
-            this.getCommunityForm().style.display = "flex";
+            this.getPostDiv().style.display = "none";
+            this.getCommunityDiv().style.display = "flex";
         }
     }
 }

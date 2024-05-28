@@ -6,9 +6,10 @@
      * Send a message to the specified User
      */
     function createMessage($friendUsername, $content, mysqli $database) {
+        $message = jsonToMessage($content);
         $username = getUsernameByToken($_COOKIE['token'], $database);
         $statement = $database->prepare("INSERT INTO message VALUES(?, ?, NOW(), ?)");
-        $statement->bind_param("sss", $username, $friendUsername, $content);
+        $statement->bind_param("sss", $username, $friendUsername, $message);
         if (!$statement->execute()) {
             throw getInternalError();
         }
@@ -18,8 +19,7 @@
      * Return the chat between two users
      */
     function getChat($friendUsername, $pages, $maxPerPage, mysqli $database) {
-        $username = "TestUser1";
-        //getUsernameByToken($_COOKIE['token'], $database);
+        $username = getUsernameByToken($_COOKIE['token'], $database);
         $n = $pages * $maxPerPage;
         $statement = $database->prepare(
             "SELECT * FROM message

@@ -100,6 +100,16 @@ use function PHPSTORM_META\type;
       throw getInvalidDataError();
     }
   }
+
+  function jsonToMessage($jsonString) {
+    $assArray = json_decode($jsonString, true);
+    if ($assArray !== null) {
+      return attemptValExtraction($assArray, 'message');
+    } else {
+      throw getInvalidDataError();
+    }
+  }
+
     
   function generateJSONResponse($code, $message, $data = null, $dataName = "response") {
     $jsonObject = new stdClass();

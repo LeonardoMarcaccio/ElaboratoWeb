@@ -29,7 +29,7 @@ class MessagePage extends DynamicPage {
 
         form.onsubmit = async (event) => {
             event.preventDefault();
-            await APICalls.postRequests.sendMessageRequest(this.chatCache.textContent, bar.value);
+            await APICalls.postRequests.sendMessageRequest(this.chatCache.textContent, JSONBuilder.build(["message"],[bar.value]));
             let tmp = document.createElement("p");
             tmp.textContent = bar.value;
             tmp.className = "message-sent";
