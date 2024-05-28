@@ -1,8 +1,10 @@
 <link rel='stylesheet' type='text/css' media='screen' href='components/registration/registration.css'>
 <div class="generic-pane" id="registration-pane">
-  <div id="forms-container">
+  <div class="formpane" id="forms-container">
+    <h1>PlayPal</h1>
+    <h2>Register</h2>
     <form id="registration-form" action="">
-      <div id="registration-essential">
+      <fieldset id="registration-essential">
         <label for="registration-username">Username*</label>
         <input id="registration-username" type="text" name="registration-username" placeholder="username" required autocomplete="on">
         <p class="essentialRegistrationError" id="registration-username-specialchar-error">Username must not contain special characters and must be less than 50 characters long</p>
@@ -16,8 +18,8 @@
         <label for="registration-password-retype">Re-type password*</label>
         <input id="registration-password-retype" type="password" name="registration-password-retype" placeholder="retype password" required="required">
         <p class="essentialRegistrationError" id="registration-password-retype-error">Paswords must match</p>
-      </div>
-      <div id="registration-non-essential">
+      </fieldset>
+      <fieldset id="registration-non-essential">
         <label for="registration-firstname">First Name:</label>
         <input id="registration-firstname" type="text" name="registration-firstname" placeholder="your real name">
         <label for="registration-lastname">Last Name:</label>
@@ -32,7 +34,7 @@
         <input id="registration-profilepicture" type="file" name="registration-profilepicture" placeholder="username">
         <label for="registration-phonenumber">Phone number:</label>
         <input id="registration-phonenumber" type="text" name="registration-phonenumber" placeholder="your phone number">
-      </div>
+      </fieldset>
       <div id="registration-selectionbar">
         <button id="registration-send-data" type="submit">Register</button>
         <button id="registration-show-non-essential" type="button">Add more info</button>

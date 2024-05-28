@@ -7,7 +7,7 @@
 
 #forms-container {
   max-width: 350px;
-  margin-top: 8vh;
+  margin-top: 0;
   flex-grow: 1;
 }
 
@@ -16,9 +16,10 @@
   flex-direction: column;
   justify-content: space-evenly;
 }
-#forms-container>form>div {
+#forms-container>form>div,fieldset {
   display: flex;
   flex-direction: column;
+  border: none;
 }
 #forms-container > form > #registration-non-essential {
   display: none;
@@ -28,13 +29,13 @@
   margin-bottom: 5vh;
 }
 
-#forms-container > form > div > * {
+#forms-container > form > fieldset > * {
   margin: 3px 0px;
   transition: 500ms;
   align-self: center;
 }
 
-#forms-container > form > div > input,textarea {
+#forms-container > form > fieldset > input,textarea {
   width: 80%;
   margin: 3px 0px;
   border-radius: 10px;
@@ -44,7 +45,7 @@
   transition: 500ms;
 }
 
-#forms-container > form > div > textarea {
+#forms-container > form > fieldset > textarea {
   resize: none;
 }
 
@@ -55,7 +56,7 @@
 }
 
 #registration-selectionbar {
-  text-align: center;
+  align-items: center;
 }
 
 #registration-selectionbar > button {
