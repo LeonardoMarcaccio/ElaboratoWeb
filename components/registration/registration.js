@@ -176,7 +176,7 @@ class RegistrationPage extends DynamicPage {
     
       let pfp = null;
       try {
-        pfp = await JSONUtils.registration.imgToJSON(profilePicture);
+        pfp = await JSONUtils.registration.imgToJSON(this.profilePicture);
       } catch (e) {
         console.warn("Could not load Image! Reason:\n" + e);
       }
@@ -190,7 +190,7 @@ class RegistrationPage extends DynamicPage {
           this.gender,
           this.biography,
           this.personalwebsite,
-          this.pfp,
+          pfp,
           this.phonenumber
         )
       );
@@ -206,7 +206,7 @@ class RegistrationPage extends DynamicPage {
             this.gender,
             this.biography,
             this.personalwebsite,
-            this.pfp,
+            pfp,
             this.phonenumber
           )
         )
@@ -279,7 +279,7 @@ class RegistrationPage extends DynamicPage {
       this.emailError();
     }
     if (!evaluationJson.passwordValidityReport.allTestsPassed) {
-      this.passwordError();
+      this.passwdError();
     }
   }
   
@@ -307,7 +307,7 @@ class RegistrationPage extends DynamicPage {
     this.getEmailTakenError().style.display = "block";
   }
   
-  passwordError() {
+  passwdError() {
     this.getPassword().classList.add("wrong");
     this.getPasswordError().style.display = "block";
   }

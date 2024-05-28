@@ -108,7 +108,7 @@ class ProfilePage extends DynamicPage {
     }
     this.getUserImage().src = window.location.protocol
       + "//" + window.location.hostname
-      + genericUtilities.setIfNotNull(this.userData.pfp, "/media/users/placeholder.webp");
+      + genericUtilities.setIfNotNull("/"+ this.userData.pfp, "/media/users/placeholder.webp");
   }
 }
 
