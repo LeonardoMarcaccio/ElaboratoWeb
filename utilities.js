@@ -330,6 +330,16 @@ const APICalls = {
       let subCommentRequest = await APICalls.postRequests.postDataToApi(subCommentUrl, subcommentData);
       return subCommentRequest;
     },
+    sendTestPassword: async (password) => {
+      let passwordTestUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      passwordTestUrl.searchParams.append("type", "testpassword");
+      let passwordTestResponse = await APICalls.postRequests.postDataToApi(
+        passwordTestUrl, JSONUtils.generic.passwordTestForm(password));
+      if (passwordTestResponse.code == 200) {
+        return true;
+      }
+      return false;
+    },
     editUserRequest: async (updateData) => {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       subCommentUrl.searchParams.append("type", "edit");
@@ -491,6 +501,14 @@ const JSONUtils = {
       }
     } else {
       return obj === "" ? null : obj;
+    }
+  },
+  generic: {
+    passwordTestForm: (password) => {
+      return {"password":password};
+    },
+    passwordChangeForm: (oldPassword, newPassword) => {
+      return {"oldPassword":oldPassword, "newPassword":newPassword};
     }
   },
   registration: {
