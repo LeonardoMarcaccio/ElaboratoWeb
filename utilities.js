@@ -340,6 +340,16 @@ const APICalls = {
       }
       return false;
     },
+    sendEditPassword: async (oldPassword, newPassword) => {
+      let passwordTestUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      passwordTestUrl.searchParams.append("type", "editpassword");
+      let passwordTestResponse = await APICalls.postRequests.postDataToApi(
+        passwordTestUrl, JSONUtils.generic.passwordChangeForm(oldPassword, newPassword));
+      if (passwordTestResponse.code == 200) {
+        return true;
+      }
+      return false;
+    },
     editUserRequest: async (updateData) => {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       subCommentUrl.searchParams.append("type", "edit");
