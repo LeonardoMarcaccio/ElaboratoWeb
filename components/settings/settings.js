@@ -10,9 +10,17 @@ class SettingsPage extends DynamicPage {
       history.pushState({location: events.userSpecific.settings}, null, "settings");
     }
     await super.load("/settings/settings");
+    let tmpData = await APICalls.getRequests.getUserInfo();
+    tmpData = await tmpData.response;
+    if (tmpData.pfp != null) {
+      this.getCurrentProfileImage().src = tmpData.pfp;
+    }
     this.bindEventListeners();
   }
 
+  getCurrentProfileImage() {
+    return this.lazyNodeIdQuery("settings-editprofile-pfp-current", true);
+  }
   getAccountActionsForm() {
     return this.lazyNodeIdQuery("settings-accountactions-form", true);
   }
@@ -52,7 +60,6 @@ class SettingsPage extends DynamicPage {
       }
       let tmpData = await APICalls.getRequests.getUserInfo();
       tmpData = await tmpData.response;
-      console.log(editProfileForm);
       let usrUpdate = JSONUtils.registration.buildRegistration(
         tmpData.username,
         tmpData.email,
@@ -129,6 +136,19 @@ class SettingsPage extends DynamicPage {
       } else if (passwordTestResult && this.oldPasswordMatchError) {
         this.oldPasswordMatchError = false;
         this.getDangerZoneWarningBox().removeChild(this.oldPasswordErrorParagraph);
+      }
+      if (!this.oldPasswordMatchError && !this.passwordMatchError) {
+        this.passwordChangeResult =
+          await APICalls.postRequests.sendEditPassword(oldPassword, newPassword);
+        if (!this.passwordChangeResult) {
+          this.genericPasswordErrorParagraph = document.createElement("p");
+          this.genericPasswordErrorParagraph.innerHTML = "An error occourred while changing the password";
+          this.getDangerZoneWarningBox().appendChild(this.genericPasswordErrorParagraph);
+          this.getDangerZoneWarningBox().classList.add("generic-warningbox");
+          this.getDangerZoneWarningBox().classList.remove("generic-warningbox-inactive");
+        } else if (this.passwordChangeResult) {
+          this.getDangerZoneWarningBox().removeChild(this.oldPasswordErrorParagraph);
+        }
       }
       if (this.getDangerZoneWarningBox().childNodes.length == 0) {
         this.getDangerZoneWarningBox().style.visibility = "hidden";
