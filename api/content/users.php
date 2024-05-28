@@ -16,7 +16,7 @@
           $result = userGetRequest($database, $user);
           break;
           default:
-          throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
+          throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
         exit(generateJSONResponse(200, "Ok", $result));
     } else {
@@ -45,7 +45,7 @@
         updateUser(file_get_contents("php://input"), $database);
       break;
       default:
-        throw new ApiError(HTTP_BAD_REQUEST_ERROR_CODE, HTTP_BAD_REQUEST_ERROR);
+        throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
     }
     return null;
   }
