@@ -71,8 +71,3 @@
   border-radius: 10px;
   transition: none;
 }
-
-.wrong {
-  -webkit-box-shadow: 0px 0px 6px 2px #f00;
-  box-shadow: 0px 0px 6px 2px #f00;
-}
