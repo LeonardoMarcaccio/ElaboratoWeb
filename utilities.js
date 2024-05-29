@@ -814,6 +814,7 @@ class PostBuilder {
       let container = document.createElement("div");
       let post = document.createElement("article");
       let head = document.createElement("div");
+      let box = document.createElement("div");
       let userImage = document.createElement("img");
       let title = document.createElement("h1");
       let srcCommunity = document.createElement("h2");
@@ -830,9 +831,10 @@ class PostBuilder {
       post.style.margin = "10px";
       head.style.display = "flex";
       head.style.gap = "10px";
+      box.className = "avatar-box";
+      box.style.maxWidth = "30px";
+      box.style.maxHeight = "30px";
       userImage.src = userPfp != null ? userPfp : this.defaultPfp;
-      userImage.style.aspectRatio = "1/1";
-      userImage.style.width = "2%";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
@@ -924,7 +926,8 @@ class PostBuilder {
 
       container.appendChild(post);
       post.appendChild(head);
-      head.appendChild(userImage);
+      box.appendChild(userImage);
+      head.appendChild(box);
       head.appendChild(title);
       post.appendChild(srcCommunity);
       if (postImg != null) {
@@ -956,6 +959,7 @@ class CommunityBuilder {
   async makeCommunity(titleString, descString, commImg) {
       let community = document.createElement("article");
       let head = document.createElement("div");
+      let box = document.createElement("div");
       let image = document.createElement("img");
       let title = document.createElement("h1");
       let follow = document.createElement("button");
@@ -966,9 +970,10 @@ class CommunityBuilder {
       community.style.margin = "10px";
       head.style.display = "flex";
       head.style.gap = "10px";
+      box.className = "avatar-box";
+      box.style.maxWidth = "30px";
+      box.style.maxHeight = "30px";
       image.src = commImg != null ? commImg : this.defaultImage;
-      image.style.aspectRatio = "1/1";
-      image.style.maxWidth = "2%";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
@@ -979,7 +984,8 @@ class CommunityBuilder {
       desc.style.textAlign = "left";
 
       community.appendChild(head);
-      head.appendChild(image);
+      box.appendChild(image);
+      head.appendChild(box);
       head.appendChild(title);
       head.appendChild(follow);
       community.appendChild(desc);
@@ -1003,7 +1009,6 @@ class CommunityBuilder {
 
       } else {
         head.style.justifyContent = "space-evenly";
-        //desc.style.textAlign = "center";
       }
 
       return community;
@@ -1026,6 +1031,7 @@ class CommentBuilder {
     let user = document.createElement("h1");
     let date = document.createElement("h2");
     let content = document.createElement("p");
+    let box = document.createElement("div");
     let pfp = document.createElement("img");
     let buttons = document.createElement("nav");
     let userPfp = null;
@@ -1042,13 +1048,15 @@ class CommentBuilder {
     date.style.fontSize = "80%";
     content.innerText = contentString;
     content.style.textAlign = "left";
+    box.className = "avatar-box";
+    box.style.maxWidth = "30px";
+    box.style.maxHeight = "30px";
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
-    pfp.style.aspectRatio = "1/1";
-    pfp.style.maxWidth = "2%";
     
     container.appendChild(comment);
     comment.appendChild(head);
-    head.appendChild(pfp);
+    box.appendChild(pfp);
+    head.appendChild(box);
     head.appendChild(user);
     head.appendChild(date);
     comment.appendChild(content);
