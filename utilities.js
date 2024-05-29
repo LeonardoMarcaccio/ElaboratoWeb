@@ -835,6 +835,7 @@ class PostBuilder {
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
       userImage.src = userPfp != null ? userPfp : this.defaultPfp;
+      userImage.alt = userString + "'s profile";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
@@ -974,6 +975,7 @@ class CommunityBuilder {
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
       image.src = commImg != null ? commImg : this.defaultImage;
+      image.alt = titleString + " community";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
@@ -1052,6 +1054,7 @@ class CommentBuilder {
     box.style.maxWidth = "30px";
     box.style.maxHeight = "30px";
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
+    pfp.alt = userString + "'s profile";
     
     container.appendChild(comment);
     comment.appendChild(head);
