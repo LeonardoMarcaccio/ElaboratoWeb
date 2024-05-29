@@ -70,6 +70,7 @@
         } else {
           throw new ApiError(HTTP_BAD_REQUEST_ERROR, HTTP_BAD_REQUEST_ERROR_CODE);
         }
+      break;
       case "vote":
         if (isset($_GET['target']) && isset($_GET['vote'])) {
           addVote(getUsernameByToken($_COOKIE['token'], $database), $_GET['target'], $_GET['vote'], $database);

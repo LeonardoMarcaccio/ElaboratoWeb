@@ -202,3 +202,7 @@ button {
   width: 15vw;
   max-width: 200px;
 }
+
+#user-div > .avatar-box {
+  max-height: 90px;
+}

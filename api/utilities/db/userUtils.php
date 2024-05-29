@@ -37,30 +37,48 @@
     $completeFriendList = array();
     foreach ($friends as $singleFriend) {
       array_push($completeFriendList,
-        filterInfoLevel(getUser($singleFriend, $database), USER_FRIEND));
+      filterInfoLevel(getUser($singleFriend, $database), USER_FRIEND));
     }
     return $completeFriendList;
   }
-
+  
   function getFriendNames($username, mysqli $database) {
-    $query = $database->prepare("SELECT Fri_Username FROM friendship WHERE Username=? LIMIT 1");
+    $query = $database->prepare("SELECT Fri_Username FROM friendship WHERE Username = ?");
     $query->bind_param("s", $username);
     if (!$query->execute()) {
       throw getInternalError();
     }
-    /*  Unused variables
-    $friendsArray = array();
-    $resultingUser = mysqli_fetch_assoc($query->get_result());
-    */
-    /*  This is the code that broke
-    while ($resultingUser != null) {
-      var_dump($resultingUser);
-      array_push($resultingUser);
-      $resultingUser = mysqli_fetch_assoc($query->get_result());
+    $friends = $query->get_result();
+    $result = array();
+    while($tmp = mysqli_fetch_assoc($friends)) {
+        array_push($result, $tmp["Fri_Username"]);
     }
-    return $friendsArray;
-    */
-    return mysqli_fetch_assoc($query->get_result());
+    return $result;
+  }
+  
+  function getIncomingFriends($username, mysqli $database) {
+    $friends = getIncomingNames($username, $database);
+    $completeFriendList = array();
+    foreach ($friends as $singleFriend) {
+      array_push($completeFriendList,
+      filterInfoLevel(getUser($singleFriend, $database), USER_FRIEND));
+    }
+    return $completeFriendList;
+  }
+
+  function getIncomingNames($username, mysqli $database) {
+    $query = $database->prepare("SELECT Username FROM friendship f1 WHERE Fri_Username = ? AND
+    !EXISTS(SELECT * From friendship f2 WHERE f2.Username = ? AND f2.Fri_Username = f1.Username)");
+    $query->bind_param("ss", $username, $username);
+    if (!$query->execute()) {
+      throw getInternalError();
+    }
+    $friends = $query->get_result();
+    $result = array();
+    while($tmp = mysqli_fetch_assoc($friends)) {
+        array_push($result, $tmp["Fri_Username"]);
+    }
+    return $result;
   }
 
   function areFriends($queryingUser, $queriedUser, mysqli $database) {

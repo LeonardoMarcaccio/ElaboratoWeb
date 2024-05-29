@@ -387,6 +387,13 @@ const APICalls = {
       commentUrl.searchParams.append("target", target);
       let commentRequest = await APICalls.postRequests.postDataToApi(commentUrl, text);
       return commentRequest;
+    },
+    updateFriendStatus: async (user, status) => {
+      let friendUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      friendUrl.searchParams.append("type", status ? "friend" : "unfriend");
+      friendUrl.searchParams.append("target", user);
+      let friendRequest = await APICalls.postRequests.postDataToApi(friendUrl);
+      return friendRequest;
     }
   },
   getRequests: {
@@ -462,6 +469,13 @@ const APICalls = {
     getFriendList: async (username) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       userUrl.searchParams.append("type", "friendlist");
+      userUrl.searchParams.append("target", username);
+      let friendlist = await APICalls.getRequests.getDataToApi(null, userUrl);
+      return friendlist;
+    },
+    getIncomingFriends: async (username) => {
+      let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      userUrl.searchParams.append("type", "incoming");
       userUrl.searchParams.append("target", username);
       let friendlist = await APICalls.getRequests.getDataToApi(null, userUrl);
       return friendlist;
@@ -702,6 +716,7 @@ class ButtonHandler {
 function printUserInfo(userInfo) {
   let all = document.createElement("div");
   let head = document.createElement("div");
+  let box = document.createElement("div");
   let pfp = document.createElement("img");
   let username = document.createElement("p");
   let gender = document.createElement("p");
@@ -710,16 +725,19 @@ function printUserInfo(userInfo) {
 
   all.style.display = "flex";
   all.style.flexDirection = "column";
+  head.id = "user-div";
   head.style.display = "flex";
   head.style.flexDirection = "row";
   username.innerText = userInfo.username;
+  box.className = "avatar-box";
   pfp.src = userInfo.pfp;
   gender.innerText = userInfo.gender;
   bio.innerText = userInfo.biography;
   website.innerText = userInfo.personalwebsite;
 
   all.appendChild(head);
-  head.appendChild(pfp);
+  box.appendChild(pfp);
+  head.appendChild(box);
   head.appendChild(username);
   head.appendChild(gender);
   all.appendChild(bio);
@@ -737,22 +755,29 @@ async function openUserPage(username) {
   head.innerText = username;
   mainGlobalVariables.page.mainContentHeading.addContent(head);
   mainGlobalVariables.page.mainContentPage.addContent(printUserInfo(userInfo));
+
+  let self = await APICalls.getRequests.getUserInfo();
+  self = self.response;
+  let bois = await APICalls.getRequests.getFriendList(self.username);
+  bois = bois.response;
   
-  if (userInfo.friendship != "self") {
+  if (self.username != userInfo.username) {
     let foot = document.createElement("div");
     let footButton = document.createElement("button");
     foot.style.display = "flex";
     foot.style.justifyContent = "center";
-    if (userInfo.friendship == "no") {
+    if (!bois.includes(userInfo)) {
       footButton.innerText = "Send friend request";
-      footButton.onclick = () => {
-        //APICalls
-        footButton.style.disabled = true;
-        footButton.innerText = "Friend request sent";
+      footButton.onclick = async () => {
+        await APICalls.postRequests.updateFriendStatus(userInfo.username, true);
+        footButton.innerText = "Remove friend";
       };
     } else {
-      footButton.style.disabled = true;
-      footButton.innerText = "Friend request sent";
+      footButton.innerText = "Remove friend";
+      footButton.onclick = async () => {
+        await APICalls.postRequests.updateFriendStatus(userInfo.username, false);
+        footButton.innerText = "Friend request sent";
+      };
     }
     foot.appendChild(footButton);
     mainGlobalVariables.page.mainContentFooting.addContent(foot);
@@ -842,6 +867,7 @@ class PostBuilder {
       };
       comment.onclick = () => {
         if (comment.innerText == "Comment") {
+          this.hideOtherPosts(post.id);
           comment.innerText = "Undo";
           if (flag) {
             flag = false;
@@ -851,7 +877,7 @@ class PostBuilder {
             bar.style.display = "flex";
             input.placeholder = "Reply";
             input.style.resize = "none";
-            input.style.width = "300px";
+            input.style.width = "220px";
             send.type = "button";
             send.value = "Send";
             bar.appendChild(input);
@@ -860,12 +886,15 @@ class PostBuilder {
               let username = await APICalls.getRequests.getUserInfo();
               username = username.response;
               await APICalls.postRequests.sendCommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.value, username.username, 0]), postId);
+              comment.innerText = "Comment";
+              container.removeChild(bar);
             }
           }
           container.appendChild(bar);
         } else {
           comment.innerText = "Comment";
           container.removeChild(bar);
+          this.showAllPosts();
         }
       };
 
@@ -919,8 +948,9 @@ class CommunityBuilder {
   defaultImage = "./media/users/placeholder.webp";
   IDPrefix = "";
   
-  constructor (IDPrefix) {
+  constructor (IDPrefix, inSearch = true) {
       this.IDPrefix = IDPrefix;
+      this.inSearch = inSearch;
   }
   
   async makeCommunity(titleString, descString, commImg) {
@@ -930,8 +960,7 @@ class CommunityBuilder {
       let title = document.createElement("h1");
       let follow = document.createElement("button");
       let desc = document.createElement("p");
-      let countPosts = 0;
-      
+
       community.id = this.IDPrefix + "-community-" + this.count++;
       community.className = "community";
       community.style.margin = "10px";
@@ -948,30 +977,12 @@ class CommunityBuilder {
       follow.innerText = isFollow ? "Unfollow" : "Follow";
       desc.innerText = descString;
       desc.style.textAlign = "left";
-      
+
       community.appendChild(head);
       head.appendChild(image);
       head.appendChild(title);
       head.appendChild(follow);
       community.appendChild(desc);
-
-      desc.onclick = async () => {
-        if (countPosts == 0) {
-          let posts = await APICalls.getRequests.getPostsRequest(titleString, 1, 10);
-          posts = posts.response;
-          let builder = new PostBuilder("search");
-          for (let i in posts) {
-            posts[i];
-            let tmp = await builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].image, posts[i].id);
-            community.appendChild(tmp);
-          countPosts++;
-          }
-        } else {
-          for (; countPosts > 0; countPosts--) {
-            community.removeChild(community.lastChild);
-          }
-        }
-      }
 
       follow.onclick = async () => {
         if (follow.innerText == "Follow") {
@@ -982,6 +993,18 @@ class CommunityBuilder {
           follow.innerText = "Follow";
         }
       };
+
+      if (this.inSearch) {
+        desc.onclick = async () => {
+          sharedCommunityCache = JSONBuilder.build(["title", "desc", "img"], [titleString, descString, commImg]);
+          let event = new CustomEvent("community-detail");
+          document.dispatchEvent(event);
+        }
+
+      } else {
+        head.style.justifyContent = "space-evenly";
+        //desc.style.textAlign = "center";
+      }
 
       return community;
   }
@@ -1056,6 +1079,7 @@ class CommentBuilder {
           send.onclick = async () => {
             let username = await APICalls.getRequests.getUserInfo();
             username = username.response;
+            console.log(id);
             await APICalls.postRequests.sendSubcommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.value, username.username, 0]), id);
           }
         }

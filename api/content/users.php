@@ -76,6 +76,13 @@
           throw new ApiError("Bad Request", 400);
         }
       break;
+      case "incoming":
+        if (isset($_GET['target'])) {
+          $result = getIncomingFriends($user, $database);
+        } else {
+          throw new ApiError("Bad Request", 400);
+        }
+      break;
       case "userinfo":
         if (isset($_GET['target'])) {
           $result = filterInfoLevel(getUser($_GET['target'], $database),
