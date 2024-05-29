@@ -52,7 +52,7 @@
 
     function getUserNotification($username, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
-        $statement = $database->prepare("SELECT notification WHERE Username = ?)");
+        $statement = $database->prepare("SELECT * FROM notification WHERE Username = ?)");
         $statement->bind_param("s", $username);
     
         // Execute the statement and check for errors
@@ -70,7 +70,14 @@
         
         $result = array();
         while($tmp = mysqli_fetch_assoc($posts)) {
-            array_push($result, $tmp);
+            array_push(
+                $result,
+                new Notification(
+                    $tmp["Username"],
+                    $tmp["Code"],
+                    $tmp["Text"]
+                )
+            );
         }
         
         return $result;

@@ -69,6 +69,13 @@
           throw new ApiError("Bad Request", 400);
         }
       break;
+      case "notification":
+        if (isset($_GET['target'])) {
+          $result = getUserNotification($user, $database);
+        } else {
+          throw new ApiError("Bad Request", 400);
+        }
+      break;
       case "userinfo":
         if (isset($_GET['target'])) {
           $result = filterInfoLevel(getUser($_GET['target'], $database),
