@@ -8,6 +8,7 @@
 #forms-container {
   max-width: 350px;
   margin-top: 0;
+  margin: 0px;
   flex-grow: 1;
 }
 
@@ -15,6 +16,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  text-align: center;
 }
 #forms-container>form>div,fieldset {
   display: flex;
@@ -24,8 +26,13 @@
 #forms-container > form > #registration-non-essential {
   display: none;
 }
-
-#forms-container > form > h2 {
+.formpane > h1 {
+  transition: 500ms;
+  margin: 0px;
+}
+.formpane > h2 {
+  transition: 500ms;
+  margin: 0px;
   margin-bottom: 5vh;
 }
 
