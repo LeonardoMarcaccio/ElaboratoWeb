@@ -87,6 +87,10 @@ document.addEventListener(events.apiActions.authFailure, () => {
   }
   loginClass.load();
 });
+document.addEventListener(events.userSpecific.login, () => {
+  mainHandler.contentHandling.purgePageContent();
+  loginClass.load();
+});
 
 document.addEventListener(events.apiActions.authSuccess, () => {
   if (loginClass.isReady()) {

@@ -8,6 +8,10 @@ class RegistrationPage extends DynamicPage {
       mainGlobalVariables.buttonData.lastSelection = "register";
       history.pushState({location: events.userSpecific.register}, null, "register");
     }
+    if (this.cached) {
+      mainHandler.contentHandling.setBodyContent(this.cachedAsset);
+      return;
+    }
     await super.load("registration/registration");
     this.registrationForm = null;
     this.registrationEssentialForm = null;
@@ -33,6 +37,7 @@ class RegistrationPage extends DynamicPage {
     this.addInfoButton = null;
 
     this.bindListeners();
+    this.cachedAsset = Array.prototype.slice.call(mainHandler.contentHandling.getBodyContent().getContent().childNodes);
     mainGlobalVariables.page.currentPageLoc = this.pageId;
   }
 
@@ -147,6 +152,10 @@ class RegistrationPage extends DynamicPage {
   }
   
   bindListeners() {
+    this.getBackToLoginBtn().onclick = () => {
+      let backToLoginEvt = new CustomEvent(events.userSpecific.login);
+      document.dispatchEvent(backToLoginEvt);
+    }
     this.getAddInfoButton().onclick = () => {
       this.getRegistrationNonEssentialForm().style.display = 'flex';
       this.getAddInfoButton().style.display = 'none';
@@ -299,6 +308,9 @@ class RegistrationPage extends DynamicPage {
   passwdError() {
     this.getPassword().classList.add("wrong");
     this.getPasswordError().style.display = "block";
+  }
+  getBackToLoginBtn() {
+    return this.lazyNodeIdQuery("registration-back-to-login");
   }
 }
 
