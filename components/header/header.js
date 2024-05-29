@@ -89,3 +89,5 @@ class SlidingDrawer {
 }
 
 let drawer = new SlidingDrawer();
+
+// TODO: Add repeating function for notification check
