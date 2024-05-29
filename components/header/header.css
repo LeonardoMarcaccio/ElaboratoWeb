@@ -1,89 +1,161 @@
 #header-illustration {
-    background-color: transparent;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    padding: 5px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 5px;
+}
+
+header button {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  font-size: 25px;
+  text-align: center;
+  color: white;
+  padding: 0px;
+  max-height: 60px;
+  max-width: 60px;
+  min-height: 60px;
+  min-width: 60px;
 }
 
 #header-illustration > h1,p {
-    text-align: center;
-    user-select: none;
-    margin: 5px;
+  text-align: center;
+  user-select: none;
+  margin: 5px;
 }
 
 #header-image {
+  background-image: url("/media/images/playpal-onlymage_WO.webp");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position-y: center;
+  background-position-x: left;
+  min-width: 140px;
+}
+
+#header-bg {
+  display: flex;
+  flex-flow: row;
+}
+
+@media only screen and (max-width: 700px) {
+  #header-image {
+    display: none;
+  }
+
+  #header-bg {
     background-image: url("/media/images/playpal-onlymage_WO.webp");
     background-repeat: no-repeat;
     background-size: contain;
     background-position-y: center;
     background-position-x: left;
-    min-width: 140px;
-}
-
-#header-bg {
-    display: flex;
-    flex-flow: row;
-}
-
-@media only screen and (max-width: 700px) {
-    #header-image {
-        display: none;
-    }
-
-    #header-bg {
-        background-image: url("/media/images/playpal-onlymage_WO.webp");
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position-y: center;
-        background-position-x: left;
-    }
+  }
 }
 
 /* NOTIFICATION PROTOTYPING */
 
-/* .overlay {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    right: 0;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0, 0.9);
-    overflow-x: hidden;
-    transition: 0.5s;
+.overlay {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-x: hidden;
+  transition: 0.5s;
 }
 
 .overlay a {
-    padding: 8px;
-    text-decoration: none;
-    font-size: 36px;
-    color: #818181;
-    display: block;
-    transition: 0.3s;
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
 }
 
 .overlay a:hover, .overlay a:focus {
-    color: #f1f1f1;
+  color: #f1f1f1;
 }
 
 .overlay .closebtn {
-    position: absolute;
-    top: 20px;
-    right: 45px;
-    font-size: 60px;
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
 }
 
 @media screen and (max-height: 450px) {
-    .overlay a {font-size: 20px}
-    .overlay .closebtn {
-        font-size: 40px;
-        top: 15px;
-        right: 35px;
-    }
-} */
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 15px;
+    right: 35px;
+  }
+}
 
 header {
-    padding-top: 5px;
+  padding-top: 5px;
+}
+
+.header-notification {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  width: 100%;
+  max-height: 150px;
+  background-color: #EEEEEE;
+  border-bottom: 1px solid gray;
+  box-shadow: 0px 8px 11px 4px white;
+  border-radius: 5px;
+}
+.header-notification > * {
+  padding: 5px;
+}
+.header-notification > button {
+  min-height: 25px;
+  max-height: 25px;
+  min-width: 90%;
+  font-size: 13px;
+  color: black;
+  align-self: center;
+}
+.header-notification > h1 {
+  color: black;
+  margin: 0px;
+  padding: 4px;
+}
+.header-notification > p {
+  text-align: left;
+  color: black;
+}
+
+#header-drawer {
+  display: flex;
+  flex-flow: column;
+}
+
+#header-drawer-top {
+  padding-top: 5px;
+  display: flex;
+  justify-content: right;
+}
+
+#header-drawer-body {
+  margin: 5px;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+#header-drawer-body-scrollcontainer {
+  gap: 15px;
+  display: flex;
+  overflow-y: auto;
+  flex-flow: column;
 }

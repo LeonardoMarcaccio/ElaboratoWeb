@@ -1,18 +1,24 @@
 <link rel="stylesheet" href="/components/header/header.css">
-
 <header>
-    <div id="header-bg">
-        <div id="header-image"></div>
-        <div id="header-illustration">
-            <h1>PlayPal</h1>
-            <p>Let's Play, Pal!</p>
-        </div>
+  <div id="header-bg">
+    <div id="header-image"></div>
+    <div id="header-illustration">
+      <h1>PlayPal</h1>
+      <p>Let's Play, Pal!</p>
+    </div>
 
         <!-- NOTIFICATION PROTYPING -->
+    <div id="header-drawer" class="overlay">
+      <div id="header-drawer-top">
+        <button type="button" id="header-drawer-close-btn">&times;</button>
+      </div>
+      <div id="header-drawer-body">
+        <div id="header-drawer-body-scrollcontainer">
 
-        <!-- <div id="myNav" class="overlay">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         </div>
-        <span style="font-size:30px;cursor:pointer;padding:15px;" onclick="openNav()">&#9776; </span> -->
+      </div>
     </div>
+    <button type="button" id="header-drawer-btn">&#9776; </button>
+  </div>
 </header>
+<script src="components/header/header.js"></script>
