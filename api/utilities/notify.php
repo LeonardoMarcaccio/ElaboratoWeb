@@ -12,7 +12,18 @@
             throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
         }
     }
+
+    function notifyFriendshipRequest($from, $to, $code, mysqli $database) {
+        // Prepare the SQL statement with the correct number of placeholders
+        $statement = $database->prepare("INSERT INTO notification (Username, Code, Text) VALUES (?, ?, ?)");
+        $message = $from." sent you a friend request";
+        $statement->bind_param("sss", $to, $code, $message);
     
+        // Execute the statement and check for errors
+        if (!$statement->execute()) {
+            throw new ApiError(HTTP_INTERNAL_SERVER_ERROR, HTTP_INTERNAL_SERVER_ERROR_CODE);
+        }
+    }
 
     function notifyPost($community, $code, mysqli $database) {
         $statement = $database->prepare("SELECT Username FROM `join` WHERE Name = ?");

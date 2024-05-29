@@ -100,6 +100,7 @@
     if (!$query->execute()) {
       throw getInternalError();
     }
+    notifyFriendshipRequest($friendingUser, $friendedUser, uniqid(), $database);
   }
 
   function removeFriend($friendingUser, $friendedUser, mysqli $database) {
