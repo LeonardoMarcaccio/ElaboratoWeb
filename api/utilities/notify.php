@@ -47,10 +47,10 @@
         }
     }
 
-    function destroyNotification($username, $code, mysqli $database) {
+    function destroyNotification($code, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
-        $statement = $database->prepare("DELETE FROM notification WHERE Username = ? AND Code = ?)");
-        $statement->bind_param("ss", $username, $code);
+        $statement = $database->prepare("DELETE FROM notification WHERE Code = ?)");
+        $statement->bind_param("s", $code);
     
         // Execute the statement and check for errors
         if (!$statement->execute()) {

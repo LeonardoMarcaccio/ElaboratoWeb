@@ -35,6 +35,9 @@
     // Not needed anymore
     //$usrObj = jsonToLogin(file_get_contents("php://input"));
     switch($_GET['type']) {
+      case "removeNotification":
+        destroyNotification($_GET["target"], $database);
+      break;
       case "friend":
         addFriend($user, $_GET["target"], $database);
       break;
