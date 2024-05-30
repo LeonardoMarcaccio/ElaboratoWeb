@@ -38,7 +38,6 @@
 #profile-user-image-box > img {
   max-width: 100%;
   max-height: 100%;
-  aspect-ratio: 1/1;
 }
 #profile-user-name-box > * {
   display: inline;
