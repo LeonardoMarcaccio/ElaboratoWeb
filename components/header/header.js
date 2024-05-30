@@ -123,5 +123,4 @@ class SlidingDrawer {
 let drawer = new SlidingDrawer();
 drawer.update();
 
-// TODO: Add repeating function for notification check
 setInterval(() => drawer.update(), 3000);
