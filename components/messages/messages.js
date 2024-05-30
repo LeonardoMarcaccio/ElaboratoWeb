@@ -41,7 +41,7 @@ class MessagePage extends DynamicPage {
         this.chatLoader.switchLoadMethod(async (page) => {
             let username = await APICalls.getRequests.getUserInfo();
             username = username.response.username;
-            let user = document.createElement("p");
+            let user = document.createElement("h1");
             let prev = document.createElement("div");
             this.chat = document.createElement("div");
             this.chat.id = "page-dm-upper";
