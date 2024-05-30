@@ -39,9 +39,6 @@ class MessagePage extends DynamicPage {
         this.chatLoader.switchLoadMethod(async (page) => {
             let username = await APICalls.getRequests.getUserInfo();
             username = username.response.username;
-            let messages = await APICalls.getRequests.getMessagesRequest(this.chatCache.textContent, page, 16);
-            messages = messages.response;
-            let messageCount = messages.length;
             let user = document.createElement("p");
             let prev = document.createElement("div");
             this.chat = document.createElement("div");
@@ -51,22 +48,27 @@ class MessagePage extends DynamicPage {
             user.id = "user-dm";
             prev.id = "message-bottom";
             mainGlobalVariables.page.mainContentHeading.addContent(user);
+            let messages = await APICalls.getRequests.getMessagesRequest(this.chatCache.textContent, page, 16);
+            messages = messages.response;
+            let messageCount = messages != undefined ? messages.length : 0;
             
             if (page == 1) {
-                    this.chat.appendChild(prev);
-                } else {
-                    this.chat.insertBefore(prev, chat.firstChild);
-                }
+                this.chat.appendChild(prev);
+            } else {
+                this.chat.insertBefore(prev, chat.firstChild);
+            }
                 
-                for (let i=0; i<messageCount; i++) {
-                    let tmp = document.createElement("p");
-                    tmp.textContent = messages[i].Text;
-                    tmp.className = messages[i].Username == username ? "message-sent" : "message-received";
-                    this.chat.insertBefore(tmp, prev);
-                    prev = tmp;
-                }
-                this.messagesDiv.appendChild(this.chat);
-                mainGlobalVariables.page.mainContentFooting.addContent(form);
+            for (let i=0; i<messageCount; i++) {
+                let tmp = document.createElement("div");
+                let text = document.createElement("p");
+                text.textContent = messages[i].Text;
+                tmp.className = messages[i].Username == username ? "message-sent" : "message-received";
+                tmp.appendChild(text);
+                this.chat.insertBefore(tmp, prev);
+                prev = tmp;
+            }
+            this.messagesDiv.appendChild(this.chat);
+            mainGlobalVariables.page.mainContentFooting.addContent(form);
         });
     }
 }

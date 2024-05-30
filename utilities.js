@@ -734,28 +734,33 @@ function printUserInfo(userInfo) {
   let head = document.createElement("div");
   let box = document.createElement("div");
   let pfp = document.createElement("img");
-  let username = document.createElement("p");
+  let baseInfo = document.createElement("div");
+  let username = document.createElement("h1");
   let gender = document.createElement("p");
   let bio = document.createElement("p");
-  let website = document.createElement("p");
+  let website = document.createElement("a");
 
-  all.style.display = "flex";
-  all.style.flexDirection = "column";
+  all.className = "generic-pane";
   head.id = "user-div";
   head.style.display = "flex";
   head.style.flexDirection = "row";
+  head.style.justifyContent = "flex-start";
   username.innerText = userInfo.username;
   box.className = "avatar-box";
   pfp.src = userInfo.pfp;
   gender.innerText = userInfo.gender;
+  gender.style.textAlign = "left";
   bio.innerText = userInfo.biography;
+  bio.style.fontStyle = "italic";
   website.innerText = userInfo.personalwebsite;
+  website.href = userInfo.personalwebsite;
 
   all.appendChild(head);
   box.appendChild(pfp);
   head.appendChild(box);
-  head.appendChild(username);
-  head.appendChild(gender);
+  baseInfo.appendChild(username);
+  baseInfo.appendChild(gender);
+  head.appendChild(baseInfo);
   all.appendChild(bio);
   all.appendChild(website);
   return all;
@@ -767,10 +772,8 @@ async function openUserPage(username) {
   mainGlobalVariables.page.mainContentFooting.clearContent();
   let userInfo = await APICalls.getRequests.getUserInfo(username);
   userInfo = userInfo.response;
-  let head = document.createElement("p");
-  head.innerText = username;
-  mainGlobalVariables.page.mainContentHeading.addContent(head);
-  mainGlobalVariables.page.mainContentPage.addContent(printUserInfo(userInfo));
+  let page = printUserInfo(userInfo);
+  mainGlobalVariables.page.mainContentPage.addContent(page);
 
   let self = await APICalls.getRequests.getUserInfo();
   self = self.response;
@@ -782,7 +785,7 @@ async function openUserPage(username) {
     let footButton = document.createElement("button");
     foot.style.display = "flex";
     foot.style.justifyContent = "center";
-    if (!bois.includes(userInfo)) {
+    if (bois.filter((x) => x.username == userInfo.username).length == 0) {
       footButton.innerText = "Send friend request";
       footButton.onclick = async () => {
         await APICalls.postRequests.updateFriendStatus(userInfo.username, true);
@@ -796,7 +799,7 @@ async function openUserPage(username) {
       };
     }
     foot.appendChild(footButton);
-    mainGlobalVariables.page.mainContentFooting.addContent(foot);
+    page.appendChild(foot);
   }
 }
 
