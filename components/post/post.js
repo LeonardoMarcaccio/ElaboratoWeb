@@ -15,6 +15,7 @@ class PostPage extends DynamicPage {
         this.toggleButtons = null;
         this.togglePost = null;
         this.toggleCommunity = null;
+        this.errMess = document.createElement("p");
         this.setToggleButtons();
 
         await this.bindListeners();
@@ -75,8 +76,11 @@ class PostPage extends DynamicPage {
         this.togglePost.disabled = true;
         this.toggleCommunity.textContent = "Create Community";
         this.toggleCommunity.disabled = false;
+        this.errMess.style.display = "none";
+        this.errMess.style.justifyContent = "center";
         this.toggleButtons.appendChild(this.togglePost);
         this.toggleButtons.appendChild(this.toggleCommunity);
+        mainGlobalVariables.page.mainContentFooting.addContent(this.errMess);
         mainGlobalVariables.page.mainContentHeading.addContent(this.toggleButtons);
     }
 
@@ -129,23 +133,36 @@ class PostPage extends DynamicPage {
         this.getPostForm().onsubmit = async (event) => {
             event.preventDefault();
             this.setPostElements();
-            let picture = await this.imgToJSON(this.postImage.files[0]);
-            await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "postImage", "name", "username"],
-            ["", "", this.postContent.value, 0, this.postTitle.value, picture, select.value, this.user]),
-            select.value);
+            if (this.postContent.value != "" && this.postTitle.value != "") {
+                this.errMess.style.display = "none";
+                let picture = this.postImage.files.length != 0 ? await this.imgToJSON(this.postImage.files[0]) : null;
+                await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "postImage", "name", "username"],
+                ["", "", this.postContent.value, 0, this.postTitle.value, picture, select.value, this.user]),
+                select.value);
+            } else {
+                this.errMess.textContent = "You must fill in the title and content fields!";
+                this.errMess.style.display = "flex";
+            }
         }
 
         this.getCommunityForm().onsubmit = async (event) => {
             event.preventDefault();
             this.setCommunityElements();
-            let picture = await this.imgToJSON(this.communityImage.files[0]);
-            await APICalls.postRequests.sendCommunityRequest(JSONBuilder.build(["name", "communityImage", "description"],
-            [this.communityTitle.value, picture, this.communityDesc.value]));
+            if (this.communityTitle.value != "" && this.communityDesc.value != "" && this.communityImage.files.length) {
+                this.errMess.style.display = "none";
+                let picture = await this.imgToJSON(this.communityImage.files[0]);
+                await APICalls.postRequests.sendCommunityRequest(JSONBuilder.build(["name", "communityImage", "description"],
+                [this.communityTitle.value, picture, this.communityDesc.value]));
+            } else {
+                this.errMess.textContent = "You must fill in the title, description, and image fields!";
+                this.errMess.style.display = "flex";
+            }
         }
 
         this.togglePost.onclick = () => {
             this.togglePost.disabled = true;
             this.toggleCommunity.disabled = false;
+            this.errMess.style.display = "none";
             this.getCommunityDiv().style.display = "none";
             this.getPostDiv().style.display = "flex";
         }
@@ -153,6 +170,7 @@ class PostPage extends DynamicPage {
         this.toggleCommunity.onclick = () => {
             this.togglePost.disabled = false;
             this.toggleCommunity.disabled = true;
+            this.errMess.style.display = "none";
             this.getPostDiv().style.display = "none";
             this.getCommunityDiv().style.display = "flex";
         }

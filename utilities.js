@@ -813,6 +813,7 @@ class PostBuilder {
     this.defaultColor = "rgb(255, 255, 255)";
     this.clickedColor = "#5DADE2";
     this.postList = new Array();
+    this.highlightCount = 0;
   }
 
   hideOtherPosts(generatedId) {
@@ -890,6 +891,7 @@ class PostBuilder {
       comment.onclick = () => {
         if (comment.innerText == "Comment") {
           this.hideOtherPosts(post.id);
+          this.highlightCount++;
           comment.innerText = "Undo";
           if (flag) {
             flag = false;
@@ -916,7 +918,10 @@ class PostBuilder {
         } else {
           comment.innerText = "Comment";
           container.removeChild(bar);
-          this.showAllPosts();
+          this.highlightCount--;
+          if (this.highlightCount == 0) {
+            this.showAllPosts();
+          }
         }
       };
 
@@ -925,6 +930,7 @@ class PostBuilder {
       paragraph.onclick = async () => {
         if (paragraph.className == 0) {
           this.hideOtherPosts(post.id);
+          this.highlightCount++;
           let comments = await APICalls.getRequests.getCommentsRequest(postId, 1, 10);
           comments = comments.response;
           let builder = new CommentBuilder(titleString);
@@ -940,7 +946,10 @@ class PostBuilder {
             container.removeChild(container.lastChild);
             paragraph.className--;
           }
-          this.showAllPosts();
+          this.highlightCount--;
+          if (this.highlightCount == 0) {
+            this.showAllPosts();
+          }
         }
       }
 
@@ -1029,6 +1038,7 @@ class CommunityBuilder {
         }
 
       } else {
+        follow.style.color = "#FFFFFF";
         head.style.justifyContent = "space-evenly";
       }
 
@@ -1101,7 +1111,7 @@ class CommentBuilder {
           bar.style.display = "flex";
           input.placeholder = "Reply";
           input.style.resize = "none";
-          input.style.width = "300px";
+          input.style.width = "220px";
           send.type = "button";
           send.value = "Send";
           bar.appendChild(input);
