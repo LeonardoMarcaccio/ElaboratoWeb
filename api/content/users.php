@@ -2,6 +2,7 @@
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utilities/jsonutils.php';             //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utilities/db/sessionUtils.php';             //NOSONAR
   require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utilities/db/userUtils.php';             //NOSONAR
+  require_once $_SERVER['DOCUMENT_ROOT'] . '/api/utilities/notify.php';             //NOSONAR
 
   try {
     $database = new mysqli("localhost", "root", "", "playpal");                   //NOSONAR
@@ -23,6 +24,7 @@
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);
     }
   } catch (ApiError $thrownError) {
+    throw $thrownError;
     header($_SERVER["SERVER_PROTOCOL"] . " " . $thrownError->getCode() . " " . $thrownError->getMessage());
     die(generateJSONResponse($thrownError->getApiErrorCode(), $thrownError->getApiMessage()));
   }
@@ -73,11 +75,7 @@
         }
       break;
       case "notification":
-        if (isset($_GET['target'])) {
-          $result = getUserNotification($user, $database);
-        } else {
-          throw new ApiError("Bad Request", 400);
-        }
+        $result = getUserNotification($user, $database);
       break;
       case "incoming":
         if (isset($_GET['target'])) {

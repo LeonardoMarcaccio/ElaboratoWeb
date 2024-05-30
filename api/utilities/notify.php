@@ -1,5 +1,6 @@
 <?php
     require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/ApiError.php";   //NOSONAR
+    require_once $_SERVER['DOCUMENT_ROOT'] . "/api/classes/data/notification.php";   //NOSONAR
 
     function notifyMessage($from, $to, $code, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
@@ -49,7 +50,7 @@
 
     function destroyNotification($code, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
-        $statement = $database->prepare("DELETE FROM notification WHERE Code = ?)");
+        $statement = $database->prepare("DELETE FROM notification WHERE Code = ?");
         $statement->bind_param("s", $code);
     
         // Execute the statement and check for errors
@@ -63,7 +64,7 @@
 
     function getUserNotification($username, mysqli $database) {
         // Prepare the SQL statement with the correct number of placeholders
-        $statement = $database->prepare("SELECT * FROM notification WHERE Username = ?)");
+        $statement = $database->prepare("SELECT * FROM notification WHERE Username = ?");
         $statement->bind_param("s", $username);
     
         // Execute the statement and check for errors
@@ -72,9 +73,6 @@
         }
 
         $posts = $statement->get_result();
-        if (mysqli_num_rows($posts) === 0) {
-            throw getInternalError();
-        }
 
         // Close the statement
         $statement->close();
@@ -93,4 +91,3 @@
         
         return $result;
     }
-    
