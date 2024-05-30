@@ -54,7 +54,7 @@ class SettingsPage extends DynamicPage {
       let editProfileForm = new FormData(this.getEditProfileForm());
       let pfp = null;
       try {
-        pfp = await JSONUtils.registration.imgToJSON(profilePicture);
+        pfp = await JSONUtils.registration.imgToJSON(editProfileForm.get("settings-editprofile-pfp"));
       } catch (e) {
         console.warn("Could not load Image! Reason:\n" + e);
       }
@@ -85,6 +85,8 @@ class SettingsPage extends DynamicPage {
             editProfileForm.get("settings-editprofile-phonenumber"), null), tmpData.phonenumber)
       );
       await APICalls.postRequests.editUserRequest(usrUpdate);
+      tmpData = await APICalls.getRequests.getUserInfo();
+      this.getCurrentProfileImage().src = tmpData.response.pfp;
     };
     this.getDangerZoneForm().onsubmit = async (event) => {
       event.preventDefault();
