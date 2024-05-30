@@ -132,15 +132,18 @@
   function updateUser($requestBody, mysqli $database) {
     $userObj = jsonToRegistration($requestBody);
     $dbNames = [
-        'Email' => $userObj->getEmail(),
-        'FirstName' => $userObj->getFirstName(),
-        'LastName' => $userObj->getLastName(),
-        'Gender' => $userObj->getGender(),
-        'Biography' => $userObj->getBiography(),
-        'PersonalWebsite' => $userObj->getPersonalWebsite(),
-        'Pfp' => $userObj->getPfp(),
-        'Phonenumbers' => $userObj->getPhoneNumbers(),
+      'Email' => $userObj->getEmail(),
+      'FirstName' => $userObj->getFirstName(),
+      'LastName' => $userObj->getLastName(),
+      'Gender' => $userObj->getGender(),
+      'Biography' => $userObj->getBiography(),
+      'PersonalWebsite' => $userObj->getPersonalWebsite(),
+      'Phonenumbers' => $userObj->getPhoneNumbers()
     ];
+
+    if ($userObj->getPfp() != null) {
+      $dbNames = array_merge($dbNames, ['Pfp' => $userObj->getPfp()]);
+    }
 
     $target = getUsernameByToken($_COOKIE['token'], $database);
     $queryString = "UPDATE user SET ";
