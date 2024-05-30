@@ -75,7 +75,7 @@ class SettingsPage extends DynamicPage {
             editProfileForm.get("settings-editprofile-gender"), null), tmpData.gender),
         genericUtilities.setIfNotEmpty(
           genericUtilities.setIfNotNull(
-            editProfileForm.get("settings-editprofile-bio"), null), tmpData.bio),
+            editProfileForm.get("settings-editprofile-bio"), null), tmpData.biography),
         genericUtilities.setIfNotEmpty(
           genericUtilities.setIfNotNull(
             editProfileForm.get("settings-editprofile-personalwebsite"), null), tmpData.personalwebsite),

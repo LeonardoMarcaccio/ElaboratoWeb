@@ -1,25 +1,53 @@
 class Notification {
   constructor(identifier, title = "", content = "") {
     this.identifier = identifier;
+    this.notifTitle = null;
+    this.notifContent = null;
     this.notification = document.createElement("div")
     this.notification.classList.add("header-notification");
     this.clearBtn = document.createElement("button");
     this.clearBtn.type = "button";
     this.clearBtn.innerHTML = "mark as read";
-    this.notifTitle = document.createElement("h1");
-    this.notifContent = document.createElement("p");
+    if (title != "") {
+    }
+    if (content == "") {
+    }
     this.clearBtn = document.createElement("button");
     this.clearBtn.innerHTML = "mark as read";
-    this.notification.appendChild(this.notifTitle);
-    this.notification.appendChild(this.notifContent);
     this.notification.appendChild(this.clearBtn);
     this.setTitle(title);
     this.setContent(content);
   }
   setTitle(title) {
+    if (this.notifTitle!= null && (title == null || title == "")) {
+      this.notification.removeChild(this.notifTitle);
+      this.notifTitle = null;
+      return;
+    }
+    if (this.notifTitle == null) {
+      this.notifTitle = document.createElement("h1");
+      if (this.notifContent != null) {
+        this.notification.insertBefore(this.notifTitle, this.notifContent);
+      } else {
+        this.notification.insertBefore(this.notifTitle, this.clearBtn);
+      }
+    }
     this.notifTitle.innerHTML = title;
   }
   setContent(content) {
+    if (this.notifContent!= null && (content == null || content == "")) {
+      this.notification.removeChild(this.notifContent);
+      this.notifContent = null;
+      return;
+    }
+    if (this.notifContent == null) {
+      this.notifContent = document.createElement("p");
+      if (this.notifTitle != null) {
+        this.notification.insertBefore(this.notifContent, this.clearBtn);
+      } else {
+        this.notification.insertBefore(this.notifContent, this.notifTitle);
+      }
+    }
     this.notifContent.innerHTML = content;
   }
   setClearAction(clearAction) {
