@@ -350,6 +350,15 @@ const APICalls = {
       }
       return false;
     },
+    sendRemoveNotification: async (notificationCode) => {
+      let notificationRemovalUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      notificationRemovalUrl.searchParams.append("type", "removeNotification");
+      notificationRemovalUrl.searchParams.append("target", notificationCode);
+      let notificationUpdateResponse = await APICalls.postRequests.postDataToApi(
+        notificationRemovalUrl);
+      APICalls.evaluateResponseCodeAction(notificationUpdateResponse);
+      return notificationUpdateResponse;
+    },
     editUserRequest: async (updateData) => {
       let subCommentUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
       subCommentUrl.searchParams.append("type", "edit");
@@ -465,6 +474,13 @@ const APICalls = {
       }
       let userRequest = await APICalls.getRequests.getDataToApi(null, userUrl);
       return userRequest;
+    },
+    getNotifications: async () => {
+      let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);
+      userUrl.searchParams.append("type", "notification");
+      let notifications = await APICalls.getRequests.getDataToApi(null, userUrl);
+      APICalls.evaluateResponseCodeAction(notifications);
+      return notifications;
     },
     getFriendList: async (username) => {
       let userUrl = APICalls.createApiUrl(APIConstants.apiPages.users);

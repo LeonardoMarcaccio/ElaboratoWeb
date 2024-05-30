@@ -158,4 +158,5 @@ header {
   display: flex;
   overflow-y: auto;
   flex-flow: column;
+  padding-bottom: 30px;
 }
