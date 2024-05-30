@@ -46,11 +46,19 @@ class SlidingDrawer {
     this.notifications = new Map();
   }
   open() {
-    this.drawer.style.width = "75vw";
+    if (this.isOpen) {
+      return;
+    }
+    this.drawer.classList.add("header-drawer-open");
+    this.drawer.classList.remove("header-drawer-close");
     this.isOpen = true;
   }
   close() {
-    this.drawer.style.width = "0";
+    if (!this.isOpen) {
+      return;
+    }
+    this.drawer.classList.add("header-drawer-close");
+    this.drawer.classList.remove("header-drawer-open");
     this.isOpen = false;
   }
   bindActionListeners() {

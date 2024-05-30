@@ -134,7 +134,21 @@ header {
   color: black;
 }
 
+.header-drawer-open {
+  width: 50vw;
+}
+.header-drawer-close {
+  width: 0vw;
+}
+
+@media only screen and (max-width: 700px) {
+  .header-drawer-open {
+    width: 75vw;
+  }
+}
+
 #header-drawer {
+  overflow-x: hidden;
   display: flex;
   flex-flow: column;
 }
