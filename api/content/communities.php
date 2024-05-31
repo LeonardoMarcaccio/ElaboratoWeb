@@ -149,10 +149,17 @@
         }
         $result = array();
         foreach ($postList as $singlePost) {
-          array_push($result, new Post($singlePost['Date'],
-            $singlePost['Content'], $singlePost['Title'],
-            $singlePost['Name'], $singlePost['Username'],
-            $singlePost['Image'], $singlePost['PostID']));
+          array_push($result, new Post(
+              $singlePost['Date'],
+              $singlePost['Content'],
+              $singlePost['Title'],
+              $singlePost['Name'],
+              $singlePost['Username'],
+              $singlePost['Likes'],
+              $singlePost['Image'],
+              $singlePost['PostID']
+            )
+          );
         }
       break;
       case "comment":

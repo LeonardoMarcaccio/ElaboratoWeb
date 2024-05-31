@@ -7,8 +7,18 @@
     private $name;
     private $username;
     private $id;
+    private $likes;
 
-    public function __construct($date, $content, $title, $name, $username, $imageUrl = null, $id = null) {
+    public function __construct(
+      $date,
+      $content,
+      $title,
+      $name,
+      $username,
+      $likes,
+      $imageUrl = null,
+      $id = null
+      ) {
       $this->date = $date;
       $this->content = $content;
       $this->title = $title;
@@ -16,6 +26,7 @@
       $this->name = $name;
       $this->username = $username;
       $this->id = $id;
+      $this->likes = $likes;
     }
 
     public function getDate() {
@@ -39,6 +50,9 @@
     public function getId() {
       return $this->id;
     }
+    public function getLikes() {
+      return $this->likes;
+    }
 
     public function jsonSerialize() {
       return ['date' => $this->date,
@@ -47,6 +61,8 @@
         'imageUrl' => $this->imageUrl,
         'name' => $this->name,
         'username' => $this->username,
-        'id' => $this->id];
+        'id' => $this->id,
+        'likes' => $this->likes
+      ];
     }
   }
