@@ -836,6 +836,7 @@ class PostBuilder {
       let container = document.createElement("div");
       let post = document.createElement("article");
       let head = document.createElement("div");
+      let userButton = document.createElement("button");
       let box = document.createElement("div");
       let userImage = document.createElement("img");
       let title = document.createElement("h2");
@@ -854,6 +855,9 @@ class PostBuilder {
       post.style.margin = "10px";
       head.style.display = "flex";
       head.style.gap = "10px";
+      userButton.style.border = "none";
+      userButton.style.margin = "0px";
+      userButton.style.position = "absolute";
       box.className = "avatar-box";
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
@@ -951,7 +955,7 @@ class PostBuilder {
         }
       };
 
-      userImage.onclick = async () => openUserPage(userString);
+      userButton.onclick = async () => openUserPage(userString);
 
       paragraph.onclick = async () => {
         if (paragraph.className == 0) {
@@ -982,6 +986,7 @@ class PostBuilder {
       container.appendChild(post);
       post.appendChild(head);
       box.appendChild(userImage);
+      box.appendChild(userButton);
       head.appendChild(box);
       head.appendChild(title);
       post.appendChild(srcCommunity);
@@ -1091,6 +1096,7 @@ class CommentBuilder {
     let user = document.createElement("h2");
     let date = document.createElement("h3");
     let content = document.createElement("p");
+    let userButton = document.createElement("button");
     let box = document.createElement("div");
     let pfp = document.createElement("img");
     let buttons = document.createElement("nav");
@@ -1108,6 +1114,9 @@ class CommentBuilder {
     date.style.fontSize = "80%";
     content.innerText = contentString;
     content.style.textAlign = "left";
+    userButton.style.border = "none";
+    userButton.style.margin = "0px";
+    userButton.style.position = "absolute";
     box.className = "avatar-box";
     box.style.maxWidth = "30px";
     box.style.maxHeight = "30px";
@@ -1118,13 +1127,14 @@ class CommentBuilder {
     container.appendChild(comment);
     comment.appendChild(head);
     box.appendChild(pfp);
+    box.appendChild(userButton);
     head.appendChild(box);
     head.appendChild(user);
     head.appendChild(date);
     comment.appendChild(content);
     comment.appendChild(buttons);
     
-    user.onclick = () => openUserPage(userString);
+    userButton.onclick = () => openUserPage(userString);
 
     let reply = document.createElement("button");
     reply.innerText = "Reply";
