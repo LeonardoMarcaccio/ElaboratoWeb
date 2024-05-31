@@ -83,7 +83,7 @@ use function PHPSTORM_META\type;
       $postUsername = attemptValExtraction($assArray, 'username');
       $postImageUrl = decodeAndStoreImage(jsonToImage(attemptValExtraction($assArray, 'postImage')));
       $postId = attemptValExtraction($assArray, 'id');
-      return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, $postImageUrl, $postId);
+      return new Post($postDate, $postContent, $postTitle, $postName, $postUsername, 0, $postImageUrl, $postId);
     } else {
       throw getInvalidDataError();
     }
