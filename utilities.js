@@ -749,6 +749,7 @@ function printUserInfo(userInfo) {
   box.className = "avatar-box";
   pfp.src = userInfo.pfp;
   pfp.style.maxWidth = "90px";
+  pfp.alt = userInfo.username + "'s profile picture";
   gender.innerText = userInfo.gender;
   gender.style.textAlign = "left";
   bio.innerText = userInfo.biography;
@@ -935,7 +936,7 @@ class PostBuilder {
           this.highlightCount++;
           let comments = await APICalls.getRequests.getCommentsRequest(postId, 1, 10);
           comments = comments.response;
-          let builder = new CommentBuilder(titleString);
+          let builder = new CommentBuilder(post.id);
           for (let i in comments) {
             let numSubComments = await APICalls.getRequests.getSubcommentsAmount(comments[i].id);
             numSubComments = numSubComments.response;
