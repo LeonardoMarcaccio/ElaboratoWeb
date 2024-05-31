@@ -25,15 +25,15 @@ class Notification {
       this.notifTitle = null;
       return;
     }
-    if (this.notifTitle == null) {
+    if (this.notifTitle == null && title != null && title != "") {
       this.notifTitle = document.createElement("h1");
       if (this.notifContent != null) {
         this.notification.insertBefore(this.notifTitle, this.notifContent);
       } else {
         this.notification.insertBefore(this.notifTitle, this.clearBtn);
       }
+      this.notifTitle.innerHTML = title;
     }
-    this.notifTitle.innerHTML = title;
   }
   setContent(content) {
     if (this.notifContent!= null && (content == null || content == "")) {
@@ -44,9 +44,9 @@ class Notification {
     if (this.notifContent == null) {
       this.notifContent = document.createElement("p");
       if (this.notifTitle != null) {
-        this.notification.insertBefore(this.notifContent, this.clearBtn);
-      } else {
         this.notification.insertBefore(this.notifContent, this.notifTitle);
+      } else {
+        this.notification.insertBefore(this.notifContent, this.clearBtn);
       }
     }
     this.notifContent.innerHTML = content;

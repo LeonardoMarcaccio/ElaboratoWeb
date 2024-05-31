@@ -1,5 +1,7 @@
 class ProfilePage extends DynamicPage {
   async load() {
+    mainHandler.contentHandling.clearHeadingContent();
+    mainHandler.contentHandling.clearFootingContent();
     if (!mainGlobalVariables.userData.userLoggedIn) {
       return;
     }
