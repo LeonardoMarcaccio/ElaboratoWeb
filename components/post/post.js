@@ -140,6 +140,8 @@ class PostPage extends DynamicPage {
                 await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "postImage", "name", "username"],
                 ["", "", this.postContent.value, 0, this.postTitle.value, picture, select.value, this.user]),
                 select.value);
+                this.errMess.textContent = "Post successfully uploaded";
+                this.errMess.style.display = "flex";
             } else {
                 this.errMess.textContent = "You must fill in the title and content fields!";
                 this.errMess.style.display = "flex";
@@ -154,6 +156,8 @@ class PostPage extends DynamicPage {
                 let picture = await this.imgToJSON(this.communityImage.files[0]);
                 await APICalls.postRequests.sendCommunityRequest(JSONBuilder.build(["name", "communityImage", "description"],
                 [this.communityTitle.value, picture, this.communityDesc.value]));
+                this.errMess.textContent = "Community successfully created";
+                this.errMess.style.display = "flex";
             } else {
                 this.errMess.textContent = "You must fill in the title, description, and image fields!";
                 this.errMess.style.display = "flex";

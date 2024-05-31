@@ -749,7 +749,7 @@ function printUserInfo(userInfo) {
   box.className = "avatar-box";
   pfp.src = userInfo.pfp;
   pfp.style.maxWidth = "90px";
-  pfp.alt = userInfo.username + "'s profile picture";
+  pfp.alt = "";
   gender.innerText = userInfo.gender;
   gender.style.textAlign = "left";
   bio.innerText = userInfo.biography;
@@ -838,8 +838,8 @@ class PostBuilder {
       let head = document.createElement("div");
       let box = document.createElement("div");
       let userImage = document.createElement("img");
-      let title = document.createElement("h1");
-      let srcCommunity = document.createElement("h2");
+      let title = document.createElement("h2");
+      let srcCommunity = document.createElement("h3");
       let paragraph = document.createElement("p");
       let buttons = document.createElement("nav");
       let like = document.createElement("button");
@@ -858,7 +858,7 @@ class PostBuilder {
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
       userImage.src = userPfp != null ? userPfp : this.defaultPfp;
-      userImage.alt = userString + "'s profile";
+      userImage.alt = "";
       userImage.style.maxWidth = "30px";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
@@ -989,6 +989,7 @@ class PostBuilder {
           let postImage = document.createElement("img");
           postImage.src = postImg;
           postImage.style.maxWidth = "220px";
+          postImage.alt = "";
           post.appendChild(postImage);
       }
       post.appendChild(paragraph);
@@ -1017,7 +1018,7 @@ class CommunityBuilder {
       let head = document.createElement("div");
       let box = document.createElement("div");
       let image = document.createElement("img");
-      let title = document.createElement("h1");
+      let title = document.createElement("h2");
       let follow = document.createElement("button");
       let desc = document.createElement("p");
 
@@ -1030,7 +1031,7 @@ class CommunityBuilder {
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
       image.src = commImg != null ? commImg : this.defaultImage;
-      image.alt = titleString + " community";
+      image.alt = "";
       image.style.maxWidth = "30px";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
@@ -1087,8 +1088,8 @@ class CommentBuilder {
     let container = document.createElement("div");
     let comment = document.createElement("article");
     let head = document.createElement("div");
-    let user = document.createElement("h1");
-    let date = document.createElement("h2");
+    let user = document.createElement("h2");
+    let date = document.createElement("h3");
     let content = document.createElement("p");
     let box = document.createElement("div");
     let pfp = document.createElement("img");
@@ -1111,7 +1112,7 @@ class CommentBuilder {
     box.style.maxWidth = "30px";
     box.style.maxHeight = "30px";
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
-    pfp.alt = userString + "'s profile";
+    pfp.alt = "";
     pfp.style.maxWidth = "30px";
     
     container.appendChild(comment);
