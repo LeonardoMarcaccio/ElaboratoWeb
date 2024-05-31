@@ -47,6 +47,7 @@ class SettingsPage extends DynamicPage {
     this.getAccountActionsForm().onsubmit = async (event) => {
       event.preventDefault();
       await APICalls.postRequests.sendLogout();
+      mainGlobalVariables.userData.userLoggedIn = false;
       updateLoginStatus();
     };
     this.getEditProfileForm().onsubmit = async (event) => {

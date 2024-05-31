@@ -133,6 +133,9 @@ class SlidingDrawer {
     });
   }
   async update() {
+    if (!mainGlobalVariables.userData.userLoggedIn) {
+      return;
+    }
     let userNotifications = await APICalls.getRequests.getNotifications();
     if (!userNotifications.hasOwnProperty("response")) {
       return;
