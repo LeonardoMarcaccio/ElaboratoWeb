@@ -108,9 +108,6 @@ button {
 .generic-form > fieldset > * {
   transition: 500ms;
 }
-.generic-form > * {
-
-}
 .generic-form > fieldset > textarea {
   resize: none;
 }
