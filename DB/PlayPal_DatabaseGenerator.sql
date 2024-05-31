@@ -326,13 +326,13 @@ INSERT INTO `join`(`Name`, `Username`) VALUES ('Titanfall 2','TestUser4');
 -- Post Table
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
-VALUES (1,'2024-02-05','Just installed my new Ubuntu distro',0,'New Linux User', "media/users/Ubuntu.png",'LinuxUsers','TestUser1');
+VALUES (1,'2024-02-05','Just installed my new Ubuntu distro',3,'New Linux User', "media/users/Ubuntu.png",'LinuxUsers','TestUser1');
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
-VALUES (2,'2024-02-06','I really love linux it feels amazing',0,'First Impressions',"media/users/Ubuntu.png",'LinuxUsers','TestUser1');
+VALUES (2,'2024-02-06','I really love linux it feels amazing',2,'First Impressions',"media/users/Ubuntu.png",'LinuxUsers','TestUser1');
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
-VALUES (3,'2024-02-06','My favourite one is Jack Cooper',0,"What's your favourite character?","media/users/JackCooper.jpg",'Titanfall 2','TestUser2');
+VALUES (3,'2024-02-06','My favourite one is Jack Cooper',3,"What's your favourite character?","media/users/JackCooper.jpg",'Titanfall 2','TestUser2');
 
 INSERT INTO `post`(`PostID`, `Date`, `Content`, `Likes`, `Title`, `Image`, `Name`, `Username`)
 VALUES (4,'2024-02-07',"I'm still downloading it",0,"Has anyone tried the new update?",null,'Call of Duty MLG','TestUser3');
