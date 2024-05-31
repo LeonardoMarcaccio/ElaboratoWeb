@@ -20,7 +20,7 @@
 .profile-user-pane-head {
   display: flex;
   justify-content: space-evenly;
-  max-height: 100px;
+  max-height: 215px;
   flex-grow: 0;
 }
 .profile-user-pane-body {
