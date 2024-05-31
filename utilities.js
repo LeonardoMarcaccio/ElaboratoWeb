@@ -965,6 +965,7 @@ class PostBuilder {
       if (postImg != null) {
           let postImage = document.createElement("img");
           postImage.src = postImg;
+          postImage.style.maxWidth = "220px";
           post.appendChild(postImage);
       }
       post.appendChild(paragraph);
