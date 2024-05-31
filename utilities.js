@@ -1125,8 +1125,9 @@ class CommentBuilder {
           send.onclick = async () => {
             let username = await APICalls.getRequests.getUserInfo();
             username = username.response;
-            console.log(id);
             await APICalls.postRequests.sendSubcommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.value, username.username, 0]), id);
+            reply.innerText = "Reply";
+            container.removeChild(bar);
           }
         }
         container.appendChild(bar);
