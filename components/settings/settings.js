@@ -42,6 +42,27 @@ class SettingsPage extends DynamicPage {
   getDangerZoneNewPasswordRepeatField() {
     return this.lazyNodeIdQuery("settings-dangerzone-password-repeat", true);
   }
+  getWarningBox() {
+    return this.lazyNodeIdQuery("settings-warning-box");
+  }
+  showVisualUpdate(visible, text, error = false) {
+    if (visible) {
+      this.getWarningBox().classList.remove("generic-update-box-hidden");
+      if (error) {
+        this.getWarningBox().classList.remove("generic-update-box-fine");
+        this.getWarningBox().classList.add("generic-update-box-error");
+      } else {
+        this.getWarningBox().classList.remove("generic-update-box-error");
+        this.getWarningBox().classList.add("generic-update-box-fine");
+      }
+    } else {
+      this.getWarningBox().classList.add("generic-update-box-hidden");
+    }
+    this.getWarningBox().innerHTML = "";
+    let warningText = document.createElement("p");
+    warningText.innerHTML = text;
+    this.getWarningBox().appendChild(warningText);
+  }
   
   bindEventListeners() {
     this.getAccountActionsForm().onsubmit = async (event) => {
@@ -85,7 +106,16 @@ class SettingsPage extends DynamicPage {
           genericUtilities.setIfNotNull(
             editProfileForm.get("settings-editprofile-phonenumber"), null), tmpData.phonenumber)
       );
-      await APICalls.postRequests.editUserRequest(usrUpdate);
+      let editUserResult = await APICalls.postRequests.editUserRequest(usrUpdate);
+      if (editUserResult.code == 200) {
+        this.showVisualUpdate(true, "Upates registered successfully!", false);
+      } else {
+        this.showVisualUpdate(true, "An error occourred while updating your profile", true);
+      }
+      mainGlobalVariables.page.mainContentPage.getContent().scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
       tmpData = await APICalls.getRequests.getUserInfo();
       this.getCurrentProfileImage().src = tmpData.response.pfp;
     };

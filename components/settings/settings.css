@@ -58,3 +58,19 @@
   color: rgb(196, 0, 0);
   font-weight: bold;
 }
+
+
+.generic-update-box { 
+  display: block;
+  min-height: 50px;
+  max-height: 0;
+}
+.generic-update-box-hidden {
+  display: none;
+}
+.generic-update-box-fine { 
+  border: 2px dashed green;
+}
+.generic-update-box-error {
+  border: 2px dashed red;
+}
