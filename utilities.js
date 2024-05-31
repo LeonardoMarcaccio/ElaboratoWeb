@@ -748,6 +748,7 @@ function printUserInfo(userInfo) {
   username.innerText = userInfo.username;
   box.className = "avatar-box";
   pfp.src = userInfo.pfp;
+  pfp.style.maxWidth = "90px";
   gender.innerText = userInfo.gender;
   gender.style.textAlign = "left";
   bio.innerText = userInfo.biography;
@@ -856,6 +857,7 @@ class PostBuilder {
       box.style.maxHeight = "30px";
       userImage.src = userPfp != null ? userPfp : this.defaultPfp;
       userImage.alt = userString + "'s profile";
+      userImage.style.maxWidth = "30px";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
@@ -1004,6 +1006,7 @@ class CommunityBuilder {
       box.style.maxHeight = "30px";
       image.src = commImg != null ? commImg : this.defaultImage;
       image.alt = titleString + " community";
+      image.style.maxWidth = "30px";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
@@ -1084,6 +1087,7 @@ class CommentBuilder {
     box.style.maxHeight = "30px";
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
     pfp.alt = userString + "'s profile";
+    pfp.style.maxWidth = "30px";
     
     container.appendChild(comment);
     comment.appendChild(head);
