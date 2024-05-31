@@ -7,6 +7,7 @@ class Notification {
     this.notification.classList.add("header-notification");
     this.clearBtn = document.createElement("button");
     this.clearBtn.type = "button";
+    this.clearBtn.name = "header-drawer-notification-dismiss";
     this.clearBtn.innerHTML = "mark as read";
     if (title != "") {
     }
@@ -69,6 +70,7 @@ class SlidingDrawer {
     this.drawerBtn = document.getElementById("header-drawer-btn");
     this.drawerCloseBtn = document.getElementById("header-drawer-close-btn");
     this.drawerBody = document.getElementById("header-drawer-body-scrollcontainer");
+    this.notificationCounter = document.getElementById("header-drawer-notification-counter");
     this.bindActionListeners();
     this.isOpen = false;
     this.notifications = new Map();
@@ -108,12 +110,6 @@ class SlidingDrawer {
     }
     let notification = new Notification(code, title, content);
     let selectedId = code;
-    /*if (this.freeIds.length == 0) {
-      selectedId = this.nextNotificationId;
-      this.nextNotificationId += 1;
-    } else {
-      selectedId = this.freeIds.pop();
-    }*/
     this.notifications.set(selectedId, notification);
     notification.setClearAction(() => {
       APICalls.postRequests.sendRemoveNotification(selectedId);
@@ -126,11 +122,15 @@ class SlidingDrawer {
     this.drawerBody.removeChild(this.notifications.get(notificationNumber).getNotification());
     this.freeIds.push(notificationNumber);
     this.notifications.delete(notificationNumber);
+    this.update();
   }
   clearNotifications() {
     this.notifications.forEach((index) => {
       this.destroyNotification(index);
     });
+  }
+  updateNotificationCounter(number) {
+    this.notificationCounter.innerHTML = number;
   }
   async update() {
     if (!mainGlobalVariables.userData.userLoggedIn) {
@@ -138,11 +138,14 @@ class SlidingDrawer {
     }
     let userNotifications = await APICalls.getRequests.getNotifications();
     if (!userNotifications.hasOwnProperty("response")) {
+      this.notificationCounter.innerHTML = "";
       return;
     }
     let codeList = new Array();
+    let size = 0;
     userNotifications.response.forEach(
       (value, index) => {
+        size += 1;
         codeList.push(value);
         this.createNotification(value.code, "", value.text);
       }
@@ -156,6 +159,9 @@ class SlidingDrawer {
     enqueuedDeletion.forEach((value, index) => {
       this.notifications.delete(value);
     });
+    this.notificationCounter.innerHTML = size > 0
+      ? size
+      : "";
   }
 }
 

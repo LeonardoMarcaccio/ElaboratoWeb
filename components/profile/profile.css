@@ -52,3 +52,7 @@
 #profile-user-bio-container > p {
   text-align: left;
 }
+
+#profile-user-name-box > p {
+  font-weight: bold;
+}

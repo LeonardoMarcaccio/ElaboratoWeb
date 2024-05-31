@@ -80,8 +80,8 @@ class ProfilePage extends DynamicPage {
       return;
     }
     this.getUsernameArea().innerHTML = genericUtilities.setIfNotNull(this.userData.username);
-    this.getUserFirstNameArea().innerHTML = "<b>"+genericUtilities.setIfNotNull(this.userData.firstname)+"</b>";
-    this.getUserLastNameArea().innerHTML = "<b>"+genericUtilities.setIfNotNull(this.userData.lastname)+"</b>";
+    this.getUserFirstNameArea().innerHTML = genericUtilities.setIfNotNull(this.userData.firstname);
+    this.getUserLastNameArea().innerHTML = genericUtilities.setIfNotNull(this.userData.lastname);
     if (this.userData.biography != null) {
       this.getBioContent().innerHTML = this.userData.biography;
       this.getBioContent().style.color = "black";
