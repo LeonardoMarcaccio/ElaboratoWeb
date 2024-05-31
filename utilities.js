@@ -832,7 +832,7 @@ class PostBuilder {
     }
   }
 
-  async makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId) {
+  async makePost (titleString, userPfp, userString, srcCommunityString, paragraphString, postImg, postId, likes) {
       let container = document.createElement("div");
       let post = document.createElement("article");
       let head = document.createElement("div");
@@ -847,6 +847,7 @@ class PostBuilder {
       let comment = document.createElement("button");
       const bar = document.createElement("form");
       let flag = true;
+      let curLikes = likes;
 
       post.id = this.IDPrefix + "-post-" + this.count++;
       post.className = "post";
@@ -867,7 +868,7 @@ class PostBuilder {
       paragraph.innerText = paragraphString;
       paragraph.style.textAlign = "left";
       paragraph.className = 0;
-      like.innerText = "Like";
+      like.innerText = curLikes + "  Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
       like.style.background = this.defaultColor;
@@ -883,12 +884,34 @@ class PostBuilder {
 
       like.onclick = async () => {
         await APICalls.postRequests.vote(postId, 1);
-        like.style.background = like.style.background == this.defaultColor ? this.clickedColor : this.defaultColor;
+        if (like.style.background == this.defaultColor) {
+          like.style.background = this.clickedColor;
+          if (dislike.style.background != this.defaultColor) {
+            curLikes += 2;
+          } else {
+            curLikes += 1;
+          }
+        } else {
+          like.style.background = this.defaultColor;
+          curLikes -= 1;
+        }
+        like.innerText = curLikes + "  Like";
         dislike.style.background = this.defaultColor;
       };
       dislike.onclick = async () => {
         await APICalls.postRequests.vote(postId, 0);
-        dislike.style.background = dislike.style.background == this.defaultColor ? this.clickedColor : this.defaultColor;
+        if (dislike.style.background == this.defaultColor) {
+          dislike.style.background = this.clickedColor;
+          if (like.style.background != this.defaultColor) {
+            curLikes -= 2;
+          } else {
+            curLikes -= 1;
+          }
+        } else {
+          dislike.style.background = this.defaultColor;
+          curLikes += 1;
+        }
+        like.innerText = curLikes + "  Like";
         like.style.background = this.defaultColor;
       };
       comment.onclick = () => {

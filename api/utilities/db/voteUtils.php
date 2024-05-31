@@ -19,6 +19,7 @@
                 deleteVote($username, $postID, $database);
             }
         }
+        updateLikes($postID, $database);
     }
 
     function newVote($username, $postID, $value, mysqli $database) {
