@@ -859,6 +859,7 @@ class PostBuilder {
       userButton.style.border = "none";
       userButton.style.margin = "0px";
       userButton.name = userString + "-profile";
+      userButton.style.backgroundColor = "transparent";
       box.className = "avatar-box";
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
@@ -876,6 +877,7 @@ class PostBuilder {
       parButton.style.margin = "0px";
       parButton.innerText = paragraphString;
       parButton.name = "open-post-" + titleString;
+      parButton.style.backgroundColor = "transparent";
       like.innerText = curLikes + "  Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
@@ -1054,8 +1056,8 @@ class CommunityBuilder {
       bottom.style.display = "flex";
       open.style.border = "none";
       open.style.margin = "0px";
-      open.style.width = "-webkit-fill-available";
       open.name = "open-community-" + titleString;
+      open.style.backgroundColor = "transparent";
       open.innerText = descString;
 
       community.appendChild(head);
@@ -1082,10 +1084,11 @@ class CommunityBuilder {
           let event = new CustomEvent("community-detail");
           document.dispatchEvent(event);
         }
-
       } else {
         follow.style.color = "#FFFFFF";
         head.style.justifyContent = "space-evenly";
+        open.style.color = "#FFFFFF";
+        bottom.style.justifyContent = "center";
       }
 
       return community;
@@ -1109,7 +1112,6 @@ class CommentBuilder {
     let date = document.createElement("h3");
     let content = document.createElement("p");
     let userButton = document.createElement("button");
-    let box = document.createElement("div");
     let pfp = document.createElement("img");
     let buttons = document.createElement("nav");
     let userPfp = null;
@@ -1129,18 +1131,15 @@ class CommentBuilder {
     userButton.style.border = "none";
     userButton.style.margin = "0px";
     userButton.name = userString + "-profile";
-    box.className = "avatar-box";
-    box.style.maxWidth = "30px";
-    box.style.maxHeight = "30px";
+    userButton.style.backgroundColor = "transparent";
     pfp.src = userPfp != null ? userPfp : this.defaultImage;
     pfp.alt = "";
-    pfp.style.maxWidth = "30px";
+    pfp.style.maxHeight = "30px";
     
     container.appendChild(comment);
     comment.appendChild(head);
-    box.appendChild(pfp);
-    box.appendChild(userButton);
-    head.appendChild(box);
+    userButton.appendChild(pfp);
+    head.appendChild(userButton);
     head.appendChild(user);
     head.appendChild(date);
     comment.appendChild(content);
