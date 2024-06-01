@@ -841,7 +841,9 @@ class PostBuilder {
       let userImage = document.createElement("img");
       let title = document.createElement("h2");
       let srcCommunity = document.createElement("h3");
+      let contPar = document.createElement("div");
       let paragraph = document.createElement("p");
+      let parButton = document.createElement("button");
       let buttons = document.createElement("nav");
       let like = document.createElement("button");
       let dislike = document.createElement("button");
@@ -858,6 +860,7 @@ class PostBuilder {
       userButton.style.border = "none";
       userButton.style.margin = "0px";
       userButton.style.position = "absolute";
+      userButton.name = userString + "-profile";
       box.className = "avatar-box";
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
@@ -869,9 +872,16 @@ class PostBuilder {
       title.style.marginBlockEnd = "0px";
       srcCommunity.innerText = "by " + userString + ", from " + srcCommunityString;
       srcCommunity.style.fontSize = "80%";
+      contPar.style.display = "flex";
       paragraph.innerText = paragraphString;
       paragraph.style.textAlign = "left";
       paragraph.className = 0;
+      parButton.style.border = "none";
+      parButton.style.margin = "0px";
+      parButton.style.position = "absolute";
+      parButton.style.width = "-webkit-fill-available";
+      parButton.name = titleString + "-comments";
+      parButton.className = "postContent";
       like.innerText = curLikes + "  Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
@@ -957,7 +967,8 @@ class PostBuilder {
 
       userButton.onclick = async () => openUserPage(userString);
 
-      paragraph.onclick = async () => {
+      parButton.onclick = async () => {
+        parButton.style.backgroundColor = "transparent";
         if (paragraph.className == 0) {
           this.hideOtherPosts(post.id);
           this.highlightCount++;
@@ -991,13 +1002,15 @@ class PostBuilder {
       head.appendChild(title);
       post.appendChild(srcCommunity);
       if (postImg != null) {
-          let postImage = document.createElement("img");
-          postImage.src = postImg;
-          postImage.style.maxWidth = "220px";
-          postImage.alt = "";
-          post.appendChild(postImage);
+        let postImage = document.createElement("img");
+        postImage.src = postImg;
+        postImage.style.maxWidth = "220px";
+        postImage.alt = "";
+        post.appendChild(postImage);
       }
-      post.appendChild(paragraph);
+      contPar.appendChild(paragraph);
+      contPar.appendChild(parButton);
+      post.appendChild(contPar);
       post.appendChild(buttons);
       buttons.appendChild(like);
       buttons.appendChild(dislike);
@@ -1025,6 +1038,8 @@ class CommunityBuilder {
       let image = document.createElement("img");
       let title = document.createElement("h2");
       let follow = document.createElement("button");
+      let bottom = document.createElement("div");
+      let open = document.createElement("button");
       let desc = document.createElement("p");
 
       community.id = this.IDPrefix + "-community-" + this.count++;
@@ -1044,6 +1059,12 @@ class CommunityBuilder {
       let isFollow = await APICalls.getRequests.isFollowing(titleString);
       isFollow = isFollow.response[0];
       follow.innerText = isFollow ? "Unfollow" : "Follow";
+      bottom.style.display = "flex";
+      open.style.border = "none";
+      open.style.margin = "0px";
+      open.style.position = "absolute";
+      open.style.width = "-webkit-fill-available";
+      open.name = titleString + "-community";
       desc.innerText = descString;
       desc.style.textAlign = "left";
 
@@ -1052,7 +1073,9 @@ class CommunityBuilder {
       head.appendChild(box);
       head.appendChild(title);
       head.appendChild(follow);
-      community.appendChild(desc);
+      bottom.appendChild(desc);
+      bottom.appendChild(open);
+      community.appendChild(bottom);
 
       follow.onclick = async () => {
         if (follow.innerText == "Follow") {
@@ -1065,7 +1088,7 @@ class CommunityBuilder {
       };
 
       if (this.inSearch) {
-        desc.onclick = async () => {
+        open.onclick = async () => {
           sharedCommunityCache = JSONBuilder.build(["title", "desc", "img"], [titleString, descString, commImg]);
           let event = new CustomEvent("community-detail");
           document.dispatchEvent(event);
@@ -1117,6 +1140,7 @@ class CommentBuilder {
     userButton.style.border = "none";
     userButton.style.margin = "0px";
     userButton.style.position = "absolute";
+    userButton.name = userString + "-profile";
     box.className = "avatar-box";
     box.style.maxWidth = "30px";
     box.style.maxHeight = "30px";
