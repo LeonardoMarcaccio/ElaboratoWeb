@@ -842,7 +842,6 @@ class PostBuilder {
       let title = document.createElement("h2");
       let srcCommunity = document.createElement("h3");
       let contPar = document.createElement("div");
-      let paragraph = document.createElement("p");
       let parButton = document.createElement("button");
       let buttons = document.createElement("nav");
       let like = document.createElement("button");
@@ -859,27 +858,23 @@ class PostBuilder {
       head.style.gap = "10px";
       userButton.style.border = "none";
       userButton.style.margin = "0px";
-      userButton.style.position = "absolute";
       userButton.name = userString + "-profile";
       box.className = "avatar-box";
       box.style.maxWidth = "30px";
       box.style.maxHeight = "30px";
       userImage.src = userPfp != null ? userPfp : this.defaultPfp;
       userImage.alt = "";
-      userImage.style.maxWidth = "30px";
+      userImage.style.maxHeight = "30px";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";
       srcCommunity.innerText = "by " + userString + ", from " + srcCommunityString;
       srcCommunity.style.fontSize = "80%";
       contPar.style.display = "flex";
-      paragraph.innerText = paragraphString;
-      paragraph.style.textAlign = "left";
-      paragraph.className = 0;
+      parButton.className = 0;
       parButton.style.border = "none";
       parButton.style.margin = "0px";
-      parButton.style.position = "absolute";
-      parButton.style.width = "-webkit-fill-available";
+      parButton.innerText = paragraphString;
       parButton.name = "open-post-" + titleString;
       like.innerText = curLikes + "  Like";
       dislike.innerText = "Dislike";
@@ -968,7 +963,7 @@ class PostBuilder {
 
       parButton.onclick = async () => {
         parButton.style.backgroundColor = "transparent";
-        if (paragraph.className == 0) {
+        if (parButton.className == 0) {
           this.hideOtherPosts(post.id);
           this.highlightCount++;
           let comments = await APICalls.getRequests.getCommentsRequest(postId, 1, 10);
@@ -979,12 +974,12 @@ class PostBuilder {
             numSubComments = numSubComments.response;
             let tmp = builder.makeComment(comments[i].username, comments[i].content, comments[i].date, comments[i].id, numSubComments[0].count);
             container.appendChild(tmp);
-            paragraph.className++;
+            parButton.className++;
           }
         } else {
-          while (paragraph.className > 0) {
+          while (parButton.className > 0) {
             container.removeChild(container.lastChild);
-            paragraph.className--;
+            parButton.className--;
           }
           this.highlightCount--;
           if (this.highlightCount == 0) {
@@ -995,7 +990,7 @@ class PostBuilder {
 
       container.appendChild(post);
       post.appendChild(head);
-      box.appendChild(userImage);
+      userButton.appendChild(userImage);
       box.appendChild(userButton);
       head.appendChild(box);
       head.appendChild(title);
@@ -1007,7 +1002,6 @@ class PostBuilder {
         postImage.alt = "";
         post.appendChild(postImage);
       }
-      contPar.appendChild(paragraph);
       contPar.appendChild(parButton);
       post.appendChild(contPar);
       post.appendChild(buttons);
@@ -1039,7 +1033,6 @@ class CommunityBuilder {
       let follow = document.createElement("button");
       let bottom = document.createElement("div");
       let open = document.createElement("button");
-      let desc = document.createElement("p");
 
       community.id = this.IDPrefix + "-community-" + this.count++;
       community.className = "community";
@@ -1061,18 +1054,15 @@ class CommunityBuilder {
       bottom.style.display = "flex";
       open.style.border = "none";
       open.style.margin = "0px";
-      open.style.position = "absolute";
       open.style.width = "-webkit-fill-available";
       open.name = "open-community-" + titleString;
-      desc.innerText = descString;
-      desc.style.textAlign = "left";
+      open.innerText = descString;
 
       community.appendChild(head);
       box.appendChild(image);
       head.appendChild(box);
       head.appendChild(title);
       head.appendChild(follow);
-      bottom.appendChild(desc);
       bottom.appendChild(open);
       community.appendChild(bottom);
 
@@ -1138,7 +1128,6 @@ class CommentBuilder {
     content.style.textAlign = "left";
     userButton.style.border = "none";
     userButton.style.margin = "0px";
-    userButton.style.position = "absolute";
     userButton.name = userString + "-profile";
     box.className = "avatar-box";
     box.style.maxWidth = "30px";

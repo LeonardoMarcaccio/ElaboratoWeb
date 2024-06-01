@@ -8,3 +8,8 @@ body {
     flex-flow: column;
     justify-content: space-evenly;
 }
+
+button:hover {
+    background-color: transparent;
+    transition: none;
+  }
