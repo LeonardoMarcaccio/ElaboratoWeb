@@ -47,3 +47,7 @@
 .search-form input[type="text"]:focus {
     border-color:#007bff;
 }
+
+label {
+    display: none;
+}

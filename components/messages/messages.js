@@ -17,13 +17,20 @@ class MessagePage extends DynamicPage {
     async pageSetup() {
         this.messagesDiv = this.getMessagesDiv();
         let form = document.createElement("form");
+        let label = document.createElement("label");
         let bar = document.createElement("input");
         let send = document.createElement("button");
         form.className = "messages-form";
+        bar.id = "message-bar-input";
         bar.type = "text";
         bar.placeholder = "Message...";
+        label.style.display = "none";
+        label.textContent = "Message";
+        label.htmlFor = "message-bar-input";
         send.innerText = "Send";
         send.type = "submit";
+        send.name = "send-message";
+        form.appendChild(label);
         form.appendChild(bar);
         form.appendChild(send);
 

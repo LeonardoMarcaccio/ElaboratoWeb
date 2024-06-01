@@ -880,8 +880,7 @@ class PostBuilder {
       parButton.style.margin = "0px";
       parButton.style.position = "absolute";
       parButton.style.width = "-webkit-fill-available";
-      parButton.name = titleString + "-comments";
-      parButton.className = "postContent";
+      parButton.name = "open-post-" + titleString;
       like.innerText = curLikes + "  Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
@@ -1064,7 +1063,7 @@ class CommunityBuilder {
       open.style.margin = "0px";
       open.style.position = "absolute";
       open.style.width = "-webkit-fill-available";
-      open.name = titleString + "-community";
+      open.name = "open-community-" + titleString;
       desc.innerText = descString;
       desc.style.textAlign = "left";
 

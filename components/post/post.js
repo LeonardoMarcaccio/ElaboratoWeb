@@ -74,9 +74,11 @@ class PostPage extends DynamicPage {
         this.togglePost.textContent = "Create Post";
         this.togglePost.style.color = "#FFFFFF";
         this.togglePost.disabled = true;
+        this.togglePost.name = "create-post";
         this.toggleCommunity.textContent = "Create Community";
         this.toggleCommunity.style.color = "#FFFFFF";
         this.toggleCommunity.disabled = false;
+        this.toggleCommunity.name = "create-community";
         this.errMess.style.display = "none";
         this.errMess.style.justifyContent = "center";
         this.toggleButtons.appendChild(this.togglePost);
