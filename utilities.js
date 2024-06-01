@@ -947,13 +947,13 @@ class PostBuilder {
               username = username.response;
               await APICalls.postRequests.sendCommentRequest(JSONBuilder.build(["date", "content", "username", "id"], ["", input.value, username.username, 0]), postId);
               comment.innerText = "Comment";
-              container.removeChild(bar);
+              post.removeChild(bar);
             }
           }
-          container.appendChild(bar);
+          post.appendChild(bar);
         } else {
           comment.innerText = "Comment";
-          container.removeChild(bar);
+          post.removeChild(bar);
           this.highlightCount--;
           if (this.highlightCount == 0) {
             this.showAllPosts();
