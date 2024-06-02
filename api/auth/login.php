@@ -19,7 +19,12 @@
       $username = $usrObj->getUsername();
       createSession($token, $username, $database);
 
-      setcookie("token", $token, time() + DEFAULT_TOKEN_TTL, "/");
+      setcookie("token", $token, [
+        'expires' => time() + DEFAULT_TOKEN_TTL,
+        'path' => '/',
+        'samesite' => 'Strict',
+        ]
+      );
       exit(generateJSONResponse(200, "Ok"));
     } else {
       throw new ApiError(HTTP_UNAUTHORIZED_ERROR, HTTP_UNAUTHORIZED_ERROR_CODE);

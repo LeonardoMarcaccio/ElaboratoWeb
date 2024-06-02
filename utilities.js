@@ -40,8 +40,11 @@ const genericUtilities = {
 }
 
 const cookieUtilities = {
-  addCookie: (name, value, expiration, path) => {
-    document.cookie = name+"="+value+"; "+"expires="+expiration+"; "+path;
+  addCookie(name, value, expiration, path, samesite = "Lax") {
+    document.cookie = name + "=" + encodeURIComponent(value) + "; "
+      + "expires=" + expiration + "; "
+      + "path=" + path + "; "
+      + "SameSite=" + samesite;
   },
   readCookie: (name) => {
     let entry = "";
