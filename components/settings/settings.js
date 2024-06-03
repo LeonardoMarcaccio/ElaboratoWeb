@@ -3,6 +3,7 @@ class SettingsPage extends DynamicPage {
     super();
     this.passwordMatchError = false;
     this.oldPasswordMatchError = false;
+    this.pageId = events.userSpecific.settings;
   }
   async load() {
     if (mainGlobalVariables.buttonData.lastSelection != "settings") {
@@ -16,6 +17,7 @@ class SettingsPage extends DynamicPage {
       this.getCurrentProfileImage().src = tmpData.pfp;
     }
     this.bindEventListeners();
+    mainGlobalVariables.page.currentPageLoc = this.pageId;
   }
 
   getCurrentProfileImage() {

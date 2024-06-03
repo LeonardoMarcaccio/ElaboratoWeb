@@ -45,6 +45,9 @@ class LoginPage extends DynamicPage {
   }
   showLoginWarningBox(show) {
     let warningbox = this.lazyNodeIdQuery("login-warningbox");
+    if (warningbox == null) {
+      return;
+    }
     if (show) {
       warningbox.style.display = "block"
       warningbox.classList.add("generic-warningbox");
