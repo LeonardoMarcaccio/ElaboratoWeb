@@ -50,19 +50,13 @@
     return new EmailValidityReport(filter_var($email, FILTER_VALIDATE_EMAIL) !== false);
   }
 
-  function isValidPhoneNumber($phone) {
-    $cleanedPhone = preg_replace('/[\s\-()]+/', '', $phone);
-    
-    if (strlen($phone) != 15) {
-        return false;
-    }
+  function isValidPhoneNumber($phoneNumber) {
+    // Rimuovi spazi, trattini e parentesi dalla stringa
+    $cleanedNumber = preg_replace('/[\s\-()]/', '', $phoneNumber);
 
-    if (!preg_match('/^\+?\d+$/', $cleanedPhone)) {
-        return false;
-    }
-
-    return true;
-}
+    // Verifica che il numero sia composto solo da cifre e, opzionalmente, inizi con un "+"
+    return preg_match('/^\+?[0-9]{10,15}$/', $cleanedNumber);
+  }
 
   function checkNonEssValidity(UserData $userContainer) {
     $lengthName = 50;

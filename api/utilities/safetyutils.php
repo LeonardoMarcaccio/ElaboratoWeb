@@ -6,7 +6,7 @@
   function sanitizeInput($usrInput) {
     return htmlspecialchars(strip_tags($usrInput), ENT_QUOTES, 'UTF-8');
   }
-  function generateToken($length = 32) {
+  function generateToken() {
     return uniqid("", true);
   }
   function filterInfoLevel(UserData $userObject, $infoLevel) {
