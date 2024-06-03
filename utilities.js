@@ -845,6 +845,7 @@ class PostBuilder {
       let contPar = document.createElement("div");
       let parButton = document.createElement("button");
       let buttons = document.createElement("nav");
+      let votes = document.createElement("button");
       let like = document.createElement("button");
       let dislike = document.createElement("button");
       let comment = document.createElement("button");
@@ -880,7 +881,14 @@ class PostBuilder {
       parButton.name = "open-post-" + titleString;
       parButton.style.backgroundColor = "transparent";
       parButton.style.maxHeight = "fit-content";
-      like.innerText = curLikes + "  Like";
+      parButton.style.height = "fit-content";
+      buttons.style.border = "none";
+      votes.innerText = curLikes;
+      votes.style.border = "none";
+      votes.style.backgroundColor = "transparent";
+      votes.style.padding = 0;
+      votes.style.margin = 0;
+      like.innerText = "Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
       like.style.background = this.defaultColor;
@@ -907,7 +915,7 @@ class PostBuilder {
           like.style.background = this.defaultColor;
           curLikes -= 1;
         }
-        like.innerText = curLikes + "  Like";
+        votes.innerText = curLikes;
         dislike.style.background = this.defaultColor;
       };
       dislike.onclick = async () => {
@@ -923,7 +931,7 @@ class PostBuilder {
           dislike.style.background = this.defaultColor;
           curLikes += 1;
         }
-        like.innerText = curLikes + "  Like";
+        votes.innerText = curLikes;
         like.style.background = this.defaultColor;
       };
       comment.onclick = () => {
@@ -1009,6 +1017,7 @@ class PostBuilder {
       contPar.appendChild(parButton);
       post.appendChild(contPar);
       post.appendChild(buttons);
+      buttons.appendChild(votes);
       buttons.appendChild(like);
       buttons.appendChild(dislike);
       buttons.appendChild(comment);
