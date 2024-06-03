@@ -27,7 +27,7 @@ class CommunityPage extends DynamicPage {
         let builder = new PostBuilder("search");
         for (let i in posts) {
             posts[i];
-            let tmp = await builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].image, posts[i].id, posts[i].likes);
+            let tmp = await builder.makePost(posts[i].title, null, posts[i].username, posts[i].name, posts[i].content, posts[i].imageUrl, posts[i].id, posts[i].likes);
             this.communityDiv.appendChild(tmp);
         }
     }

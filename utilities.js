@@ -879,6 +879,7 @@ class PostBuilder {
       parButton.innerText = paragraphString;
       parButton.name = "open-post-" + titleString;
       parButton.style.backgroundColor = "transparent";
+      parButton.style.maxHeight = "fit-content";
       like.innerText = curLikes + "  Like";
       dislike.innerText = "Dislike";
       comment.innerText = "Comment";
@@ -1043,11 +1044,11 @@ class CommunityBuilder {
       head.style.display = "flex";
       head.style.gap = "10px";
       box.className = "avatar-box";
-      box.style.maxWidth = "30px";
-      box.style.maxHeight = "30px";
+      box.style.maxWidth = "60px";
+      box.style.maxHeight = "60px";
       image.src = commImg != null ? commImg : this.defaultImage;
       image.alt = "";
-      image.style.maxWidth = "30px";
+      image.style.maxWidth = "60px";
       title.innerText = titleString;
       title.style.marginBlockStart = "0px";
       title.style.marginBlockEnd = "0px";

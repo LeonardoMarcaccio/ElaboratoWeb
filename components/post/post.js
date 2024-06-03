@@ -136,7 +136,7 @@ class PostPage extends DynamicPage {
         this.getPostForm().onsubmit = async (event) => {
             event.preventDefault();
             this.setPostElements();
-            if (this.postContent.value != "" && this.postTitle.value != "") {
+            if (this.postContent.value != "" && this.postTitle.value != "" && select.value != "") {
                 this.errMess.style.display = "none";
                 let picture = this.postImage.files.length != 0 ? await this.imgToJSON(this.postImage.files[0]) : null;
                 await APICalls.postRequests.sendPostRequest(JSONBuilder.build(["postID", "date", "content", "likes", "title", "postImage", "name", "username"],
@@ -144,8 +144,13 @@ class PostPage extends DynamicPage {
                 select.value);
                 this.errMess.textContent = "Post successfully uploaded";
                 this.errMess.style.display = "flex";
+                let newPage = await APICalls.getRequests.getCommunitiesRequest(select.value, 1, 16);
+                newPage = newPage.response;
+                sharedCommunityCache = JSONBuilder.build(["title", "desc", "img"], [newPage[0].Name, newPage[0].Description, newPage[0].Image]);
+                let event = new CustomEvent("community-detail");
+                document.dispatchEvent(event);
             } else {
-                this.errMess.textContent = "You must fill in the title and content fields!";
+                this.errMess.textContent = "You must fill in the title, content fields, and choose the community to submit the post in!";
                 this.errMess.style.display = "flex";
             }
         }
@@ -160,6 +165,12 @@ class PostPage extends DynamicPage {
                 [this.communityTitle.value, picture, this.communityDesc.value]));
                 this.errMess.textContent = "Community successfully created";
                 this.errMess.style.display = "flex";
+                await APICalls.postRequests.sub(this.communityTitle.value);
+                let newPage = await APICalls.getRequests.getCommunitiesRequest(this.communityTitle.value, 1, 16);
+                newPage = newPage.response;
+                sharedCommunityCache = JSONBuilder.build(["title", "desc", "img"], [newPage[0].Name, newPage[0].Description, newPage[0].Image]);
+                let event = new CustomEvent("community-detail");
+                document.dispatchEvent(event);
             } else {
                 this.errMess.textContent = "You must fill in the title, description, and image fields!";
                 this.errMess.style.display = "flex";
