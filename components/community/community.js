@@ -1,8 +1,14 @@
 let sharedCommunityCache = null;
 
 class CommunityPage extends DynamicPage {
+    constructor() {
+        super();
+        this.pageId = events.subPages.community;
+    }
+
     async load() {
         await super.load("/community/community");
+        mainGlobalVariables.page.currentPageLoc = this.pageId;
 
         this.communityBuilder = new CommunityBuilder("community", false);
         this.communityDiv = this.getCommunityDiv();

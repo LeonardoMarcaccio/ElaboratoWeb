@@ -1,4 +1,9 @@
 class SearchPage extends DynamicPage {
+    constructor() {
+        super();
+        this.pageId = events.actionBar.search;
+    }
+
     async load() {
         if (!mainGlobalVariables.userData.userLoggedIn) {
             return;
@@ -8,6 +13,7 @@ class SearchPage extends DynamicPage {
             history.pushState({location: events.actionBar.search}, null, "search");
         }
         await super.load("/search/search");
+        mainGlobalVariables.page.currentPageLoc = this.pageId;
 
         this.searchBar = null;
         this.searchButton = null;

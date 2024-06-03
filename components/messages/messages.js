@@ -1,6 +1,12 @@
 class MessagePage extends DynamicPage {
+    constructor() {
+        super();
+        this.pageId = events.subPages.messages;
+    }
+
     async load() {
         await super.load("/messages/messages");
+        mainGlobalVariables.page.currentPageLoc = this.pageId;
 
         this.chatLoader = new ContentLoader(() => {});
         this.chatCache = sharedChatCache;

@@ -1,6 +1,11 @@
 let sharedChatCache = null;
 
 class ChatPage extends DynamicPage {
+  constructor() {
+    super();
+    this.pageId = events.actionBar.chat;
+  }
+
   async load() {
     if (!mainGlobalVariables.userData.userLoggedIn) {
       return;
@@ -10,6 +15,7 @@ class ChatPage extends DynamicPage {
       history.pushState({location: events.actionBar.chat}, null, "chat");
     }
     await super.load("/chat/chat");
+    mainGlobalVariables.page.currentPageLoc = this.pageId;
 
     this.messagePage = null;
     this.bois = null;

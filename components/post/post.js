@@ -1,9 +1,15 @@
 class PostPage extends DynamicPage {
+    constructor() {
+        super();
+        this.pageId = events.actionBar.post;
+    }
+
     async load() {
         if (!mainGlobalVariables.userData.userLoggedIn) {
             return;
         }
         super.load("/post/post");
+        mainGlobalVariables.page.currentPageLoc = this.pageId;
 
         this.user = null;
         this.postContent = null;

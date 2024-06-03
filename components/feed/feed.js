@@ -1,4 +1,9 @@
 class FeedPage extends DynamicPage {
+    constructor() {
+        super();
+        this.pageId = events.actionBar.home;
+    }
+
     async load() {
         if (!mainGlobalVariables.userData.userLoggedIn) {
             return;
@@ -8,6 +13,7 @@ class FeedPage extends DynamicPage {
             history.pushState({location: events.actionBar.home}, null, "home");
         }
         await super.load("/feed/feed");
+        mainGlobalVariables.page.currentPageLoc = this.pageId;
         mainHandler.contentHandling.clearBodyContent();
         if (this.opts.cache && this.cached) {
             mainHandler.contentHandling.purgePageContent();
