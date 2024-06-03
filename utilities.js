@@ -552,6 +552,15 @@ const JSONUtils = {
       return {"oldPassword":oldPassword, "newPassword":newPassword};
     }
   },
+  arrayBufferToBase(arrayBuffer) {
+    let binary = '';
+    let bytes = new Uint8Array(arrayBuffer);
+    let len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  },
   registration: {
     imgToJSON: async (imageFile) => {
       let reader = new FileReader();
@@ -564,15 +573,14 @@ const JSONUtils = {
         }
       });
       reader.readAsArrayBuffer(imageFile);
-      let readFile = await rfile;
-
-      let encodedProfilePicture = btoa(readFile);
-      let profilePictureExtension = imageFile.name.split(".")[1];
+      let arrayBuffer = await rfile;
+      let encodedProfilePicture = JSONUtils.arrayBufferToBase(arrayBuffer);
+      let profilePictureExtension = imageFile.name.split(".").pop();
 
       return {
-          "image":encodedProfilePicture != "" ? encodedProfilePicture : null,
-          "format":encodedProfilePicture != "" ? profilePictureExtension : null
-          };
+        "image": encodedProfilePicture !== "" ? encodedProfilePicture : null,
+        "format": encodedProfilePicture !== "" ? profilePictureExtension : null
+      };
     },
     buildRegistration: (username, email, password, firstname = null, lastname = null,   //NOSONAR
       gender = null, biography = null, personalwebsite = null, pfp = null, phonenumbers = null) => {
