@@ -44,6 +44,13 @@ const events = {
     pagechange: "page-change",
   },
   /**
+   * Sub-pages.
+   */
+  subPages: {
+    community: "community-detail",
+    messages: "messages",
+  },
+  /**
    * Events regarding communication with the backend.
    */
   apiActions: {
