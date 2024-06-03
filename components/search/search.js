@@ -38,11 +38,16 @@ class SearchPage extends DynamicPage {
         this.searchDiv = this.getSearchDiv();
         let newPage = await APICalls.getRequests.getCommunitiesRequest(this.getSearchBar().value, page, 16);
         newPage = newPage.response;
-        for (let i in newPage) {
-            let tmp = await this.communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
-            this.searchDiv.appendChild(tmp);
+        if (newPage != undefined) {
+            for (let i in newPage) {
+                let tmp = await this.communityBuilder.makeCommunity(newPage[i].Name, newPage[i].Description, newPage[i].Image);
+                this.searchDiv.appendChild(tmp);
+            }
+        } else {
+            let errMess = document.createElement("p");
+            errMess.textContent = "There are no communities that fall under this topic, yet!"
+            this.searchDiv.appendChild(errMess);
         }
-        this.searchDiv.style.maxHeight = 70 + newPage.length * 80 + "px";
     }
 
     bindListeners() {

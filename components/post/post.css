@@ -18,7 +18,7 @@ form {
     box-shadow: 0px 0px 14px 30px #E0DFD5;
 }
 
-form > input, select {
+form > input, select, textarea {
     width: 80%;
     margin: 3px 0px;
     border-radius: 10px;

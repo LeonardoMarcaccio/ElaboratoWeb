@@ -36,9 +36,15 @@ class FeedPage extends DynamicPage {
     async loadPosts(page) {
         let newPage = await APICalls.getRequests.getPostsRequest("", page, 8);
         newPage = newPage.response;
-        for (let i in newPage) {
-            let tmp = await this.postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].imageUrl, newPage[i].id, newPage[i].likes);
-            this.feedDiv.appendChild(tmp);
+        if (newPage != undefined) {
+            for (let i in newPage) {
+                let tmp = await this.postBuilder.makePost(newPage[i].title, null, newPage[i].username, newPage[i].name, newPage[i].content, newPage[i].imageUrl, newPage[i].id, newPage[i].likes);
+                this.feedDiv.appendChild(tmp);
+            }
+        } else {
+            let errMess = document.createElement("p");
+            errMess.textContent = "Looks like you're not following any community at the moment..."
+            this.feedDiv.appendChild(errMess);
         }
     }
 
