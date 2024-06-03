@@ -43,7 +43,7 @@ class FeedPage extends DynamicPage {
             }
         } else {
             let errMess = document.createElement("p");
-            errMess.textContent = "Looks like you're not following any community at the moment..."
+            errMess.textContent = "Looks like you're not following any community at the moment...";
             this.feedDiv.appendChild(errMess);
         }
     }

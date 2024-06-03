@@ -45,7 +45,7 @@ class SearchPage extends DynamicPage {
             }
         } else {
             let errMess = document.createElement("p");
-            errMess.textContent = "There are no communities that fall under this topic, yet!"
+            errMess.textContent = "There are no communities that fall under this topic, yet!";
             this.searchDiv.appendChild(errMess);
         }
     }
