@@ -45,6 +45,7 @@
 }
 #profile-user-username {
   flex-grow: 1;
+  display: block;
 }
 #profile-user-bio-container > h2 {
   text-align: center;

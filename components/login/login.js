@@ -41,7 +41,7 @@ class LoginPage extends DynamicPage {
     return this.lazyNodeIdQuery("login-goto-register", true);
   }
   getForm() {
-    return this.lazyNodeIdQuery("login-form", true);
+    return this.lazyNodeIdQuery("login-form");
   }
   clearCredentials() {
     this.getForm().reset();
