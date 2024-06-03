@@ -1,4 +1,9 @@
 class ProfilePage extends DynamicPage {
+  constructor() {
+    super();
+    this.pageId = events.actionBar.profile;
+  }
+
   async load() {
     mainHandler.contentHandling.clearHeadingContent();
     mainHandler.contentHandling.clearFootingContent();
@@ -15,6 +20,7 @@ class ProfilePage extends DynamicPage {
       return;
     }
     await super.load("profile/profile");
+    mainGlobalVariables.page.currentPageLoc = this.pageId;
     await this.populateElement();
     this.bindListeners();
     this.userData = null;
