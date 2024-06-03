@@ -43,6 +43,18 @@ class LoginPage extends DynamicPage {
   getForm() {
     return this.lazyNodeIdQuery("login-form");
   }
+  showLoginWarningBox(show) {
+    let warningbox = this.lazyNodeIdQuery("login-warningbox");
+    if (show) {
+      warningbox.style.display = "block"
+      warningbox.classList.add("generic-warningbox");
+      warningbox.classList.remove("generic-warningbox-hidden");
+    } else {
+      warningbox.style.display = "none"
+      warningbox.classList.add("generic-warningbox-hidden");
+      warningbox.classList.remove("generic-warningbox");
+    }
+  }
   clearCredentials() {
     this.getForm().reset();
   }
@@ -58,7 +70,7 @@ class LoginPage extends DynamicPage {
     this.getPasswordField().classList.remove("wrong");
   }
   bindListeners() {
-    this.getForm().onsubmit = (event) => {
+    this.getForm().onsubmit = async (event) => {
       event.preventDefault();
       this.clearCredentialError();
       if (this.getUsernameField().value == "") {
@@ -67,8 +79,16 @@ class LoginPage extends DynamicPage {
       if(this.getPasswordField().value == "") {
         this.triggerCredentialError(this.getPasswordField());
       }
-      APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
-        this.getUsernameField().value, this.getPasswordField().value), true);
+      let loginResponse = 
+        await APICalls.postRequests.sendAuthentication(JSONUtils.login.buildLogin(
+          this.getUsernameField().value, this.getPasswordField().value), true);
+      if (loginResponse.code == 200) {
+        this.showLoginWarningBox(false);
+      } else if (loginResponse.code == 401) {
+        this.triggerCredentialError(this.getUsernameField());
+        this.triggerCredentialError(this.getPasswordField());
+        this.showLoginWarningBox(true);
+      }
     }
     
     this.getRegisterButton().onclick = () => {

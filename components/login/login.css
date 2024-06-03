@@ -71,3 +71,7 @@
   border-radius: 10px;
   transition: none;
 }
+
+#login-warningbox {
+  display: none;
+}
