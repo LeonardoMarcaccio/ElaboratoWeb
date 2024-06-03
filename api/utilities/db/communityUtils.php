@@ -82,9 +82,6 @@
 
         $result = array();
         $communities = $statement->get_result();
-        if (mysqli_num_rows($communities) === 0) {
-            return $result;
-        }
 
         while($tmp = mysqli_fetch_assoc($communities)) {
             array_push($result, $tmp);
@@ -132,4 +129,3 @@
           throw getInternalError();
         }
     }
-

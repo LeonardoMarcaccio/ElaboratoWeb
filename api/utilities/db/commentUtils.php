@@ -107,9 +107,6 @@
         }
 
         $comments = $statement->get_result();
-        if (mysqli_num_rows($comments) === 0) {
-            throw getInternalError();
-        }
 
         $result = array();
         while($tmp = mysqli_fetch_assoc($comments)) {
@@ -138,9 +135,6 @@
         }
 
         $comments = $statement->get_result();
-        if (mysqli_num_rows($comments) === 0) {
-            throw getInternalError();
-        }
 
         $result = array();
         while($tmp = mysqli_fetch_assoc($comments)) {
@@ -164,10 +158,6 @@
         }
 
         $amount = $statement->get_result();
-
-        if (mysqli_num_rows($amount) === 0) {
-            throw getInternalError();
-        }
 
         $result = array();
         while($tmp = mysqli_fetch_assoc($amount)) {

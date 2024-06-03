@@ -34,9 +34,6 @@
         }
 
         $users = $statement->get_result();
-        if (mysqli_num_rows($users) == 0) {
-            throw getInternalError();
-        }
 
         while($username = mysqli_fetch_assoc($users)) {
             $statement = $database->prepare("INSERT INTO notification (Username, Code, Text) VALUES(?, ?, ?)");

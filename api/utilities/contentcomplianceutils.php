@@ -47,9 +47,22 @@
   }
 
   function checkEmailValidity($email) {
-    // @ check
     return new EmailValidityReport(filter_var($email, FILTER_VALIDATE_EMAIL) !== false);
   }
+
+  function isValidPhoneNumber($phone) {
+    $cleanedPhone = preg_replace('/[\s\-()]+/', '', $phone);
+    
+    if (strlen($phone) != 15) {
+        return false;
+    }
+
+    if (!preg_match('/^\+?\d+$/', $cleanedPhone)) {
+        return false;
+    }
+
+    return true;
+}
 
   function checkNonEssValidity(UserData $userContainer) {
     $lengthName = 50;
@@ -67,7 +80,7 @@
     } else {
       $profilePicCheck = standardStringValidity($userContainer->getPfp(), $lengthPfp);
     }
-    $phoneNumberCheck = true;     // TODO: Check for each number if it conforms with standards.
+    $phoneNumberCheck = isValidPhoneNumber($userContainer->getPhoneNumbers());
 
     return new NonEssValidity($firstNameCheck, $lastNameCheck,
       $genderCheck, $biographyValid, $personalWebsiteCheck,

@@ -34,9 +34,6 @@
         }
         
         $communities = $statement->get_result();
-        if (mysqli_num_rows($communities) === 0) {
-            throw getInternalError();
-        }
         
         $result = array();
         while($tmp = mysqli_fetch_assoc($communities)) {

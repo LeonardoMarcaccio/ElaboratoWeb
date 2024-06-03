@@ -13,7 +13,7 @@
     if ($trialsNumber != null) {
       return $trialsNumber;
     } else {
-        throw getInternalError();
+      throw getInternalError();
     }
   }
 
@@ -28,7 +28,7 @@
     if ($resultingUser != null) {
       return $resultingUser;
     } else {
-        throw getInternalError();
+      throw getInternalError();
     }
   }
 

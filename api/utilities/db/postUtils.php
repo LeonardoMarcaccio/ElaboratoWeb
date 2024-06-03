@@ -50,9 +50,6 @@
         }
 
         $posts = $statement->get_result();
-        if (mysqli_num_rows($posts) === 0) {
-            throw getInternalError();
-        }
         
         $result = array();
         while($tmp = mysqli_fetch_assoc($posts)) {
@@ -81,9 +78,6 @@
         }
 
         $posts = $statement->get_result();
-        if (mysqli_num_rows($posts) == 0) {
-            throw getInternalError();
-        }
         
         $result = array();
         while($tmp = mysqli_fetch_assoc($posts)) {
@@ -104,9 +98,6 @@
         }
 
         $likes = $statement->get_result();
-        if (mysqli_num_rows($likes) === 0) {
-            throw getInternalError();
-        }
 
         $statement = $database->prepare("SELECT COUNT(*) AS value FROM vote WHERE PostID=? and Value=0");
         $statement->bind_param("s", $postID);
@@ -115,9 +106,6 @@
         }
 
         $dislikes = $statement->get_result();
-        if (mysqli_num_rows($dislikes) === 0) {
-            throw getInternalError();
-        }
 
         $newValue = mysqli_fetch_assoc($likes)["value"] - mysqli_fetch_assoc($dislikes)["value"];
 
