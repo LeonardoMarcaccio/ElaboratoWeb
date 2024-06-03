@@ -131,6 +131,10 @@ class RegistrationPage extends DynamicPage {
     return this.lazyNodeIdQuery("registration-phonenumber");
   }
 
+  getPhoneNumberError() {
+    return this.lazyNodeIdQuery("registration-phonenumber-error");
+  }
+
   getNonEssentialElements() {
     let nonEssentialElements = new Array();
     nonEssentialElements.push(this.getFirstname());
@@ -216,6 +220,7 @@ class RegistrationPage extends DynamicPage {
         case 401:
         if (response.hasOwnProperty("response")) {
           this.checkEssentialCredendialEvaluation(response.response);
+          this.checkNonEssentialCredendialEvaluation(response.response);
         }
         break;
         case 409:
@@ -242,6 +247,9 @@ class RegistrationPage extends DynamicPage {
     this.getPasswordError().classList.remove("wrong");
     this.getPasswordRetype().classList.remove("wrong");
     this.getPasswordRetypeError().classList.remove("wrong");
+    this.getPasswordRetypeError().style.display = "none";
+    this.getPhoneNumber().classList.remove("wrong");
+    this.getPhoneNumberError().style.display = "none";
   }
   
   localEssentialFieldsCheck(username, email, password, passwordRetype) {
@@ -280,6 +288,11 @@ class RegistrationPage extends DynamicPage {
       this.passwdError();
     }
   }
+  checkNonEssentialCredendialEvaluation(evaluationJson) {
+    if (!evaluationJson.nonEssentialValidityReport.phoneNumbersValid) {
+      this.phoneNumberError();
+    }
+  }
   
   usernameError() {
     this.getUsername().classList.add("wrong");
@@ -308,6 +321,10 @@ class RegistrationPage extends DynamicPage {
   passwdError() {
     this.getPassword().classList.add("wrong");
     this.getPasswordError().style.display = "block";
+  }
+  phoneNumberError() {
+    this.getPhoneNumber().classList.add("wrong");
+    this.getPhoneNumberError().style.display = "block";
   }
   getBackToLoginBtn() {
     return this.lazyNodeIdQuery("registration-back-to-login");
