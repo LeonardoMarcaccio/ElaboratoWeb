@@ -51,6 +51,10 @@
   }
 
   function isValidPhoneNumber($phoneNumber) {
+    if($phoneNumber === null) {
+      return true;
+    }
+
     // Rimuovi spazi, trattini e parentesi dalla stringa
     $cleanedNumber = preg_replace('/[\s\-()]/', '', $phoneNumber);
 
