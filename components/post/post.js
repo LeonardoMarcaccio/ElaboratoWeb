@@ -109,7 +109,7 @@ class PostPage extends DynamicPage {
             rejected(new Error("Could not read file!"));
           }
         });
-        reader.readAsBinaryString(imageFile);
+        reader.readAsArrayBuffer(imageFile);
         let readFile = await rfile;
   
         let encodedProfilePicture = btoa(readFile);
