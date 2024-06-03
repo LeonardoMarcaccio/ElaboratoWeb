@@ -287,8 +287,6 @@ const APICalls = {
       if (authRequest.code == "200") {
         let customEvt = new CustomEvent(events.apiActions.authSuccess);
         document.dispatchEvent(customEvt);
-      } else {
-        APICalls.evaluateResponseCodeAction(authRequest);
       }
       return authRequest;
     },

@@ -81,10 +81,10 @@ class LoginPage extends DynamicPage {
 let loginClass = new LoginPage();
 
 document.addEventListener(events.apiActions.authFailure, () => {
-  mainHandler.contentHandling.purgePageContent();
   if (mainGlobalVariables.page.currentPageLoc == events.userSpecific.register) {
     return;
   }
+  mainHandler.contentHandling.purgePageContent();
   loginClass.load();
 });
 document.addEventListener(events.userSpecific.login, () => {
