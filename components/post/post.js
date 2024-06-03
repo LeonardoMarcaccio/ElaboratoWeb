@@ -110,14 +110,13 @@ class PostPage extends DynamicPage {
           }
         });
         reader.readAsArrayBuffer(imageFile);
-        let readFile = await rfile;
-  
-        let encodedProfilePicture = btoa(readFile);
-        let profilePictureExtension = imageFile.name.split(".")[1];
-  
+        let arrayBuffer = await rfile;
+        let encodedProfilePicture = JSONUtils.arrayBufferToBase(arrayBuffer);
+        let profilePictureExtension = imageFile.name.split(".").pop();
+        
         return {
-            "image":encodedProfilePicture != "" ? encodedProfilePicture : null,
-            "format":encodedProfilePicture != "" ? profilePictureExtension : null
+          "image": encodedProfilePicture !== "" ? encodedProfilePicture : null,
+          "format": encodedProfilePicture !== "" ? profilePictureExtension : null
         };
     }
 
