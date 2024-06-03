@@ -158,7 +158,7 @@ use function PHPSTORM_META\type;
 
   function decodeAndStoreImage($image, $prefix = "img-") {
     if (is_a($image, 'EncodedImage')) {
-      if (!in_array($image->getExtension(), SUPPORTED_IMAGE_FORMATS)) {
+      if (!in_array(strtolower($image->getExtension()), SUPPORTED_IMAGE_FORMATS)) {
         return null;
       }
       $decodedImage = base64_decode($image->getEncodedImageString());
